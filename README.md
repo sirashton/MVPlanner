@@ -31,6 +31,18 @@ This project is currently in the initial development phase. Contributions and fe
 3. Open the project in VS Code
 4. Press F5 to run the extension in a new VS Code Development Host window
 
+## Installation (for local use)
+
+1. Download the latest `.vsix` file from [your chosen distribution method, e.g., GitHub releases]
+2. Open VS Code
+3. Go to the Extensions view (Ctrl+Shift+X)
+4. Click on the "..." at the top-right of the Extensions view
+5. Select "Install from VSIX..."
+6. Choose the downloaded `.vsix` file
+7. Reload VS Code when prompted
+
+You can now use MVPlanner in any of your projects!
+
 ## Usage
 [Usage instructions will be added as features are implemented]
 

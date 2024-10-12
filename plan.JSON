@@ -129,6 +129,52 @@
           "description": "Prepare and submit the extension to the VS Code Marketplace",
           "status": "Not Started",
           "mscw": "Won't"
+        },
+        {
+          "name": "Set up GitHub Releases",
+          "description": "Configure GitHub Releases for distributing the extension",
+          "status": "Not Started",
+          "mscw": "Should",
+          "subtasks": [
+            {
+              "name": "Create first GitHub Release",
+              "description": "Manually create the first GitHub Release with the .vsix file",
+              "status": "Not Started",
+              "mscw": "Must"
+            },
+            {
+              "name": "Set up GitHub Actions for automated releases",
+              "description": "Create a workflow to automate the release process",
+              "status": "Not Started",
+              "mscw": "Should"
+            },
+            {
+              "name": "Update README with GitHub Release instructions",
+              "description": "Add instructions for users to download the extension from GitHub Releases",
+              "status": "Not Started",
+              "mscw": "Must"
+            }
+          ]
+        },
+        {
+          "name": "Package extension",
+          "description": "Create a .vsix file for local installation",
+          "status": "Not Started",
+          "mscw": "Must",
+          "subtasks": [
+            {
+              "name": "Install vsce",
+              "description": "Install the VS Code Extension Manager",
+              "status": "Complete",
+              "mscw": "Must"
+            },
+            {
+              "name": "Package extension",
+              "description": "Use vsce to package the extension",
+              "status": "Not Started",
+              "mscw": "Must"
+            }
+          ]
         }
       ]
     }

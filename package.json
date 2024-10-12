@@ -9,13 +9,13 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": ["onStartupFinished"],
+  "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "mvplanner.helloWorld",
-        "title": "Hello World"
+        "command": "mvplanner.openPlanViewer",
+        "title": "Open Plan Viewer"
       }
     ]
   },

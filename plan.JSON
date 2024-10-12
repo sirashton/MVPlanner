@@ -1,112 +1,136 @@
 {
-    "name": "Project Planner VS Code Extension",
-    "description": "A VS Code extension for interactive project planning and TODO integration",
-    "status": "In Progress",
-    "mscw": "Must",
-    "subtasks": [
-      {
-        "name": "Setup Development Environment",
-        "description": "Set up the initial project structure and development tools",
-        "status": "Complete",
-        "mscw": "Must",
-        "subtasks": [
-          {
-            "name": "Initialize VS Code Extension project",
-            "description": "Create the basic extension structure using VS Code's yeoman generator",
-            "status": "Complete",
-            "mscw": "Must"
-          },
-          {
-            "name": "Set up TypeScript configuration",
-            "description": "Configure TypeScript for the project",
-            "status": "Complete",
-            "mscw": "Must"
-          },
-          {
-            "name": "Set up testing framework",
-            "description": "Integrate a testing framework for TDD approach",
-            "status": "Not Started",
-            "mscw": "Should"
-          }
-        ]
-      },
-      {
-        "name": "Implement Plan Viewer",
-        "description": "Create the interactive plan viewing and editing interface",
-        "status": "Not Started",
-        "mscw": "Must",
-        "subtasks": [
-          {
-            "name": "Design Plan Viewer UI",
-            "description": "Create wireframes and design for the Plan Viewer interface",
-            "status": "Not Started",
-            "mscw": "Must"
-          },
-          {
-            "name": "Implement Plan Viewer component",
-            "description": "Develop the React component for the Plan Viewer",
-            "status": "Not Started",
-            "mscw": "Must"
-          },
-          {
-            "name": "Integrate Plan Viewer with VS Code WebView",
-            "description": "Set up the WebView to host the Plan Viewer in VS Code",
-            "status": "Not Started",
-            "mscw": "Must"
-          },
-          {
-            "name": "Implement plan.json parsing and rendering",
-            "description": "Create functionality to read and display plan.json data",
-            "status": "Not Started",
-            "mscw": "Must"
-          },
-          {
-            "name": "Add interactive editing features",
-            "description": "Implement ability to add, edit, and delete tasks in the viewer",
-            "status": "Not Started",
-            "mscw": "Must"
-          }
-        ]
-      },
-      {
-        "name": "Develop TODO Linter",
-        "description": "Create the TODO comment linting functionality",
-        "status": "Not Started",
-        "mscw": "Must",
-        "subtasks": [
-          {
-            "name": "Implement TODO parsing logic",
-            "description": "Develop functionality to parse TODO comments from code files",
-            "status": "Not Started",
-            "mscw": "Must"
-          },
-          {
-            "name": "Create plan.json comparison logic",
-            "description": "Develop logic to compare TODOs with tasks in plan.json",
-            "status": "Not Started",
-            "mscw": "Must"
-          },
-          {
-            "name": "Integrate linter with VS Code diagnostics",
-            "description": "Set up the linter to report issues through VS Code's diagnostic system",
-            "status": "Not Started",
-            "mscw": "Must"
-          },
-          {
-            "name": "Implement on-save linting",
-            "description": "Trigger linting process when a file is saved",
-            "status": "Not Started",
-            "mscw": "Should"
-          }
-        ]
-      },
-      {
-        "name": "Extension Packaging and Distribution",
-        "description": "Prepare the extension for distribution",
-        "status": "Not Started",
-        "mscw": "Must",
-        "subtasks": [
-          {
-            "name": "Create extension icon and branding",
-            "description": "Design an icon and branding elements for the extension",
-            "status": "
+  "name": "Project Planner VS Code Extension",
+  "description": "A VS Code extension for interactive project planning and TODO integration",
+  "status": "In Progress",
+  "mscw": "Must",
+  "subtasks": [
+    {
+      "name": "Setup Development Environment",
+      "description": "Set up the initial project structure and development tools",
+      "status": "Complete",
+      "mscw": "Must",
+      "subtasks": [
+        {
+          "name": "Initialize VS Code Extension project",
+          "description": "Create the basic extension structure using VS Code's yeoman generator",
+          "status": "Complete",
+          "mscw": "Must"
+        },
+        {
+          "name": "Set up TypeScript configuration",
+          "description": "Configure TypeScript for the project",
+          "status": "Complete",
+          "mscw": "Must"
+        },
+        {
+          "name": "Set up testing framework",
+          "description": "Integrate a testing framework for TDD approach",
+          "status": "Not Started",
+          "mscw": "Should"
+        }
+      ]
+    },
+    {
+      "name": "Implement Plan Viewer",
+      "description": "Create the interactive plan viewing and editing interface",
+      "status": "Not Started",
+      "mscw": "Must",
+      "subtasks": [
+        {
+          "name": "Design Plan Viewer UI",
+          "description": "Create wireframes and design for the Plan Viewer interface",
+          "status": "Not Started",
+          "mscw": "Must"
+        },
+        {
+          "name": "Implement Plan Viewer component",
+          "description": "Develop the React component for the Plan Viewer",
+          "status": "Not Started",
+          "mscw": "Must"
+        },
+        {
+          "name": "Integrate Plan Viewer with VS Code WebView",
+          "description": "Set up the WebView to host the Plan Viewer in VS Code",
+          "status": "Not Started",
+          "mscw": "Must"
+        },
+        {
+          "name": "Implement plan.json parsing and rendering",
+          "description": "Create functionality to read and display plan.json data",
+          "status": "Not Started",
+          "mscw": "Must"
+        },
+        {
+          "name": "Add interactive editing features",
+          "description": "Implement ability to add, edit, and delete tasks in the viewer",
+          "status": "Not Started",
+          "mscw": "Must"
+        }
+      ]
+    },
+    {
+      "name": "Develop TODO Linter",
+      "description": "Create the TODO comment linting functionality",
+      "status": "Not Started",
+      "mscw": "Must",
+      "subtasks": [
+        {
+          "name": "Implement TODO parsing logic",
+          "description": "Develop functionality to parse TODO comments from code files",
+          "status": "Not Started",
+          "mscw": "Must"
+        },
+        {
+          "name": "Create plan.json comparison logic",
+          "description": "Develop logic to compare TODOs with tasks in plan.json",
+          "status": "Not Started",
+          "mscw": "Must"
+        },
+        {
+          "name": "Integrate linter with VS Code diagnostics",
+          "description": "Set up the linter to report issues through VS Code's diagnostic system",
+          "status": "Not Started",
+          "mscw": "Must"
+        },
+        {
+          "name": "Implement on-save linting",
+          "description": "Trigger linting process when a file is saved",
+          "status": "Not Started",
+          "mscw": "Should"
+        }
+      ]
+    },
+    {
+      "name": "Extension Packaging and Distribution",
+      "description": "Prepare the extension for distribution",
+      "status": "Not Started",
+      "mscw": "Must",
+      "subtasks": [
+        {
+          "name": "Create extension icon and branding",
+          "description": "Design an icon and branding elements for the extension",
+          "status": "Not Started",
+          "mscw": "Should"
+        },
+        {
+          "name": "Write user documentation",
+          "description": "Create comprehensive user guide and API documentation",
+          "status": "Not Started",
+          "mscw": "Must"
+        },
+        {
+          "name": "Implement telemetry and error reporting",
+          "description": "Add anonymous usage tracking and error reporting",
+          "status": "Not Started",
+          "mscw": "Could"
+        },
+        {
+          "name": "Publish to VS Code Marketplace",
+          "description": "Prepare and submit the extension to the VS Code Marketplace",
+          "status": "Not Started",
+          "mscw": "Won't"
+        }
+      ]
+    }
+  ]
+}

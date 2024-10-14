@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs/promises';
 
-const EXTENSION_DEV_VERSION = "0.0.18";
+const EXTENSION_DEV_VERSION = "0.0.21";
 let planViewerPanel: vscode.WebviewPanel | undefined;
 let fileWatcher: vscode.FileSystemWatcher | undefined;
 
@@ -18,52 +18,71 @@ export function activate(context: vscode.ExtensionContext) {
     const planPath = path.join(workspaceFolder.uri.fsPath, 'plan.json');
     console.log('Plan path:', planPath);
 
-    let openPlanViewerCommand = vscode.commands.registerCommand('mvplanner.openPlanViewer', async () => {
-        if (!(await ensurePlanFileExists(planPath))) {
-            return;
-        }
-
-        if (planViewerPanel) {
-            planViewerPanel.reveal();
-        } else {
-            planViewerPanel = vscode.window.createWebviewPanel(
-                'planViewer',
-                'Plan Viewer',
-                vscode.ViewColumn.One,
-                { enableScripts: true }
-            );
-            planViewerPanel.onDidDispose(() => {
-                planViewerPanel = undefined;
-            });
-        }
-        vscode.commands.executeCommand('mvplanner.refreshPlanViewer');
-    });
-
-    let refreshPlanViewerCommand = vscode.commands.registerCommand('mvplanner.refreshPlanViewer', async () => {
+    async function updatePlanViewer() {
         if (!planViewerPanel) {
-            vscode.window.showErrorMessage('Plan Viewer is not open.');
             return;
         }
 
-        if (!(await ensurePlanFileExists(planPath))) {
+        const workspaceFolders = vscode.workspace.workspaceFolders;
+        if (!workspaceFolders) {
+            vscode.window.showErrorMessage('No workspace folder open');
             return;
         }
+
+        const planFilePath = path.join(workspaceFolders[0].uri.fsPath, 'plan.json');
 
         try {
-            const planData = await fs.readFile(planPath, 'utf8');
-            console.log('Plan data loaded successfully');
-            planViewerPanel.webview.html = getWebviewContent(planData);
+            const planContent = await fs.readFile(planFilePath, 'utf-8');
+            const planJson = JSON.parse(planContent);
+            planViewerPanel.webview.html = getWebviewContent(planJson);
         } catch (error) {
-            console.error('Error reading plan.json:', error);
-            vscode.window.showErrorMessage('Error reading plan.json. Please make sure the file exists and is accessible.');
+            vscode.window.showErrorMessage(`Error reading plan file: ${error}`);
         }
-    });
+    }
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('mvplanner.openPlanViewer', async () => {
+            if (planViewerPanel) {
+                planViewerPanel.reveal(vscode.ViewColumn.One);
+            } else {
+                planViewerPanel = vscode.window.createWebviewPanel(
+                    'planViewer',
+                    'Project Plan Viewer',
+                    vscode.ViewColumn.One,
+                    { enableScripts: true }
+                );
+
+                planViewerPanel.onDidDispose(() => {
+                    planViewerPanel = undefined;
+                }, null, context.subscriptions);
+
+                // Set up file watcher for plan.json
+                if (!fileWatcher) {
+                    const workspaceFolders = vscode.workspace.workspaceFolders;
+                    if (workspaceFolders) {
+                        const planFilePath = path.join(workspaceFolders[0].uri.fsPath, 'plan.json');
+                        fileWatcher = vscode.workspace.createFileSystemWatcher(planFilePath);
+                        fileWatcher.onDidChange(() => {
+                            updatePlanViewer();
+                        });
+                        context.subscriptions.push(fileWatcher);
+                    }
+                }
+            }
+
+            await updatePlanViewer();
+        })
+    );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('mvplanner.refreshPlanViewer', async () => {
+            await updatePlanViewer();
+        })
+    );
 
     // Set up file watcher
     setupFileWatcher(context, planPath);
 
-    context.subscriptions.push(openPlanViewerCommand);
-    context.subscriptions.push(refreshPlanViewerCommand);
     console.log('mvplanner.openPlanViewer and mvplanner.refreshPlanViewer commands registered');
 }
 
@@ -118,11 +137,75 @@ function getWebviewContent(planData: string) {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Plan Viewer</title>
+        <title>Project Plan Viewer</title>
+        <style>
+            body { font-family: Arial, sans-serif; padding: 20px; }
+            .tree { margin-left: 20px; }
+            .tree-item { margin: 10px 0; }
+            .tree-content { display: flex; align-items: center; }
+            .expand-btn { cursor: pointer; margin-right: 5px; }
+            .task-name { font-weight: bold; }
+            .task-status { margin-left: 10px; font-style: italic; }
+            .task-mscw { margin-left: 10px; }
+        </style>
     </head>
     <body>
         <h1>Project Plan</h1>
-        <pre id="planData">${planData}</pre>
+        <div id="plan-tree"></div>
+
+        <script>
+            const plan = ${JSON.stringify(planData)};
+
+            function createTreeItem(item) {
+                const div = document.createElement('div');
+                div.className = 'tree-item';
+
+                const content = document.createElement('div');
+                content.className = 'tree-content';
+
+                const expandBtn = document.createElement('span');
+                expandBtn.className = 'expand-btn';
+                expandBtn.textContent = item.subtasks && item.subtasks.length ? '▶' : '•';
+                content.appendChild(expandBtn);
+
+                const name = document.createElement('span');
+                name.className = 'task-name';
+                name.textContent = item.name;
+                content.appendChild(name);
+
+                const status = document.createElement('span');
+                status.className = 'task-status';
+                status.textContent = item.status;
+                content.appendChild(status);
+
+                const mscw = document.createElement('span');
+                mscw.className = 'task-mscw';
+                mscw.textContent = item.mscw;
+                content.appendChild(mscw);
+
+                div.appendChild(content);
+
+                if (item.subtasks && item.subtasks.length) {
+                    const subtasks = document.createElement('div');
+                    subtasks.className = 'tree';
+                    subtasks.style.display = 'none';
+                    item.subtasks.forEach(subtask => {
+                        subtasks.appendChild(createTreeItem(subtask));
+                    });
+                    div.appendChild(subtasks);
+
+                    expandBtn.addEventListener('click', () => {
+                        expandBtn.textContent = expandBtn.textContent === '▶' ? '▼' : '▶';
+                        subtasks.style.display = subtasks.style.display === 'none' ? 'block' : 'none';
+                    });
+                }
+
+                return div;
+            }
+
+            const planTree = document.getElementById('plan-tree');
+            planTree.appendChild(createTreeItem(plan));
+        </script>
     </body>
     </html>`;
 }

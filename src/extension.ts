@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs/promises';
 
-const EXTENSION_DEV_VERSION = "0.0.22";
+const EXTENSION_DEV_VERSION = "0.0.24";
 let planViewerPanel: vscode.WebviewPanel | undefined;
 let fileWatcher: vscode.FileSystemWatcher | undefined;
 
@@ -34,7 +34,8 @@ export function activate(context: vscode.ExtensionContext) {
         try {
             const planContent = await fs.readFile(planFilePath, 'utf-8');
             const planJson = JSON.parse(planContent);
-            planViewerPanel.webview.html = getWebviewContent(planJson);
+            const webviewContent = await getWebviewContent(context, planJson);
+            planViewerPanel.webview.html = webviewContent;
         } catch (error) {
             vscode.window.showErrorMessage(`Error reading plan file: ${error}`);
         }
@@ -123,7 +124,8 @@ function setupFileWatcher(context: vscode.ExtensionContext, planPath: string) {
     fileWatcher.onDidDelete(() => {
         console.log('plan.json deleted. Updating Plan Viewer.');
         if (planViewerPanel) {
-            planViewerPanel.webview.html = getWebviewContent('Plan file not found.');
+            // Display message to user on the webview that file has been deleted.
+            planViewerPanel.webview.html = 'Plan file not found.';
         }
     });
 
@@ -131,93 +133,41 @@ function setupFileWatcher(context: vscode.ExtensionContext, planPath: string) {
     console.log('File watcher for plan.json set up.');
 }
 
-function getWebviewContent(plan: any) {
-    return `<!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Project Plan Viewer</title>
-        <style>
-            body { font-family: Arial, sans-serif; padding: 20px; }
-            .tree { margin-left: 20px; }
-            .tree-item { margin: 10px 0; }
-            .tree-content { display: flex; align-items: center; }
-            .expand-btn { cursor: pointer; margin-right: 5px; }
-            .task-name { font-weight: bold; }
-            .task-status { margin-left: 10px; font-style: italic; }
-            .task-mscw { margin-left: 10px; }
-        </style>
-    </head>
-    <body>
-        <h1>Project Plan</h1>
-        <div id="plan-tree"></div>
+async function getWebviewContent(context: vscode.ExtensionContext, plan: any): Promise<string> {
+    const htmlPath = vscode.Uri.file(path.join(context.extensionPath, 'webview', 'index.html'));
+    const stylesPath = vscode.Uri.file(path.join(context.extensionPath, 'webview', 'styles.css'));
+    const scriptPath = vscode.Uri.file(path.join(context.extensionPath, 'webview', 'script.js'));
 
-        <script>
-            const vscode = acquireVsCodeApi();
-            const plan = ${JSON.stringify(plan)};
-            
-            // Retrieve the state
-            let state = vscode.getState() || { expandedItems: {} };
 
-            function createTreeItem(item, path = '') {
-                const div = document.createElement('div');
-                div.className = 'tree-item';
+    console.log('Getting webview content...');
+    console.log('Plan:', plan);
 
-                const content = document.createElement('div');
-                content.className = 'tree-content';
+    const htmlContent = await fs.readFile(htmlPath.fsPath, 'utf-8');
+    if (!planViewerPanel) {
+        // If the plan viewer is not open, doesn't matter what we return?
+        return htmlContent;
+    } else {
+        const stylesUri = planViewerPanel.webview.asWebviewUri(stylesPath);
+        const scriptUri = planViewerPanel.webview.asWebviewUri(scriptPath);
 
-                const expandBtn = document.createElement('span');
-                expandBtn.className = 'expand-btn';
-                expandBtn.textContent = item.subtasks && item.subtasks.length ? '▶' : '•';
-                content.appendChild(expandBtn);
+    
+        const nonce = getNonce();
 
-                const name = document.createElement('span');
-                name.className = 'task-name';
-                name.textContent = item.name;
-                content.appendChild(name);
+        return htmlContent
+            .replace('${stylesUri}', stylesUri.toString())
+            .replace('${scriptUri}', scriptUri.toString())
+            .replace('${nonce}', nonce)
+            .replace('${plan}', JSON.stringify(plan));
+    }
+}
 
-                const status = document.createElement('span');
-                status.className = 'task-status';
-                status.textContent = item.status;
-                content.appendChild(status);
-
-                const mscw = document.createElement('span');
-                mscw.className = 'task-mscw';
-                mscw.textContent = item.mscw;
-                content.appendChild(mscw);
-
-                div.appendChild(content);
-
-                if (item.subtasks && item.subtasks.length) {
-                    const subtasks = document.createElement('div');
-                    subtasks.className = 'tree';
-                    const currentPath = path + '/' + item.name;
-                    const isExpanded = state.expandedItems[currentPath] || false;
-                    subtasks.style.display = isExpanded ? 'block' : 'none';
-                    expandBtn.textContent = isExpanded ? '▼' : '▶';
-                    item.subtasks.forEach((subtask, index) => {
-                        subtasks.appendChild(createTreeItem(subtask, currentPath + '/' + index));
-                    });
-                    div.appendChild(subtasks);
-
-                    expandBtn.addEventListener('click', () => {
-                        const newState = subtasks.style.display === 'none';
-                        expandBtn.textContent = newState ? '▼' : '▶';
-                        subtasks.style.display = newState ? 'block' : 'none';
-                        state.expandedItems[currentPath] = newState;
-                        vscode.setState(state);
-                    });
-                }
-
-                return div;
-            }
-
-            const planTree = document.getElementById('plan-tree');
-            planTree.appendChild(createTreeItem(plan));
-        </script>
-    </body>
-    </html>`;
+function getNonce() {
+    let text = '';
+    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for (let i = 0; i < 32; i++) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
 }
 
 export function deactivate() {

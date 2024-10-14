@@ -47,5 +47,8 @@
     "type": "git",
     "url": "https://github.com/sirashton/mvplanner.git"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "files": [
+    "webview"
+  ]
 }

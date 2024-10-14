@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs/promises';
 
-const EXTENSION_DEV_VERSION = "0.0.21";
+const EXTENSION_DEV_VERSION = "0.0.22";
 let planViewerPanel: vscode.WebviewPanel | undefined;
 let fileWatcher: vscode.FileSystemWatcher | undefined;
 
@@ -49,7 +49,7 @@ export function activate(context: vscode.ExtensionContext) {
                     'planViewer',
                     'Project Plan Viewer',
                     vscode.ViewColumn.One,
-                    { enableScripts: true }
+                    { enableScripts: true, enableCommandUris: true }
                 );
 
                 planViewerPanel.onDidDispose(() => {
@@ -131,7 +131,7 @@ function setupFileWatcher(context: vscode.ExtensionContext, planPath: string) {
     console.log('File watcher for plan.json set up.');
 }
 
-function getWebviewContent(planData: string) {
+function getWebviewContent(plan: any) {
     return `<!DOCTYPE html>
     <html lang="en">
     <head>
@@ -154,9 +154,13 @@ function getWebviewContent(planData: string) {
         <div id="plan-tree"></div>
 
         <script>
-            const plan = ${JSON.stringify(planData)};
+            const vscode = acquireVsCodeApi();
+            const plan = ${JSON.stringify(plan)};
+            
+            // Retrieve the state
+            let state = vscode.getState() || { expandedItems: {} };
 
-            function createTreeItem(item) {
+            function createTreeItem(item, path = '') {
                 const div = document.createElement('div');
                 div.className = 'tree-item';
 
@@ -188,15 +192,21 @@ function getWebviewContent(planData: string) {
                 if (item.subtasks && item.subtasks.length) {
                     const subtasks = document.createElement('div');
                     subtasks.className = 'tree';
-                    subtasks.style.display = 'none';
-                    item.subtasks.forEach(subtask => {
-                        subtasks.appendChild(createTreeItem(subtask));
+                    const currentPath = path + '/' + item.name;
+                    const isExpanded = state.expandedItems[currentPath] || false;
+                    subtasks.style.display = isExpanded ? 'block' : 'none';
+                    expandBtn.textContent = isExpanded ? '▼' : '▶';
+                    item.subtasks.forEach((subtask, index) => {
+                        subtasks.appendChild(createTreeItem(subtask, currentPath + '/' + index));
                     });
                     div.appendChild(subtasks);
 
                     expandBtn.addEventListener('click', () => {
-                        expandBtn.textContent = expandBtn.textContent === '▶' ? '▼' : '▶';
-                        subtasks.style.display = subtasks.style.display === 'none' ? 'block' : 'none';
+                        const newState = subtasks.style.display === 'none';
+                        expandBtn.textContent = newState ? '▼' : '▶';
+                        subtasks.style.display = newState ? 'block' : 'none';
+                        state.expandedItems[currentPath] = newState;
+                        vscode.setState(state);
                     });
                 }
 

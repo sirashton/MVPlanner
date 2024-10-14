@@ -16,6 +16,10 @@
       {
         "command": "mvplanner.openPlanViewer",
         "title": "Open Plan Viewer"
+      },
+      {
+        "command": "mvplanner.refreshPlanViewer",
+        "title": "Refresh Plan Viewer"
       }
     ]
   },

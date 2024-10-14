@@ -3,16 +3,35 @@ import * as path from 'path';
 import * as fs from 'fs/promises';
 
 const EXTENSION_DEV_VERSION = "0.0.9";
+let planViewerPanel: vscode.WebviewPanel | undefined;
 
 export function activate(context: vscode.ExtensionContext) {
     console.log(`Activating extension "mvplanner" version: ${EXTENSION_DEV_VERSION}...`);
 
-    let disposable = vscode.commands.registerCommand('mvplanner.openPlanViewer', async () => {
-        console.log('openPlanViewer command triggered');
-        
-        // Get the first workspace folder (if any)
+    let openPlanViewerCommand = vscode.commands.registerCommand('mvplanner.openPlanViewer', () => {
+        if (planViewerPanel) {
+            planViewerPanel.reveal();
+        } else {
+            planViewerPanel = vscode.window.createWebviewPanel(
+                'planViewer',
+                'Plan Viewer',
+                vscode.ViewColumn.One,
+                { enableScripts: true }
+            );
+            planViewerPanel.onDidDispose(() => {
+                planViewerPanel = undefined;
+            });
+        }
+        vscode.commands.executeCommand('mvplanner.refreshPlanViewer');
+    });
+
+    let refreshPlanViewerCommand = vscode.commands.registerCommand('mvplanner.refreshPlanViewer', async () => {
+        if (!planViewerPanel) {
+            vscode.window.showErrorMessage('Plan Viewer is not open.');
+            return;
+        }
+
         const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
-        
         if (!workspaceFolder) {
             vscode.window.showErrorMessage('No workspace folder open. Please open a folder and try again.');
             return;
@@ -22,28 +41,18 @@ export function activate(context: vscode.ExtensionContext) {
         console.log('Plan path:', planPath);
 
         try {
-            // Use fs.promises for asynchronous file operations
             const planData = await fs.readFile(planPath, 'utf8');
             console.log('Plan data loaded successfully');
-
-            const panel = vscode.window.createWebviewPanel(
-                'planViewer',
-                'Plan Viewer',
-                vscode.ViewColumn.One,
-                {
-                    enableScripts: true
-                }
-            );
-
-            panel.webview.html = getWebviewContent(planData);
+            planViewerPanel.webview.html = getWebviewContent(planData);
         } catch (error) {
             console.error('Error reading plan.json:', error);
             vscode.window.showErrorMessage('Error reading plan.json. Please make sure the file exists and is accessible.');
         }
     });
 
-    context.subscriptions.push(disposable);
-    console.log('mvplanner.openPlanViewer command registered');
+    context.subscriptions.push(openPlanViewerCommand);
+    context.subscriptions.push(refreshPlanViewerCommand);
+    console.log('mvplanner.openPlanViewer and mvplanner.refreshPlanViewer commands registered');
 }
 
 function getWebviewContent(planData: string) {

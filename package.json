@@ -9,13 +9,17 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": ["onStartupFinished"],
+  "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "mvplanner.helloWorld",
-        "title": "Hello World"
+        "command": "mvplanner.openPlanViewer",
+        "title": "Open Plan Viewer"
+      },
+      {
+        "command": "mvplanner.refreshPlanViewer",
+        "title": "Refresh Plan Viewer"
       }
     ]
   },
@@ -43,5 +47,8 @@
     "type": "git",
     "url": "https://github.com/sirashton/mvplanner.git"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "files": [
+    "webview"
+  ]
 }

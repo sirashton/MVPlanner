@@ -1,0 +1,14 @@
+body { font-family: Arial, sans-serif; padding: 20px; }
+.tree { margin-left: 20px; }
+.tree-item { margin: 10px 0; }
+.tree-content { display: flex; align-items: center; }
+.expand-btn { cursor: pointer; margin-right: 5px; }
+.task-name { font-weight: bold; }
+.task-status { margin-left: 10px; font-style: italic; }
+.task-mscw { margin-left: 10px; }
+h1 {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: red;
+}

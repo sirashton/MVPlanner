@@ -2,8 +2,10 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs/promises';
 
+const EXTENSION_DEV_VERSION = "0.0.9";
+
 export function activate(context: vscode.ExtensionContext) {
-    console.log('Activating extension "mvplanner"...');
+    console.log(`Activating extension "mvplanner" version: ${EXTENSION_DEV_VERSION}...`);
 
     let disposable = vscode.commands.registerCommand('mvplanner.openPlanViewer', async () => {
         console.log('openPlanViewer command triggered');

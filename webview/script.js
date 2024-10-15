@@ -5,6 +5,8 @@
     // Retrieve the state
     let state = vscode.getState() || { expandedItems: {} };
 
+    const statusOptions = ['Not Started', 'In Progress', 'Complete', 'Blocked'];
+
     function renderTree(node, parentPath = []) {
         const currentPath = [...parentPath, node.name];
         const pathString = currentPath.join(' > ');
@@ -15,10 +17,13 @@
                 <div class="tree-content">
                     <span class="expand-btn">${node.subtasks && node.subtasks.length ? (isExpanded ? '▼' : '▶') : '•'}</span>
                     <span class="task-name">${node.name}</span>
-                    <span class="task-status">${node.status}</span>
+                    <select class="status-select" data-path="${pathString}">
+                        ${statusOptions.map(status => 
+                            `<option value="${status}" ${node.status === status ? 'selected' : ''}>${status}</option>`
+                        ).join('')}
+                    </select>
                     <span class="task-mscw">${node.mscw}</span>
                     <span class="task-path">${pathString}</span>
-                    <button class="complete-btn" data-path="${pathString}">Complete</button>
                 </div>
             `;
 
@@ -50,12 +55,17 @@
                     state.expandedItems[path] = !isExpanded;
                     vscode.setState(state);
                 }
-            } else if (e.target.classList.contains('complete-btn')) {
+            }
+        });
+
+        treeContainer.addEventListener('change', (e) => {
+            if (e.target.classList.contains('status-select')) {
                 const path = e.target.dataset.path;
+                const newStatus = e.target.value;
                 vscode.postMessage({
                     command: 'changeStatus',
                     path: path,
-                    newStatus: 'Complete'
+                    newStatus: newStatus
                 });
             }
         });
@@ -63,14 +73,4 @@
 
     initializeTree();
 
-    // // Handle messages from the extension
-    // window.addEventListener('message', event => {
-    //     const message = event.data;
-    //     switch (message.command) {
-    //         case 'updatePlan':
-    //             plan = message.plan;
-    //             initializeTree();
-    //             break;
-    //     }
-    // });
 })();

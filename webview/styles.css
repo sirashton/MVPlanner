@@ -18,16 +18,15 @@ h1 {
     color: #888;
 }
 
-.complete-btn {
+.status-select {
     margin-left: 10px;
     padding: 2px 5px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
     border-radius: 3px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    font-size: 0.9em;
 }
 
-.complete-btn:hover {
-    background-color: #45a049;
+.status-select:hover {
+    border-color: #888;
 }

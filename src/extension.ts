@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs/promises';
 
-const EXTENSION_DEV_VERSION = "0.0.35";
+const EXTENSION_DEV_VERSION = "0.0.36";
 let planViewerPanel: vscode.WebviewPanel | undefined;
 let fileWatcher: vscode.FileSystemWatcher | undefined;
 let planFilePath: string | undefined;
@@ -270,9 +270,6 @@ async function updateTaskStatus(taskPath: string, newStatus: string) {
         // Write the updated plan back to the file
         await fs.writeFile(planFilePath, JSON.stringify(plan, null, 2), 'utf-8');
 
-        // Refresh the plan viewer
-        vscode.commands.executeCommand('mvplanner.refreshPlanViewer');
-
         vscode.window.showInformationMessage(`Task status updated: ${taskPath} -> ${newStatus}`);
     } catch (error) {
         vscode.window.showErrorMessage(`Error updating task status: ${error}`);
@@ -308,9 +305,6 @@ async function updateTaskMSCW(taskPath: string, newMSCW: string) {
 
         // Write the updated plan back to the file
         await fs.writeFile(planFilePath, JSON.stringify(plan, null, 2), 'utf-8');
-
-        // Refresh the plan viewer
-        vscode.commands.executeCommand('mvplanner.refreshPlanViewer');
 
         vscode.window.showInformationMessage(`Task MSCW updated: ${taskPath} -> ${newMSCW}`);
     } catch (error) {

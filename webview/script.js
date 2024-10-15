@@ -2,8 +2,10 @@
     const vscode = acquireVsCodeApi();
     const plan = JSON.parse(document.getElementById('plan-data').textContent);
     
+    
     // Retrieve the state
     let state = vscode.getState() || { expandedItems: {} };
+
 
     function createTreeItem(item, path = '') {
         const div = document.createElement('div');
@@ -32,7 +34,7 @@
         mscw.textContent = item.mscw;
         content.appendChild(mscw);
 
-        // Add path display (now using only indices)
+        // Add path display
         const pathSpan = document.createElement('span');
         pathSpan.className = 'task-path';
         pathSpan.textContent = path;

@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs/promises';
 
-const EXTENSION_DEV_VERSION = "0.0.25";
+const EXTENSION_DEV_VERSION = "0.0.29";
 let planViewerPanel: vscode.WebviewPanel | undefined;
 let fileWatcher: vscode.FileSystemWatcher | undefined;
 
@@ -33,8 +33,8 @@ export function activate(context: vscode.ExtensionContext) {
 
         try {
             const planContent = await fs.readFile(planFilePath, 'utf-8');
-            const planJson = JSON.parse(planContent);
-            const webviewContent = await getWebviewContent(context, planJson);
+            const plan = JSON.parse(planContent);
+            const webviewContent = await getWebviewContent(context, plan);
             planViewerPanel.webview.html = webviewContent;
         } catch (error) {
             vscode.window.showErrorMessage(`Error reading plan file: ${error}`);
@@ -142,9 +142,51 @@ async function getWebviewContent(context: vscode.ExtensionContext, plan: any): P
     const stylesPath = vscode.Uri.file(path.join(context.extensionPath, 'webview', 'styles.css'));
     const scriptPath = vscode.Uri.file(path.join(context.extensionPath, 'webview', 'script.js'));
 
-
     console.log('Getting webview content...');
-    console.log('Plan:', plan);
+    console.log('typeof plan:', typeof plan);
+    
+    // Validate plan structure
+    let planStructureError = null;
+    if (typeof plan !== 'object' || plan === null || Array.isArray(plan)) {
+        planStructureError = 'Invalid plan structure: Top-level must be a single task object.';
+    }
+
+    // Ensure the plan object has a name property (minimum requirement for a task)
+    if (typeof plan.name !== 'string') {
+        planStructureError = 'Invalid plan structure: Task must have a name property.';
+    }
+
+    if (planStructureError) {
+        vscode.window.showErrorMessage(planStructureError);
+        const htmlContent = `
+        <div class="error-container">
+            <h2>Error in Plan Structure</h2>
+            <p>${planStructureError}</p>
+            <h3>How to Fix:</h3>
+            <ul>
+                <li>Ensure your plan.json file contains a single object (not an array).</li>
+                <li>The top-level object should represent a task with at least a 'name' property.</li>
+                <li>Example of a valid minimal structure:
+                    <pre>
+{
+    "name": "My Project",
+    "subtasks": [
+        {
+            "name": "Subtask 1"
+        },
+        {
+            "name": "Subtask 2"
+        }
+    ]
+}
+                    </pre>
+                </li>
+                <li>Check your JSON for syntax errors.</li>
+            </ul>
+        </div>
+    `
+        return htmlContent;
+    }
 
     const htmlContent = await fs.readFile(htmlPath.fsPath, 'utf-8');
     if (!planViewerPanel) {
@@ -154,7 +196,6 @@ async function getWebviewContent(context: vscode.ExtensionContext, plan: any): P
         const stylesUri = planViewerPanel.webview.asWebviewUri(stylesPath);
         const scriptUri = planViewerPanel.webview.asWebviewUri(scriptPath);
 
-    
         const nonce = getNonce();
 
         return htmlContent

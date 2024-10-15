@@ -33,36 +33,102 @@
     {
       "name": "Implement Plan Viewer",
       "description": "Create the interactive plan viewing and editing interface",
-      "status": "Not Started",
+      "status": "In Progress",
       "mscw": "Must",
       "subtasks": [
         {
-          "name": "Design Plan Viewer UI",
+          "name": "User can view the plan",
           "description": "Create wireframes and design for the Plan Viewer interface",
           "status": "Not Started",
-          "mscw": "Must"
-        },
-        {
-          "name": "Implement Plan Viewer component",
-          "description": "Develop the React component for the Plan Viewer",
-          "status": "Not Started",
-          "mscw": "Must"
+          "mscw": "Must",
+          "subtasks": [
+            {
+              "name": "The plan is nicely formatted",
+              "description": "The plan is nicely formatted",
+              "status": "Not Started",
+              "mscw": "Must"
+            },
+            {
+              "name": "Infer the status of a task based on its subtasks",
+              "description": "Done all we must, done all we should...",
+              "status": "Not Started",
+              "mscw": "Should"
+            },
+            {
+              "name": "User can filter the plan",
+              "description": "User can filter the plan by status, MSCW, etc.",
+              "status": "Not Started",
+              "mscw": "Should"
+            }
+          ]
         },
         {
           "name": "Integrate Plan Viewer with VS Code WebView",
           "description": "Set up the WebView to host the Plan Viewer in VS Code",
-          "status": "Not Started",
+          "status": "Complete",
           "mscw": "Must"
         },
         {
           "name": "Implement plan.json parsing and rendering",
           "description": "Create functionality to read and display plan.json data",
-          "status": "Not Started",
+          "status": "Complete",
           "mscw": "Must"
         },
         {
-          "name": "Add interactive editing features",
-          "description": "Implement ability to add, edit, and delete tasks in the viewer",
+          "name": "User can edit the plan",
+          "description": "",
+          "status": "In Progress",
+          "mscw": "Must",
+          "subtasks": [
+            {
+              "name": "Implement task creation and deletion",
+              "description": "Add functionality to create new tasks and delete existing ones",
+              "status": "Not Started",
+              "mscw": "Must"
+            },
+            {
+              "name": "Implement task status editing",
+              "description": "Add functionality to edit the status of tasks",
+              "status": "Complete",
+              "mscw": "Must"
+            },
+            {
+              "name": "Implement MSCW editing",
+              "description": "Add functionality to edit the MSCW of tasks",
+              "status": "Complete",
+              "mscw": "Must"
+            },
+            {
+              "name": "User can re-name tasks",
+              "description": "Add functionality to re-name tasks and descriptions",
+              "status": "Not Started",
+              "mscw": "Must"
+            },
+            {
+              "name": "Implement re-structuring of tasks",
+              "description": "Add functionality to re-structure tasks",
+              "status": "Not Started",
+              "mscw": "Should",
+              "subtasks": [
+                {
+                  "name": "Button based re-structuring",
+                  "description": "Move button, move to here button, etc.",
+                  "status": "Not Started",
+                  "mscw": "Should"
+                },
+                {
+                  "name": "Drag and drop re-structuring",
+                  "description": "Allow tasks to be re-structured via drag and drop",
+                  "status": "Not Started",
+                  "mscw": "Could"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Implement task creation and deletion",
+          "description": "Add functionality to create new tasks and delete existing ones",
           "status": "Not Started",
           "mscw": "Must"
         }
@@ -103,7 +169,7 @@
     {
       "name": "Extension Packaging and Distribution",
       "description": "Prepare the extension for distribution",
-      "status": "Not Started",
+      "status": "In Progress",
       "mscw": "Must",
       "subtasks": [
         {

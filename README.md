@@ -1,12 +1,15 @@
 # Project Planner VS Code Extension
 
 ## Overview
-Project Planner is a VS Code extension designed to help developers and teams manage project tasks, visualize project plans, and integrate TODO comments with project planning. It aims to streamline the project management process directly within the development environment.
+It's hard to stick to a longer term action plan, especially when working with AI assistants.
+I find myself working with an AI to create a multistep plan that breaks down a big feature change, then writing this down somewhere to refer to, or sketching it out on paper. But what if you and your AI can be looking at the same plan, better still, what if you're just guiding the AI to build this nice structured plan?
+MVPlanner is a VS Code extension designed to help developers and teams manage project tasks, visualize project plans, and integrate TODO comments with project planning. It aims to streamline the project management process directly within the development environment, visible to humans and agents alike.
 
 ## Key Features
-1. Interactive Plan Viewer: Visualize and edit your project plan within VS Code.
+1. Interactive Plan Viewer: Visualize sand edit your project plan within VS Code.
 2. TODO Integration: Automatically link TODO comments in your code with tasks in your project plan.
 3. Task Linting: Ensure TODOs in your code are properly tracked in the project plan.
+4. Make the plan as easy as possible for AI code assistants to edit via structure json file.
 
 ## High-Level Aims
 - Provide an intuitive, visual representation of project tasks and their hierarchy.

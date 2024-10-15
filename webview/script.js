@@ -23,7 +23,6 @@
                         ).join('')}
                     </select>
                     <span class="task-mscw">${node.mscw}</span>
-                    <span class="task-path">${pathString}</span>
                 </div>
             `;
 

@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs/promises';
 
-const EXTENSION_DEV_VERSION = "0.0.33";
+const EXTENSION_DEV_VERSION = "0.0.35";
 let planViewerPanel: vscode.WebviewPanel | undefined;
 let fileWatcher: vscode.FileSystemWatcher | undefined;
 let planFilePath: string | undefined;
@@ -67,6 +67,10 @@ export function activate(context: vscode.ExtensionContext) {
                             case 'changeStatus':
                                 console.log(`Changing status for task: ${message.path} to ${message.newStatus}`);
                                 await updateTaskStatus(message.path, message.newStatus);
+                                return;
+                            case 'changeMSCW':
+                                console.log(`Changing MSCW for task: ${message.path} to ${message.newMSCW}`);
+                                await updateTaskMSCW(message.path, message.newMSCW);
                                 return;
                         }
                     },
@@ -158,7 +162,6 @@ async function getWebviewContent(context: vscode.ExtensionContext, plan: any): P
     const scriptPath = vscode.Uri.file(path.join(context.extensionPath, 'webview', 'script.js'));
 
     console.log('Getting webview content...');
-    console.log('typeof plan:', typeof plan);
     
     // Validate plan structure
     let planStructureError = null;
@@ -273,5 +276,44 @@ async function updateTaskStatus(taskPath: string, newStatus: string) {
         vscode.window.showInformationMessage(`Task status updated: ${taskPath} -> ${newStatus}`);
     } catch (error) {
         vscode.window.showErrorMessage(`Error updating task status: ${error}`);
+    }
+}
+
+async function updateTaskMSCW(taskPath: string, newMSCW: string) {
+    if (!planFilePath) {
+        vscode.window.showErrorMessage('Plan file path is not set');
+        return;
+    }
+
+    try {
+        const planContent = await fs.readFile(planFilePath, 'utf-8');
+        let plan = JSON.parse(planContent);
+
+        // Update the task MSCW
+        const pathParts = taskPath.split(' > ');
+        let currentTask = plan;
+        for (let i = 1; i < pathParts.length; i++) {
+            const part = pathParts[i];
+            if (currentTask.subtasks) {
+                currentTask = currentTask.subtasks.find((task: any) => task.name === part);
+                if (!currentTask) {
+                    throw new Error(`Task not found: ${part}`);
+                }
+            } else {
+                throw new Error(`Invalid task structure at: ${part}`);
+            }
+        }
+
+        currentTask.mscw = newMSCW;
+
+        // Write the updated plan back to the file
+        await fs.writeFile(planFilePath, JSON.stringify(plan, null, 2), 'utf-8');
+
+        // Refresh the plan viewer
+        vscode.commands.executeCommand('mvplanner.refreshPlanViewer');
+
+        vscode.window.showInformationMessage(`Task MSCW updated: ${taskPath} -> ${newMSCW}`);
+    } catch (error) {
+        vscode.window.showErrorMessage(`Error updating task MSCW: ${error}`);
     }
 }

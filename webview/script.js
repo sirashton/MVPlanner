@@ -6,6 +6,7 @@
     let state = vscode.getState() || { expandedItems: {} };
 
     const statusOptions = ['Not Started', 'In Progress', 'Complete', 'Blocked'];
+    const mscwOptions = ['Must', 'Should', 'Could', 'Won\'t'];
 
     function renderTree(node, parentPath = []) {
         const currentPath = [...parentPath, node.name];
@@ -22,7 +23,11 @@
                             `<option value="${status}" ${node.status === status ? 'selected' : ''}>${status}</option>`
                         ).join('')}
                     </select>
-                    <span class="task-mscw">${node.mscw}</span>
+                    <select class="mscw-select" data-path="${pathString}">
+                        ${mscwOptions.map(mscw => 
+                            `<option value="${mscw}" ${node.mscw === mscw ? 'selected' : ''}>${mscw}</option>`
+                        ).join('')}
+                    </select>
                 </div>
             `;
 
@@ -65,6 +70,14 @@
                     command: 'changeStatus',
                     path: path,
                     newStatus: newStatus
+                });
+            } else if (e.target.classList.contains('mscw-select')) {
+                const path = e.target.dataset.path;
+                const newMSCW = e.target.value;
+                vscode.postMessage({
+                    command: 'changeMSCW',
+                    path: path,
+                    newMSCW: newMSCW
                 });
             }
         });

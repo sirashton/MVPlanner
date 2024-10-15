@@ -18,7 +18,8 @@ h1 {
     color: #888;
 }
 
-.status-select {
+.status-select,
+.mscw-select {
     margin-left: 10px;
     padding: 2px 5px;
     border-radius: 3px;
@@ -27,6 +28,7 @@ h1 {
     font-size: 0.9em;
 }
 
-.status-select:hover {
+.status-select:hover,
+.mscw-select:hover {
     border-color: #888;
 }

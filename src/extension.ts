@@ -2,9 +2,10 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs/promises';
 
-const EXTENSION_DEV_VERSION = "0.0.29";
+const EXTENSION_DEV_VERSION = "0.0.32";
 let planViewerPanel: vscode.WebviewPanel | undefined;
 let fileWatcher: vscode.FileSystemWatcher | undefined;
+let planFilePath: string | undefined;
 
 export function activate(context: vscode.ExtensionContext) {
     console.log(`Activating extension "mvplanner" version: ${EXTENSION_DEV_VERSION}...`);
@@ -15,8 +16,8 @@ export function activate(context: vscode.ExtensionContext) {
         return;
     }
 
-    const planPath = path.join(workspaceFolder.uri.fsPath, 'plan.json');
-    console.log('Plan path:', planPath);
+    planFilePath = path.join(workspaceFolder.uri.fsPath, 'plan.json');
+    console.log('Plan path:', planFilePath);
 
     async function updatePlanViewer() {
         if (!planViewerPanel) {
@@ -29,7 +30,10 @@ export function activate(context: vscode.ExtensionContext) {
             return;
         }
 
-        const planFilePath = path.join(workspaceFolders[0].uri.fsPath, 'plan.json');
+        if (!planFilePath) {
+            vscode.window.showErrorMessage('Plan file path is not set');
+            return;
+        }
 
         try {
             const planContent = await fs.readFile(planFilePath, 'utf-8');
@@ -57,15 +61,26 @@ export function activate(context: vscode.ExtensionContext) {
                     }
                 );
 
+                planViewerPanel.webview.onDidReceiveMessage(
+                    async message => {
+                        switch (message.command) {
+                            case 'changeStatus':
+                                console.log(`Changing status for task: ${message.path} to ${message.newStatus}`);
+                                await updateTaskStatus(message.path, message.newStatus);
+                                return;
+                        }
+                    },
+                    undefined,
+                    context.subscriptions
+                );
+
                 planViewerPanel.onDidDispose(() => {
                     planViewerPanel = undefined;
                 }, null, context.subscriptions);
 
                 // Set up file watcher for plan.json
                 if (!fileWatcher) {
-                    const workspaceFolders = vscode.workspace.workspaceFolders;
-                    if (workspaceFolders) {
-                        const planFilePath = path.join(workspaceFolders[0].uri.fsPath, 'plan.json');
+                    if (planFilePath) {
                         fileWatcher = vscode.workspace.createFileSystemWatcher(planFilePath);
                         fileWatcher.onDidChange(() => {
                             updatePlanViewer();
@@ -86,7 +101,7 @@ export function activate(context: vscode.ExtensionContext) {
     );
 
     // Set up file watcher
-    setupFileWatcher(context, planPath);
+    setupFileWatcher(context, planFilePath);
 
     console.log('mvplanner.openPlanViewer and mvplanner.refreshPlanViewer commands registered');
 }
@@ -184,7 +199,7 @@ async function getWebviewContent(context: vscode.ExtensionContext, plan: any): P
                 <li>Check your JSON for syntax errors.</li>
             </ul>
         </div>
-    `
+    `;
         return htmlContent;
     }
 
@@ -219,5 +234,44 @@ export function deactivate() {
     console.log('Deactivating extension "mvplanner"...');
     if (fileWatcher) {
         fileWatcher.dispose();
+    }
+}
+
+async function updateTaskStatus(taskPath: string, newStatus: string) {
+    if (!planFilePath) {
+        vscode.window.showErrorMessage('Plan file path is not set');
+        return;
+    }
+
+    try {
+        const planContent = await fs.readFile(planFilePath, 'utf-8');
+        let plan = JSON.parse(planContent);
+
+        // Update the task status
+        const pathParts = taskPath.split(' > ');
+        let currentTask = plan;
+        for (let i = 1; i < pathParts.length; i++) {
+            const part = pathParts[i];
+            if (currentTask.subtasks) {
+                currentTask = currentTask.subtasks.find((task: any) => task.name === part);
+                if (!currentTask) {
+                    throw new Error(`Task not found: ${part}`);
+                }
+            } else {
+                throw new Error(`Invalid task structure at: ${part}`);
+            }
+        }
+
+        currentTask.status = newStatus;
+
+        // Write the updated plan back to the file
+        await fs.writeFile(planFilePath, JSON.stringify(plan, null, 2), 'utf-8');
+
+        // Refresh the plan viewer
+        vscode.commands.executeCommand('mvplanner.refreshPlanViewer');
+
+        vscode.window.showInformationMessage(`Task status updated: ${taskPath} -> ${newStatus}`);
+    } catch (error) {
+        vscode.window.showErrorMessage(`Error updating task status: ${error}`);
     }
 }

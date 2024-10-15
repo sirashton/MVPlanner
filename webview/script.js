@@ -2,71 +2,75 @@
     const vscode = acquireVsCodeApi();
     const plan = JSON.parse(document.getElementById('plan-data').textContent);
     
-    
     // Retrieve the state
     let state = vscode.getState() || { expandedItems: {} };
 
+    function renderTree(node, parentPath = []) {
+        const currentPath = [...parentPath, node.name];
+        const pathString = currentPath.join(' > ');
+        const isExpanded = state.expandedItems[pathString] || false;
+        
+        let html = `
+            <div class="tree-item" data-path="${pathString}">
+                <div class="tree-content">
+                    <span class="expand-btn">${node.subtasks && node.subtasks.length ? (isExpanded ? '▼' : '▶') : '•'}</span>
+                    <span class="task-name">${node.name}</span>
+                    <span class="task-status">${node.status}</span>
+                    <span class="task-mscw">${node.mscw}</span>
+                    <span class="task-path">${pathString}</span>
+                    <button class="complete-btn" data-path="${pathString}">Complete</button>
+                </div>
+            `;
 
-    function createTreeItem(item, path = '') {
-        const div = document.createElement('div');
-        div.className = 'tree-item';
-
-        const content = document.createElement('div');
-        content.className = 'tree-content';
-
-        const expandBtn = document.createElement('span');
-        expandBtn.className = 'expand-btn';
-        expandBtn.textContent = item.subtasks && item.subtasks.length ? '▶' : '•';
-        content.appendChild(expandBtn);
-
-        const name = document.createElement('span');
-        name.className = 'task-name';
-        name.textContent = item.name;
-        content.appendChild(name);
-
-        const status = document.createElement('span');
-        status.className = 'task-status';
-        status.textContent = item.status;
-        content.appendChild(status);
-
-        const mscw = document.createElement('span');
-        mscw.className = 'task-mscw';
-        mscw.textContent = item.mscw;
-        content.appendChild(mscw);
-
-        // Add path display
-        const pathSpan = document.createElement('span');
-        pathSpan.className = 'task-path';
-        pathSpan.textContent = path;
-        content.appendChild(pathSpan);
-
-        div.appendChild(content);
-
-        if (item.subtasks && item.subtasks.length) {
-            const subtasks = document.createElement('div');
-            subtasks.className = 'tree';
-            const isExpanded = state.expandedItems[path] || false;
-            subtasks.style.display = isExpanded ? 'block' : 'none';
-            expandBtn.textContent = isExpanded ? '▼' : '▶';
-            item.subtasks.forEach((subtask, index) => {
-                const childPath = path ? `${path}.${index}` : `${index}`;
-                subtasks.appendChild(createTreeItem(subtask, childPath));
-            });
-            div.appendChild(subtasks);
-
-            expandBtn.addEventListener('click', () => {
-                const newState = subtasks.style.display === 'none';
-                expandBtn.textContent = newState ? '▼' : '▶';
-                subtasks.style.display = newState ? 'block' : 'none';
-                state.expandedItems[path] = newState;
-                vscode.setState(state);
-            });
+        if (node.subtasks && node.subtasks.length) {
+            html += `<div class="tree" style="display: ${isExpanded ? 'block' : 'none'};">`;
+            for (const subtask of node.subtasks) {
+                html += renderTree(subtask, currentPath);
+            }
+            html += `</div>`;
         }
 
-        return div;
+        html += `</div>`;
+        return html;
     }
 
-    const planTree = document.getElementById('plan-tree');
-    planTree.appendChild(createTreeItem(plan));
-})();
+    function initializeTree() {
+        const treeContainer = document.getElementById('plan-tree');
+        treeContainer.innerHTML = renderTree(plan);
 
+        treeContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('expand-btn')) {
+                const treeItem = e.target.closest('.tree-item');
+                const subtree = treeItem.querySelector('.tree');
+                const path = treeItem.dataset.path;
+                if (subtree) {
+                    const isExpanded = subtree.style.display !== 'none';
+                    subtree.style.display = isExpanded ? 'none' : 'block';
+                    e.target.textContent = isExpanded ? '▶' : '▼';
+                    state.expandedItems[path] = !isExpanded;
+                    vscode.setState(state);
+                }
+            } else if (e.target.classList.contains('complete-btn')) {
+                const path = e.target.dataset.path;
+                vscode.postMessage({
+                    command: 'changeStatus',
+                    path: path,
+                    newStatus: 'Complete'
+                });
+            }
+        });
+    }
+
+    initializeTree();
+
+    // // Handle messages from the extension
+    // window.addEventListener('message', event => {
+    //     const message = event.data;
+    //     switch (message.command) {
+    //         case 'updatePlan':
+    //             plan = message.plan;
+    //             initializeTree();
+    //             break;
+    //     }
+    // });
+})();

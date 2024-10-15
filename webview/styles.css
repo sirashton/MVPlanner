@@ -17,3 +17,17 @@ h1 {
     font-size: 0.8em;
     color: #888;
 }
+
+.complete-btn {
+    margin-left: 10px;
+    padding: 2px 5px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.complete-btn:hover {
+    background-color: #45a049;
+}

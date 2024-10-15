@@ -32,17 +32,23 @@
         mscw.textContent = item.mscw;
         content.appendChild(mscw);
 
+        // Add path display (now using only indices)
+        const pathSpan = document.createElement('span');
+        pathSpan.className = 'task-path';
+        pathSpan.textContent = path;
+        content.appendChild(pathSpan);
+
         div.appendChild(content);
 
         if (item.subtasks && item.subtasks.length) {
             const subtasks = document.createElement('div');
             subtasks.className = 'tree';
-            const currentPath = path + '/' + item.name;
-            const isExpanded = state.expandedItems[currentPath] || false;
+            const isExpanded = state.expandedItems[path] || false;
             subtasks.style.display = isExpanded ? 'block' : 'none';
             expandBtn.textContent = isExpanded ? '▼' : '▶';
             item.subtasks.forEach((subtask, index) => {
-                subtasks.appendChild(createTreeItem(subtask, currentPath + '/' + index));
+                const childPath = path ? `${path}.${index}` : `${index}`;
+                subtasks.appendChild(createTreeItem(subtask, childPath));
             });
             div.appendChild(subtasks);
 
@@ -50,7 +56,7 @@
                 const newState = subtasks.style.display === 'none';
                 expandBtn.textContent = newState ? '▼' : '▶';
                 subtasks.style.display = newState ? 'block' : 'none';
-                state.expandedItems[currentPath] = newState;
+                state.expandedItems[path] = newState;
                 vscode.setState(state);
             });
         }

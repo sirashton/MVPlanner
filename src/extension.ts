@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs/promises';
 
-const EXTENSION_DEV_VERSION = "0.0.24";
+const EXTENSION_DEV_VERSION = "0.0.25";
 let planViewerPanel: vscode.WebviewPanel | undefined;
 let fileWatcher: vscode.FileSystemWatcher | undefined;
 
@@ -50,7 +50,11 @@ export function activate(context: vscode.ExtensionContext) {
                     'planViewer',
                     'Project Plan Viewer',
                     vscode.ViewColumn.One,
-                    { enableScripts: true, enableCommandUris: true }
+                    {
+                        enableScripts: true,
+                        enableCommandUris: true,
+                        retainContextWhenHidden: true
+                    }
                 );
 
                 planViewerPanel.onDidDispose(() => {

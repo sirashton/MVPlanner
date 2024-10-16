@@ -8,6 +8,19 @@
     const statusOptions = ['Not Started', 'In Progress', 'Complete', 'Blocked'];
     const mscwOptions = ['Must', 'Should', 'Could', 'Won\'t'];
 
+    function countDescendantsAndSetDepth(node, depth = 0) {
+        node.depth = depth;
+        node.descendantCount = 0;
+
+        if (node.subtasks && node.subtasks.length > 0) {
+            for (const subtask of node.subtasks) {
+                node.descendantCount += countDescendantsAndSetDepth(subtask, depth + 1) + 1;
+            }
+        }
+
+        return node.descendantCount;
+    }
+
     function renderTree(node, parentPath = []) {
         const currentPath = [...parentPath, node.name];
         const pathString = currentPath.join(' > ');
@@ -18,6 +31,7 @@
                 <div class="tree-content">
                     <span class="expand-btn">${node.subtasks && node.subtasks.length ? (isExpanded ? '▼' : '▶') : '•'}</span>
                     <span class="task-name">${node.name}</span>
+                    <span class="task-info">(Depth: ${node.depth}, Descendants: ${node.descendantCount})</span>
                     <select class="status-select" data-path="${pathString}">
                         ${statusOptions.map(status => 
                             `<option value="${status}" ${node.status === status ? 'selected' : ''}>${status}</option>`
@@ -83,6 +97,9 @@
         });
     }
 
-    initializeTree();
+    document.addEventListener('DOMContentLoaded', () => {
+        countDescendantsAndSetDepth(plan);
+        initializeTree();
+    });
 
 })();

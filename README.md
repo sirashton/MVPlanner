@@ -54,3 +54,38 @@ You can now use MVPlanner in any of your projects!
 
 ## License
 [License information to be determined]
+
+## Understanding Task Priorities and Completion Status
+
+In MVPlanner, we use the MSCW (Must, Should, Could, Won't) system to prioritize tasks. However, it's important to understand how these priorities work in a hierarchical structure:
+
+1. The MSCW priority of a task only indicates its importance relative to its parent task.
+2. A subtask's priority doesn't affect the overall project status if its parent task has a lower priority.
+
+This allows for more nuanced project planning and prevents lower-priority features from blocking project completion.
+
+### Example: The Whimsical World of Unnecessary Code Optimization
+
+Imagine you're building a simple to-do list app. Your project plan might look like this:
+
+1. Basic To-Do List Functionality (MUST)
+   1.1. Add tasks (MUST)
+   1.2. Mark tasks as complete (MUST)
+   1.3. Delete tasks (SHOULD)
+
+2. User Authentication (SHOULD)
+   2.1. User registration (MUST)
+   2.2. User login (MUST)
+   2.3. Password reset (SHOULD)
+
+3. Hyper-Optimized Task Sorting Algorithm (COULD)
+   3.1. Implement quantum-inspired sorting algorithm (MUST)
+   3.2. Integrate with quantum computer API (MUST)
+   3.3. Achieve sorting speeds faster than the speed of light (SHOULD)
+   3.4. Rewrite the laws of physics if necessary (COULD)
+
+In this example, the "Hyper-Optimized Task Sorting Algorithm" is a COULD for the overall project. Even though its subtasks are marked as MUST and SHOULD, they don't affect the completion status of the main project goals.
+
+This means you can confidently say "We've done all we MUST" for the project once you've completed the Basic To-Do List Functionality, even if you haven't started rewriting the laws of physics for your sorting algorithm!
+
+This approach allows developers to dream big and plan for exciting features without losing sight of the core project requirements.

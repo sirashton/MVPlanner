@@ -71,13 +71,22 @@
         const pathString = currentPath.join(' > ');
         const isExpanded = state.expandedItems[pathString] || false;
         
+        let doMoreClass = '';
+        switch (node.doMore.toLowerCase()) {
+            case 'must': doMoreClass = 'do-more-must'; break;
+            case 'should': doMoreClass = 'do-more-should'; break;
+            case 'could': doMoreClass = 'do-more-could'; break;
+            case 'won\'t': doMoreClass = 'do-more-wont'; break;
+            case 'can\'t': doMoreClass = 'do-more-cant'; break;
+        }
+
         let html = `
             <div class="tree-item" data-path="${pathString}">
                 <div class="tree-content">
                     <span class="expand-btn">${node.subtasks && node.subtasks.length ? (isExpanded ? '▼' : '▶') : '•'}</span>
                     <span class="task-name">${node.name}</span>
                     <span class="task-info">(Depth: ${node.depth}, Descendants: ${node.descendantCount})</span>
-                    <span class="do-more-status">${node.doMore} do more</span>
+                    <span class="do-more-status ${doMoreClass}"><strong>${node.doMore}</strong> do more</span>
                     <select class="status-select" data-path="${pathString}">
                         ${statusOptions.map(status => 
                             `<option value="${status}" ${node.status === status ? 'selected' : ''}>${status}</option>`

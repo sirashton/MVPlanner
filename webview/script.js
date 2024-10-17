@@ -157,8 +157,3 @@
     });
 
 })();
-
-
-// Note to self for tomorrow:
-// The "Extension Packaging and Distribution" task is getting "Must do more" even though all the subtasks at most "Should do more"
-// Check that a "Should" task is never getting set to "Must do more" etc...

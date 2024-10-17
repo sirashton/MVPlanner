@@ -209,6 +209,26 @@
         vscode.setState(state);
     }
 
+    function expandCriticalPath() {
+        const allItems = document.querySelectorAll('.tree-item');
+        allItems.forEach(item => {
+            const path = item.dataset.path;
+            const taskName = item.querySelector('.task-name');
+            if (taskName && taskName.classList.contains('task-name-highlight')) {
+                state.expandedItems[path] = true;
+                const subtree = item.querySelector('.tree');
+                if (subtree) {
+                    subtree.style.display = 'block';
+                }
+                const expandBtn = item.querySelector('.expand-btn');
+                if (expandBtn && expandBtn.textContent === '▶') {
+                    expandBtn.textContent = '▼';
+                }
+            }
+        });
+        vscode.setState(state);
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         countDescendantsAndSetDepth(plan);
         try {
@@ -228,5 +248,10 @@
 
     document.getElementById('collapse-all').addEventListener('click', () => {
         collapseAll();
+    });
+
+    // Add event listener for the new button
+    document.getElementById('expand-critical').addEventListener('click', () => {
+        expandCriticalPath();
     });
 })();

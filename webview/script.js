@@ -8,16 +8,85 @@
     const statusOptions = ['Not Started', 'In Progress', 'Complete', 'Blocked'];
     const mscwOptions = ['Must', 'Should', 'Could', 'Won\'t'];
 
+    function countDescendantsAndSetDepth(node, depth = 0) {
+        node.depth = depth;
+        node.descendantCount = 0;
+
+        if (node.subtasks && node.subtasks.length > 0) {
+            for (const subtask of node.subtasks) {
+                node.descendantCount += countDescendantsAndSetDepth(subtask, depth + 1) + 1;
+            }
+        }
+
+        return node.descendantCount;
+    }
+
+    function calculateDoMore(node) {
+        const mscwOrder = ['Must', 'Should', 'Could', 'Won\'t', 'Can\'t'];
+        node.doMore = 'Not Calculated';
+
+        if (!node.subtasks || node.subtasks.length === 0) {
+            
+            try {
+                if (node.status === 'Complete') {
+                    node.doMore = 'Can\'t';
+                } else {
+                    node.doMore = `${node.mscw}`;
+                }
+            } catch (error) {
+                vscode.postMessage({
+                    command: 'log',
+                    message: `Error calculating do-more status for node: ${node.name}, Error: ${error.message}`
+                });
+                node.doMore = 'Error calculating do-more status';
+            }
+        }
+        else { // If there are subtasks, we need to calculate the do-more status for each subtask
+            for (const subtask of node.subtasks) {
+                calculateDoMore(subtask);
+            }
+
+            // Check if done all we {level}
+            for (const levelWereChecking of mscwOrder) { // For each level
+                // Find all tasks that level or more important (lower index in mscwOrder)
+                const tasksAtOrAboveLevel = node.subtasks.filter(subtask => mscwOrder.indexOf(subtask.mscw) <= mscwOrder.indexOf(levelWereChecking));
+                
+                // check if all those tasks have do-more status at least as important as the level we are checking
+                // If no tasks then skip to next levelWereChecking
+                if (tasksAtOrAboveLevel.length === 0) {
+                    continue;
+                }
+                if (tasksAtOrAboveLevel.some(subtask => mscwOrder.indexOf(subtask.doMore) <= mscwOrder.indexOf(levelWereChecking))) {
+                    node.doMore = `${levelWereChecking}`;
+                    return node.doMore;
+                }
+            }
+        }
+    
+        return node.doMore;
+    }
+
     function renderTree(node, parentPath = []) {
         const currentPath = [...parentPath, node.name];
         const pathString = currentPath.join(' > ');
         const isExpanded = state.expandedItems[pathString] || false;
         
+        let doMoreClass = '';
+        switch (node.doMore.toLowerCase()) {
+            case 'must': doMoreClass = 'do-more-must'; break;
+            case 'should': doMoreClass = 'do-more-should'; break;
+            case 'could': doMoreClass = 'do-more-could'; break;
+            case 'won\'t': doMoreClass = 'do-more-wont'; break;
+            case 'can\'t': doMoreClass = 'do-more-cant'; break;
+        }
+
         let html = `
             <div class="tree-item" data-path="${pathString}">
                 <div class="tree-content">
                     <span class="expand-btn">${node.subtasks && node.subtasks.length ? (isExpanded ? '▼' : '▶') : '•'}</span>
                     <span class="task-name">${node.name}</span>
+                    <span class="task-info">(Depth: ${node.depth}, Descendants: ${node.descendantCount})</span>
+                    <span class="do-more-status ${doMoreClass}"><strong>${node.doMore}</strong> do more</span>
                     <select class="status-select" data-path="${pathString}">
                         ${statusOptions.map(status => 
                             `<option value="${status}" ${node.status === status ? 'selected' : ''}>${status}</option>`
@@ -83,6 +152,17 @@
         });
     }
 
-    initializeTree();
+    document.addEventListener('DOMContentLoaded', () => {
+        countDescendantsAndSetDepth(plan);
+        try {
+            calculateDoMore(plan);
+        } catch (error) {
+            vscode.postMessage({
+                command: 'log',
+                message: `Error calculating do-more status for entire plan: ${error.message}`
+            });
+        }
+        initializeTree();
+    });
 
 })();

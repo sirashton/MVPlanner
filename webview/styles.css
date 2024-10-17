@@ -1,9 +1,41 @@
 body { font-family: Arial, sans-serif; padding: 20px; }
-.tree { margin-left: 20px; }
-.tree-item { margin: 10px 0; }
-.tree-content { display: flex; align-items: center; }
-.expand-btn { cursor: pointer; margin-right: 5px; }
-.task-name { font-weight: bold; }
+.tree { margin-left: 20px; padding: 10px; background-color: #ffffff; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; }
+.tree-item {
+    margin: 10px 0;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+.tree-content {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+.expand-btn {
+    cursor: pointer;
+    margin-right: 10px;
+    font-size: 12px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e0e0e0;
+    border-radius: 50%;
+}
+.task-name {
+    font-weight: normal;
+    flex-grow: 1;
+    color: #333;
+}
+.task-name-highlight {
+    font-weight: bold;
+    color: #000;
+}
+.task-info { font-size: 0.8em; color: #666; margin-right: 10px; }
 .task-status { margin-left: 10px; font-style: italic; }
 .task-mscw { margin-left: 10px; }
 h1 {
@@ -22,7 +54,7 @@ h1 {
 .mscw-select {
     margin-left: 10px;
     padding: 2px 5px;
-    border-radius: 3px;
+    border-radius: 5px;
     border: 1px solid #ccc;
     background-color: #fff;
     font-size: 0.9em;
@@ -69,4 +101,14 @@ h1 {
 .do-more-cant {
     background-color: #90EE90;
     color: #006400;
+}
+
+/* New styles for top-level tree */
+#plan-tree > .tree-item > .tree {
+    margin-left: 0;
+}
+
+/* Adjust nested trees */
+.tree-item .tree-item {
+    margin-left: 20px;
 }

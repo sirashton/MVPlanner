@@ -66,7 +66,18 @@
         return node.doMore;
     }
 
-    function renderTree(node, parentPath = []) {
+    function getDoMoreRank(doMore) {
+        const ranks = {
+            'must': 0,
+            'should': 1,
+            'could': 2,
+            'won\'t': 3,
+            'can\'t': 4
+        };
+        return ranks[doMore.toLowerCase()] ?? 5; // Default to lowest priority if unknown
+    }
+
+    function renderTree(node, parentPath = [], parentDoMore = null) {
         const currentPath = [...parentPath, node.name];
         const pathString = currentPath.join(' > ');
         const isExpanded = state.expandedItems[pathString] || false;
@@ -80,11 +91,14 @@
             case 'can\'t': doMoreClass = 'do-more-cant'; break;
         }
 
+        const matchesParentDoMore = parentDoMore === null || node.doMore.toLowerCase() === parentDoMore.toLowerCase();
+        const titleClass = matchesParentDoMore ? 'task-name-highlight' : '';
+
         let html = `
-            <div class="tree-item" data-path="${pathString}">
+            <div class="tree-item ${doMoreClass}">
                 <div class="tree-content">
                     <span class="expand-btn">${node.subtasks && node.subtasks.length ? (isExpanded ? '▼' : '▶') : '•'}</span>
-                    <span class="task-name">${node.name}</span>
+                    <span class="task-name ${titleClass}">${node.name}</span>
                     <span class="task-info">(Depth: ${node.depth}, Descendants: ${node.descendantCount})</span>
                     <span class="do-more-status ${doMoreClass}"><strong>${node.doMore}</strong> do more</span>
                     <select class="status-select" data-path="${pathString}">
@@ -101,9 +115,14 @@
             `;
 
         if (node.subtasks && node.subtasks.length) {
+            // Sort subtasks by do-more status
+            const sortedSubtasks = [...node.subtasks].sort((a, b) => {
+                return getDoMoreRank(a.doMore) - getDoMoreRank(b.doMore);
+            });
+
             html += `<div class="tree" style="display: ${isExpanded ? 'block' : 'none'};">`;
-            for (const subtask of node.subtasks) {
-                html += renderTree(subtask, currentPath);
+            for (const subtask of sortedSubtasks) {
+                html += renderTree(subtask, currentPath, node.doMore);
             }
             html += `</div>`;
         }

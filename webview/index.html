@@ -7,11 +7,14 @@
     <link rel="stylesheet" href="${stylesUri}">
 </head>
 <body>
-    <h1>Project Plan</h1>
-    <div class="controls">
-        <button id="expand-all">Expand All</button>
-        <button id="collapse-all">Collapse All</button>
-    </div>
+    <header>
+        <h1><strong>MVPlanner</strong></h1>
+        <div class="controls">
+            <button id="expand-all">Expand All</button>
+            <button id="collapse-all">Collapse All</button>
+            <button id="expand-critical">Expand Critical Path</button>
+        </div>
+    </header>
     <div id="plan-tree"></div>
     <script id="plan-data" type="application/json">
         ${plan}

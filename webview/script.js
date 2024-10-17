@@ -138,8 +138,8 @@
         treeContainer.addEventListener('click', (e) => {
             if (e.target.classList.contains('expand-btn')) {
                 const treeItem = e.target.closest('.tree-item');
+                const path = treeItem.getAttribute('data-path');
                 const subtree = treeItem.querySelector('.tree');
-                const path = treeItem.dataset.path;
                 if (subtree) {
                     const isExpanded = subtree.style.display !== 'none';
                     subtree.style.display = isExpanded ? 'none' : 'block';
@@ -171,6 +171,44 @@
         });
     }
 
+    function expandAll() {
+        const allItems = document.querySelectorAll('.tree-item');
+        allItems.forEach(item => {
+            const path = item.getAttribute('data-path');
+            if (path) {
+                state.expandedItems[path] = true;
+            }
+            const subtree = item.querySelector('.tree');
+            if (subtree) {
+                subtree.style.display = 'block';
+            }
+            const expandBtn = item.querySelector('.expand-btn');
+            if (expandBtn && expandBtn.textContent === '▶') {
+                expandBtn.textContent = '▼';
+            }
+        });
+        vscode.setState(state);
+    }
+
+    function collapseAll() {
+        const allItems = document.querySelectorAll('.tree-item');
+        allItems.forEach(item => {
+            const path = item.getAttribute('data-path');
+            if (path) {
+                state.expandedItems[path] = false;
+            }
+            const subtree = item.querySelector('.tree');
+            if (subtree) {
+                subtree.style.display = 'none';
+            }
+            const expandBtn = item.querySelector('.expand-btn');
+            if (expandBtn && expandBtn.textContent === '▼') {
+                expandBtn.textContent = '▶';
+            }
+        });
+        vscode.setState(state);
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         countDescendantsAndSetDepth(plan);
         try {
@@ -184,4 +222,11 @@
         initializeTree();
     });
 
+    document.getElementById('expand-all').addEventListener('click', () => {
+        expandAll();
+    });
+
+    document.getElementById('collapse-all').addEventListener('click', () => {
+        collapseAll();
+    });
 })();

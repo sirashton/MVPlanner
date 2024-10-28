@@ -95,7 +95,7 @@
         const titleClass = matchesParentDoMore ? 'task-name-highlight' : '';
 
         let html = `
-            <div class="tree-item ${doMoreClass}">
+            <div class="tree-item ${doMoreClass}" data-path="${pathString}">
                 <div class="tree-content">
                     <span class="expand-btn">${node.subtasks && node.subtasks.length ? (isExpanded ? '▼' : '▶') : '•'}</span>
                     <span class="task-name ${titleClass}">${node.name}</span>

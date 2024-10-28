@@ -45,20 +45,32 @@
             {
               "name": "The plan is nicely formatted",
               "description": "The plan is nicely formatted",
-              "status": "Not Started",
+              "status": "Complete",
               "mscw": "Must"
             },
             {
               "name": "Infer the status of a task based on its subtasks",
               "description": "Done all we must, done all we should...",
-              "status": "Not Started",
+              "status": "Complete",
               "mscw": "Should"
             },
             {
               "name": "User can filter the plan",
               "description": "User can filter the plan by status, MSCW, etc.",
               "status": "Not Started",
+              "mscw": "Could"
+            },
+            {
+              "name": "Decide how to handle completion status of task with subtasks",
+              "description": "",
+              "status": "Not Started",
               "mscw": "Should"
+            },
+            {
+              "name": "BUG: Case sensitive plan.json filepath",
+              "description": "Either block .JSON or handle it",
+              "status": "Not Started",
+              "mscw": "Must"
             }
           ]
         },
@@ -125,12 +137,6 @@
               ]
             }
           ]
-        },
-        {
-          "name": "Implement task creation and deletion",
-          "description": "Add functionality to create new tasks and delete existing ones",
-          "status": "Not Started",
-          "mscw": "Must"
         }
       ]
     },

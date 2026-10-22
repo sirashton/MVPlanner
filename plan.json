@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 38,
+  "revision": 39,
   "nextId": 44,
   "root": {
     "id": "T-1",
@@ -574,13 +574,16 @@
             "name": "Undo recent plan changes",
             "status": "Not Started",
             "mscw": "Should",
-            "proposed": true,
             "description": "Step back the last change or few, using the plan branch's history, for when the conversation changes its mind.",
             "log": [
               {
                 "at": "2026-10-22T23:19:29.474Z",
                 "agent": "claude-panel",
                 "text": "Proposed under T-37"
+              },
+              {
+                "at": "2026-10-22T23:23:23.705Z",
+                "text": "Proposal accepted"
               }
             ]
           },

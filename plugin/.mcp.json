@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "mvplanner": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/dist/mcp.js"],
+      "env": {
+        "CLAUDE_PROJECT_DIR": "${CLAUDE_PROJECT_DIR}",
+        "MVPLANNER_BACKEND": "${user_config.backend}",
+        "MVPLANNER_BRANCH": "${user_config.branch}"
+      }
+    }
+  }
+}

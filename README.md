@@ -1,91 +1,107 @@
-# Project Planner VS Code Extension
+# MVPlanner
 
-## Overview
-It's hard to stick to a longer term action plan, especially when working with AI assistants.
-I find myself working with an AI to create a multistep plan that breaks down a big feature change, then writing this down somewhere to refer to, or sketching it out on paper. But what if you and your AI can be looking at the same plan, better still, what if you're just guiding the AI to build this nice structured plan?
-MVPlanner is a VS Code extension designed to help developers and teams manage project tasks, visualize project plans, and integrate TODO comments with project planning. It aims to streamline the project management process directly within the development environment, visible to humans and agents alike.
+One prioritised plan that you and every agent work from.
 
-## Key Features
-1. Interactive Plan Viewer: Visualize sand edit your project plan within VS Code.
-2. TODO Integration: Automatically link TODO comments in your code with tasks in your project plan.
-3. Task Linting: Ensure TODOs in your code are properly tracked in the project plan.
-4. Make the plan as easy as possible for AI code assistants to edit via structure json file.
+Agents are good at doing the next thing and bad at remembering what was agreed. Give a swarm a big feature and you get drift: work nobody asked for, quiet gaps where a Must should be, and agents treading on each other. MVPlanner keeps the plan in one place every agent can reach, and a Claude Code plugin makes agents use it:
 
-## High-Level Aims
-- Provide an intuitive, visual representation of project tasks and their hierarchy.
-- Seamlessly integrate project planning with the development workflow.
-- Enhance code-to-task traceability through TODO comment integration.
-- Offer real-time task status updates and plan modifications.
-- Improve project oversight without leaving the coding environment.
+- **Claim before editing.** Each agent claims a task before it changes code, so two agents never take the same work.
+- **Propose, don't drift.** New ideas become proposed tasks for a human to accept, rather than code.
+- **Defer on purpose.** Keeping something minimal is fine, as long as it's recorded: `task_defer` creates a task and the code gets an `MVP(T-42)` or `TODO(T-43)` marker.
+- **Know when you're done.** Priorities are MoSCoW, relative to each parent, and roll up into "done all we Must / Should / Could".
 
-## Planned Features
-- Interactive task creation, editing, and status updates.
-- Hierarchical task visualization with collapsible subtasks.
-- TODO comment linting on file save.
-- Task filtering and searching capabilities.
-- Integration with VS Code's source control features for plan.json file management.
+## Install the Claude Code plugin
 
-## Development Status
-This project is currently in the initial development phase. Contributions and feedback are welcome!
+```
+/plugin install mvplanner --marketplace sirashton/MVPlanner
+```
 
-## Installation (for development)
-1. Clone the repository
-2. Run `npm install`
-3. Open the project in VS Code
-4. Press F5 to run the extension in a new VS Code Development Host window
+On Claude Code versions before 2.1.275, add the marketplace first with `/plugin marketplace add sirashton/MVPlanner`, then `/plugin install mvplanner@mvplanner`.
 
-## Installation (for local use)
+The plugin needs Node.js 22.18 or later on the machine that runs Claude Code. It ships pre-built, so there is nothing to `npm install`.
 
-1. Download the latest `.vsix` file from [your chosen distribution method, e.g., GitHub releases]
-2. Open VS Code
-3. Go to the Extensions view (Ctrl+Shift+X)
-4. Click on the "..." at the top-right of the Extensions view
-5. Select "Install from VSIX..."
-6. Choose the downloaded `.vsix` file
-7. Reload VS Code when prompted
+Then create the live plan for a repository, once, from a checkout that can push to it:
 
-You can now use MVPlanner in any of your projects!
+```
+mvplan init --name "My project"        # or: mvplan init --from plan.json
+```
 
-## Usage
-[Usage instructions will be added as features are implemented]
+`mvplan` is on Claude's PATH while the plugin is enabled. Outside Claude Code, run `npm link` in a clone of this repo to get `mvplan` on your PATH.
 
-## Contributing
-[Contribution guidelines will be added as the project progresses]
+## Where the plan lives
+
+The live plan is `plan.json` on a dedicated `mvplanner/plan` branch of the repository's remote. Every tool call fetches it, applies its change and pushes, retrying if another agent got there first. That makes one plan visible to every worktree, every cloud session and every Claude Code project with access to the repo, even though agents in different projects can't message each other. The working tree is never touched, and the branch is never merged.
+
+For a single machine you can set the backend to `file` instead. The plan is then `plan.json` in the main checkout, shared by all of its worktrees.
+
+Rules agents are given at the start of every session and subagent:
+
+1. The live plan is wherever the tools say. A `plan.json` in your checkout may be stale: never read, edit or commit it.
+2. Read and change the plan only through the MVPlanner tools.
+3. Claim one task before editing code, and work only on that task.
+4. Propose new work with `task_propose`. Defer with `task_defer` and a marker.
+5. Record progress with `task_update` before finishing.
+6. If the tools can't find the plan, stop and report it.
+
+## What the plugin contains
+
+| Part | What it does |
+| :- | :- |
+| MCP server | `plan_overview`, `plan_next`, `task_get`, `task_claim`, `task_release`, `task_update`, `task_propose`, `task_add`, `task_defer`, `plan_check` |
+| Hooks | **SessionStart** and **SubagentStart** brief the agent: its id, the rules, its task or the next ones. **PreToolUse** denies direct edits to `plan.json`, and warns about (or blocks) edits with no claimed task. **PostToolUse** sends back markers that name no task. **Stop** and **SubagentStop** nudge once when files changed but no progress was recorded |
+| Skills | `/mvplanner:plan` to break work down with you, `/mvplanner:next` to pick up and finish a task, `/mvplanner:defer` for markers |
+| Agents | `planner` maintains the plan; `scope-reviewer` checks a change against its task |
+| `mvplan` CLI | The same operations from a terminal or CI, plus `init`, `accept` and `decline` for humans |
+
+Settings (asked for when you enable the plugin, and in `/config`):
+
+- **Strictness:** `warn` (the default) nudges agents, `enforce` blocks edits without a claimed task, `off` disables the hooks.
+- **Backend:** `git` (the default) or `file`.
+- **Plan branch:** `mvplanner/plan` by default.
+
+## Priorities: MoSCoW, relative to the parent
+
+A task's priority only says how much its parent needs it. A subtask's priority doesn't affect the project if its parent has a lower one.
+
+1. Basic to-do list (Must)
+   1. Add tasks (Must)
+   2. Mark tasks complete (Must)
+   3. Delete tasks (Should)
+2. User accounts (Should)
+   1. Registration (Must)
+3. Hyper-optimised sorting (Could)
+   1. Integrate a quantum computer API (Must)
+
+Once 1.1 and 1.2 are complete, the project is at "done all we Must" even though 3.1 is a Must, because sorting is only a Could for the project. Agents are only offered work on the critical path: the branches that hold the project at its current level.
+
+## Deferral markers
+
+```ts
+// MVP(T-42): returns a fixed list; expand when real users need filtering
+export const filters = () => DEFAULT_FILTERS;
+
+// TODO(T-43): retry on network errors
+```
+
+A marker must name a task in the plan. `mvplan check` (run it in CI) fails on markers that name no task, name a missing task, or name one that is already Complete or Won't. Markdown, JSON and `dist/` folders are not scanned. Add `mvplan:ignore` to a line, or `mvplan:ignore-file` anywhere in a file, to skip examples.
+
+## The plan file
+
+Version 2 of the format is described by [plan.schema.json](plan.schema.json). Each task has a stable id (`T-12`), a status, a MoSCoW priority, and optionally acceptance criteria, a claim, dependencies (`T-3`, or `owner/repo#T-3` for another repo's plan), deferral details and a log. `mvplan migrate old.json new.json` converts the original version 1 format.
+
+This repository's own plan lives on its [`mvplanner/plan`](https://github.com/sirashton/MVPlanner/tree/mvplanner/plan) branch. Run `mvplan show` in a clone to see it.
+
+## Developing
+
+```
+npm install
+npm test               # node:test, no build needed
+npm run typecheck
+npm run build          # bundles plugin/dist; commit the result
+claude --plugin-dir ./plugin
+```
+
+The VS Code extension from the first version has been retired.
 
 ## License
-[License information to be determined]
 
-## Understanding Task Priorities and Completion Status
-
-In MVPlanner, we use the MSCW (Must, Should, Could, Won't) system to prioritize tasks. However, it's important to understand how these priorities work in a hierarchical structure:
-
-1. The MSCW priority of a task only indicates its importance relative to its parent task.
-2. A subtask's priority doesn't affect the overall project status if its parent task has a lower priority.
-
-This allows for more nuanced project planning and prevents lower-priority features from blocking project completion.
-
-### Example: The Whimsical World of Unnecessary Code Optimization
-
-Imagine you're building a simple to-do list app. Your project plan might look like this:
-
-1. Basic To-Do List Functionality (MUST)
-   1.1. Add tasks (MUST)
-   1.2. Mark tasks as complete (MUST)
-   1.3. Delete tasks (SHOULD)
-
-2. User Authentication (SHOULD)
-   2.1. User registration (MUST)
-   2.2. User login (MUST)
-   2.3. Password reset (SHOULD)
-
-3. Hyper-Optimized Task Sorting Algorithm (COULD)
-   3.1. Implement quantum-inspired sorting algorithm (MUST)
-   3.2. Integrate with quantum computer API (MUST)
-   3.3. Achieve sorting speeds faster than the speed of light (SHOULD)
-   3.4. Rewrite the laws of physics if necessary (COULD)
-
-In this example, the "Hyper-Optimized Task Sorting Algorithm" is a COULD for the overall project. Even though its subtasks are marked as MUST and SHOULD, they don't affect the completion status of the main project goals.
-
-This means you can confidently say "We've done all we MUST" for the project once you've completed the Basic To-Do List Functionality, even if you haven't started rewriting the laws of physics for your sorting algorithm!
-
-This approach allows developers to dream big and plan for exciting features without losing sight of the core project requirements.
+MIT

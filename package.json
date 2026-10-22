@@ -1,54 +1,32 @@
 {
   "name": "mvplanner",
-  "displayName": "MVPlanner",
-  "description": "A VS Code extension for interactive project planning and TODO integration",
-  "version": "0.0.1",
-  "engines": {
-    "vscode": "^1.93.0"
-  },
-  "categories": [
-    "Other"
-  ],
-  "activationEvents": [],
-  "main": "./out/extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "mvplanner.openPlanViewer",
-        "title": "Open Plan Viewer"
-      },
-      {
-        "command": "mvplanner.refreshPlanViewer",
-        "title": "Refresh Plan Viewer"
-      }
-    ]
-  },
-  "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
-    "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
-  },
-  "devDependencies": {
-    "@types/vscode": "^1.93.0",
-    "@types/mocha": "^10.0.8",
-    "@types/node": "20.x",
-    "@typescript-eslint/eslint-plugin": "^8.7.0",
-    "@typescript-eslint/parser": "^8.7.0",
-    "eslint": "^9.11.1",
-    "typescript": "^5.6.2",
-    "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.4.1"
-  },
-  "publisher": "Alex Ashton",
+  "version": "0.2.0",
+  "description": "A shared, prioritised plan that humans and agent swarms work from, delivered as a Claude Code plugin",
+  "type": "module",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/sirashton/mvplanner.git"
   },
-  "license": "MIT",
-  "files": [
-    "webview"
-  ]
+  "engines": {
+    "node": ">=22.18"
+  },
+  "bin": {
+    "mvplan": "plugin/dist/cli.js"
+  },
+  "scripts": {
+    "typecheck": "tsc -p .",
+    "test": "node --test test/*.test.ts",
+    "build": "node scripts/build.mjs",
+    "check:bundle": "node scripts/build.mjs --check"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "esbuild": "^0.28.2",
+    "typescript": "^5.9.0"
+  }
 }

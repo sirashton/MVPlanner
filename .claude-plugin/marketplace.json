@@ -1,0 +1,12 @@
+{
+  "name": "mvplanner",
+  "owner": { "name": "Alex Ashton", "url": "https://github.com/sirashton" },
+  "description": "MVPlanner: a shared, prioritised plan for agent swarms",
+  "plugins": [
+    {
+      "name": "mvplanner",
+      "source": "./plugin",
+      "description": "One prioritised plan that every agent works from: claim before editing, propose instead of drifting, defer with MVP()/TODO() markers"
+    }
+  ]
+}

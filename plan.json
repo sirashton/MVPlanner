@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 45,
+  "revision": 46,
   "nextId": 44,
   "root": {
     "id": "T-1",
@@ -512,7 +512,7 @@
           {
             "id": "T-38",
             "name": "Scoping skill (/mvplanner:scope)",
-            "status": "Not Started",
+            "status": "In Progress",
             "mscw": "Must",
             "description": "Tells the agent how to run a scoping session: add tasks straight away with the human's say-so, park side ideas as Could rather than dropping them, ask about priority only when unclear, and read back what changed.",
             "acceptance": [
@@ -530,8 +530,18 @@
               {
                 "at": "2026-10-22T23:23:17.446Z",
                 "text": "Proposal accepted"
+              },
+              {
+                "at": "2026-10-22T23:36:05.564Z",
+                "agent": "claude-panel",
+                "text": "Claimed on claude/project-thread-mr24nb"
               }
-            ]
+            ],
+            "claimedBy": {
+              "agent": "claude-panel",
+              "at": "2026-10-22T23:36:05.564Z",
+              "branch": "claude/project-thread-mr24nb"
+            }
           },
           {
             "id": "T-39",

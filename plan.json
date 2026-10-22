@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 3,
+  "revision": 4,
   "nextId": 30,
   "root": {
     "id": "T-1",
@@ -138,7 +138,7 @@
           {
             "id": "T-18",
             "name": "Start the live plan branch for this repo",
-            "status": "In Progress",
+            "status": "Complete",
             "mscw": "Must",
             "description": "Run mvplan init --from plan.json, then remove plan.json from main.",
             "acceptance": [
@@ -148,14 +148,9 @@
               },
               {
                 "text": "plan.json is removed from main",
-                "done": false
+                "done": true
               }
             ],
-            "claimedBy": {
-              "agent": "claude-pr4",
-              "at": "2026-10-22T22:38:51.897Z",
-              "branch": "claude/project-thread-mr24nb"
-            },
             "log": [
               {
                 "at": "2026-10-22T22:38:51.898Z",
@@ -166,6 +161,11 @@
                 "at": "2026-10-22T22:38:54.239Z",
                 "agent": "claude-pr4",
                 "text": "checked \"mvplanner/plan exists on GitHub\"; linked https://github.com/sirashton/MVPlanner/pull/4; Created mvplanner/plan from plan.json with Alex's go-ahead; PR #4 removes plan.json from main"
+              },
+              {
+                "at": "2026-10-22T22:41:28.749Z",
+                "agent": "claude-pr4",
+                "text": "status In Progress -> Complete; checked \"plan.json is removed from main\"; PR #4 merged; plan.json removed from main"
               }
             ],
             "links": [

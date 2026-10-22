@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 21,
-  "nextId": 37,
+  "revision": 22,
+  "nextId": 38,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -466,6 +466,27 @@
         "name": "Retire the VS Code extension",
         "status": "Complete",
         "mscw": "Must"
+      },
+      {
+        "id": "T-37",
+        "name": "Live scoping sessions",
+        "status": "Not Started",
+        "mscw": "Must",
+        "proposed": true,
+        "description": "Alex and an agent talk through a product idea and the plan changes as they talk: ideas get added, parked as Could or Won't, and re-prioritised in seconds, with the page updating live.",
+        "acceptance": [
+          {
+            "text": "A 30-minute scoping chat produces a usable plan without anyone typing into the plan directly",
+            "done": false
+          }
+        ],
+        "log": [
+          {
+            "at": "2026-10-22T23:19:09.116Z",
+            "agent": "claude-panel",
+            "text": "Proposed under T-1"
+          }
+        ]
       }
     ]
   }

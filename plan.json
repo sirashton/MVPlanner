@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 30,
+  "revision": 31,
   "nextId": 44,
   "root": {
     "id": "T-1",
@@ -385,7 +385,6 @@
                 "name": "Live updates while agents work",
                 "status": "Not Started",
                 "mscw": "Must",
-                "proposed": true,
                 "description": "The page refreshes on its own when agents claim, update or propose, without losing the reader's place.",
                 "acceptance": [
                   {
@@ -403,6 +402,10 @@
                     "at": "2026-10-22T23:19:04.740Z",
                     "agent": "claude-panel",
                     "text": "priority Should -> Must; Alex: live scoping sessions need the page to update as the agent edits"
+                  },
+                  {
+                    "at": "2026-10-22T23:23:06.967Z",
+                    "text": "Proposal accepted"
                   }
                 ]
               },

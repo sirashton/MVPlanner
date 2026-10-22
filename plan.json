@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 22,
-  "nextId": 38,
+  "revision": 23,
+  "nextId": 39,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -485,6 +485,29 @@
             "at": "2026-10-22T23:19:09.116Z",
             "agent": "claude-panel",
             "text": "Proposed under T-1"
+          }
+        ],
+        "subtasks": [
+          {
+            "id": "T-38",
+            "name": "Scoping skill (/mvplanner:scope)",
+            "status": "Not Started",
+            "mscw": "Must",
+            "proposed": true,
+            "description": "Tells the agent how to run a scoping session: add tasks straight away with the human's say-so, park side ideas as Could rather than dropping them, ask about priority only when unclear, and read back what changed.",
+            "acceptance": [
+              {
+                "text": "The agent never writes code during a scoping session",
+                "done": false
+              }
+            ],
+            "log": [
+              {
+                "at": "2026-10-22T23:19:23.171Z",
+                "agent": "claude-panel",
+                "text": "Proposed under T-37"
+              }
+            ]
           }
         ]
       }

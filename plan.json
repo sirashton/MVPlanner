@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 44,
+  "revision": 45,
   "nextId": 44,
   "root": {
     "id": "T-1",
@@ -536,7 +536,7 @@
           {
             "id": "T-39",
             "name": "Batch plan edits in one call",
-            "status": "In Progress",
+            "status": "Complete",
             "mscw": "Must",
             "description": "One tool call applies many adds, moves, renames and priority changes in a single fetch and push, so a burst of ideas lands in about a second instead of one round trip each.",
             "log": [
@@ -553,13 +553,13 @@
                 "at": "2026-10-22T23:26:08.089Z",
                 "agent": "claude-panel",
                 "text": "Claimed on claude/project-thread-mr24nb"
+              },
+              {
+                "at": "2026-10-22T23:36:03.388Z",
+                "agent": "claude-panel",
+                "text": "status In Progress -> Complete; plan_edit MCP tool and mvplan apply; refs between edits; whole batch fails together"
               }
-            ],
-            "claimedBy": {
-              "agent": "claude-panel",
-              "at": "2026-10-22T23:26:08.089Z",
-              "branch": "claude/project-thread-mr24nb"
-            }
+            ]
           },
           {
             "id": "T-40",

@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 34,
+  "revision": 35,
   "nextId": 44,
   "root": {
     "id": "T-1",
@@ -490,7 +490,6 @@
         "name": "Live scoping sessions",
         "status": "Not Started",
         "mscw": "Must",
-        "proposed": true,
         "description": "Alex and an agent talk through a product idea and the plan changes as they talk: ideas get added, parked as Could or Won't, and re-prioritised in seconds, with the page updating live.",
         "acceptance": [
           {
@@ -503,6 +502,10 @@
             "at": "2026-10-22T23:19:09.116Z",
             "agent": "claude-panel",
             "text": "Proposed under T-1"
+          },
+          {
+            "at": "2026-10-22T23:23:15.422Z",
+            "text": "Proposal accepted"
           }
         ],
         "subtasks": [

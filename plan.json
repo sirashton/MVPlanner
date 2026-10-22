@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 40,
+  "revision": 41,
   "nextId": 44,
   "root": {
     "id": "T-1",
@@ -610,13 +610,16 @@
             "name": "Listen to a live call",
             "status": "Not Started",
             "mscw": "Could",
-            "proposed": true,
             "description": "Follow a live meeting's audio or captions rather than a chat. Until then, chat with the agent (voice dictation works) or use transcripts.",
             "log": [
               {
                 "at": "2026-10-22T23:19:33.698Z",
                 "agent": "claude-panel",
                 "text": "Proposed under T-37"
+              },
+              {
+                "at": "2026-10-22T23:23:27.821Z",
+                "text": "Proposal accepted"
               }
             ]
           }

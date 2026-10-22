@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 6,
-  "nextId": 30,
+  "revision": 7,
+  "nextId": 31,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -264,6 +264,21 @@
                 "at": "2026-10-22T22:44:10.411Z",
                 "agent": "claude-pr4",
                 "text": "priority Could -> Must; added criterion \"Shows status by priority, claims, proposals, next up and deferred markers\"; added criterion \"Updates live as agents change the plan\"; Alex chose a native Claude Code panel first"
+              }
+            ]
+          },
+          {
+            "id": "T-30",
+            "name": "Web review UI",
+            "status": "Not Started",
+            "mscw": "Should",
+            "proposed": true,
+            "description": "Browser page for reviewing the plan: accept or decline proposals, re-prioritise, see progress. Mock-up: https://claude.ai/artifact/1a9rDxj9fqQqQpCcX4sb8d",
+            "log": [
+              {
+                "at": "2026-10-22T22:44:12.711Z",
+                "agent": "claude-pr4",
+                "text": "Proposed under T-26"
               }
             ]
           }

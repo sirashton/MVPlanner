@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 9,
+  "revision": 10,
   "nextId": 31,
   "root": {
     "id": "T-1",
@@ -254,7 +254,7 @@
           {
             "id": "T-28",
             "name": "Panel beside the chat in Claude Code",
-            "status": "Not Started",
+            "status": "In Progress",
             "mscw": "Must",
             "acceptance": [
               {
@@ -271,8 +271,18 @@
                 "at": "2026-10-22T22:44:10.411Z",
                 "agent": "claude-pr4",
                 "text": "priority Could -> Must; added criterion \"Shows status by priority, claims, proposals, next up and deferred markers\"; added criterion \"Updates live as agents change the plan\"; Alex chose a native Claude Code panel first"
+              },
+              {
+                "at": "2026-10-22T22:45:27.117Z",
+                "agent": "claude-panel",
+                "text": "Claimed on claude/project-thread-mr24nb"
               }
-            ]
+            ],
+            "claimedBy": {
+              "agent": "claude-panel",
+              "at": "2026-10-22T22:45:27.117Z",
+              "branch": "claude/project-thread-mr24nb"
+            }
           },
           {
             "id": "T-30",

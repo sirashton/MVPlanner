@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 24,
-  "nextId": 40,
+  "revision": 25,
+  "nextId": 41,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -519,6 +519,21 @@
             "log": [
               {
                 "at": "2026-10-22T23:19:25.224Z",
+                "agent": "claude-panel",
+                "text": "Proposed under T-37"
+              }
+            ]
+          },
+          {
+            "id": "T-40",
+            "name": "Move, rename and remove tasks",
+            "status": "Not Started",
+            "mscw": "Must",
+            "proposed": true,
+            "description": "Core operations and agent tools to restructure the plan, which scoping needs constantly. The page's editing (T-36) uses the same operations.",
+            "log": [
+              {
+                "at": "2026-10-22T23:19:27.382Z",
                 "agent": "claude-panel",
                 "text": "Proposed under T-37"
               }

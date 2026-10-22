@@ -88,7 +88,7 @@ A marker must name a task in the plan. `mvplan check` (run it in CI) fails on ma
 
 Version 2 of the format is described by [plan.schema.json](plan.schema.json). Each task has a stable id (`T-12`), a status, a MoSCoW priority, and optionally acceptance criteria, a claim, dependencies (`T-3`, or `owner/repo#T-3` for another repo's plan), deferral details and a log. `mvplan migrate old.json new.json` converts the original version 1 format.
 
-This repository's own plan is in [plan.json](plan.json) until its plan branch is created.
+This repository's own plan lives on its [`mvplanner/plan`](https://github.com/sirashton/MVPlanner/tree/mvplanner/plan) branch. Run `mvplan show` in a clone to see it.
 
 ## Developing
 

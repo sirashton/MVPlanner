@@ -145,3 +145,19 @@ test('lines and files can opt out of marker checks', () => {
     assert.deepEqual(findMarkers('// TODO(T-1) example mvplan:ignore\n// TODO(T-2)').map(m => m.id), ['T-2']);
     assert.deepEqual(findMarkers('// mvplan:ignore-file\n// TODO tidy'), []);
 });
+
+test('the review view summarises progress, proposals, claims and deferrals', async () => {
+    const { buildView } = await import('../src/view.ts');
+    const plan = todoApp();
+    updateTask(plan, 'T-3', 'a', { status: 'Complete' });
+    claimTask(plan, 'T-4', 'agent-a');
+    const proposal = proposeTask(plan, 'T-2', 'agent-b', { name: 'Undo' });
+    const deferred = deferTask(plan, 'T-4', 'agent-a', { name: 'Animate', trigger: 'users ask' });
+    const view = buildView(plan, [{ kind: 'MVP', id: deferred.id, line: 3, text: '', file: 'a.ts' }]);
+    assert.equal(view.level, 'Must');
+    assert.deepEqual(view.ladder[0], { label: 'Must', done: 1, total: 2, isCurrent: true });
+    assert.deepEqual(view.proposals.map(p => [p.id, p.by]), [[proposal.id, 'agent-b']]);
+    assert.deepEqual(view.claims.map(c => [c.id, c.agent, c.isStale]), [['T-4', 'agent-a', false]]);
+    assert.deepEqual(view.deferred.map(d => [d.id, d.markers.length]), [[deferred.id, 1]]);
+    assert.equal(view.tree.length, 11);
+});

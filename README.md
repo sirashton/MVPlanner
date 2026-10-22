@@ -50,7 +50,8 @@ Rules agents are given at the start of every session and subagent:
 | Hooks | **SessionStart** and **SubagentStart** brief the agent: its id, the rules, its task or the next ones. **PreToolUse** denies direct edits to `plan.json`, and warns about (or blocks) edits with no claimed task. **PostToolUse** sends back markers that name no task. **Stop** and **SubagentStop** nudge once when files changed but no progress was recorded |
 | Skills | `/mvplanner:plan` to break work down with you, `/mvplanner:next` to pick up and finish a task, `/mvplanner:defer` for markers |
 | Agents | `planner` maintains the plan; `scope-reviewer` checks a change against its task |
-| `mvplan` CLI | The same operations from a terminal or CI, plus `init`, `accept` and `decline` for humans |
+| Plan panel | A panel beside the chat for the human: progress by priority, proposals to accept or decline, who's working on what, next up, deferred work and recent activity. Opens by itself in repos with a plan; `/plan-panel` reopens it |
+| `mvplan` CLI | The same operations from a terminal or CI, plus `init`, `accept` and `decline` for humans, and `view` (the panel's data as JSON) |
 
 Settings (asked for when you enable the plugin, and in `/config`):
 
@@ -97,6 +98,7 @@ npm install
 npm test               # node:test, no build needed
 npm run typecheck
 npm run build          # bundles plugin/dist; commit the result
+claude plugin test ./plugin    # the panel's tests
 claude --plugin-dir ./plugin
 ```
 

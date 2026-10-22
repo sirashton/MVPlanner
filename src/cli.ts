@@ -9,6 +9,7 @@ import {
 import type { Mscw, Plan, Status } from './core/index.ts';
 import { renderNext, renderTask, renderTree } from './format.ts';
 import { scanRepo } from './scan.ts';
+import { buildView } from './view.ts';
 import { currentBranch, repoTopLevel } from './storage/git.ts';
 import { FileStore, GitBranchStore, openStore } from './storage/stores.ts';
 
@@ -20,6 +21,7 @@ Reading
   mvplan next [--agent A]           Next tasks on the critical path
   mvplan get <id>                   One task in full
   mvplan check                      Validate the plan and the MVP()/TODO() markers in this repo
+  mvplan view [--no-markers]        The review view as JSON, for the panel and the web UI
 
 Changing
   mvplan claim <id> --agent A       Claim a task before working on it
@@ -72,6 +74,7 @@ export async function main(argv: string[], cwd = process.cwd()): Promise<number>
             agent: { type: 'string' },
             all: { type: 'boolean' },
             json: { type: 'boolean' },
+            'no-markers': { type: 'boolean' },
             status: { type: 'string' },
             mscw: { type: 'string' },
             note: { type: 'string' },
@@ -143,6 +146,12 @@ export async function main(argv: string[], cwd = process.cwd()): Promise<number>
             const plan = await store.read({ fresh: true });
             const task = getTask(plan, args[0] ?? fail('Usage: mvplan get <id>'));
             out(renderTask(plan, task, taskPath(plan, task.id)));
+            return 0;
+        }
+        case 'view': {
+            const plan = await store.read({ fresh: true });
+            const markers = values['no-markers'] ? [] : await scanRepo((await repoTopLevel(cwd)) ?? cwd).catch(() => []);
+            out(JSON.stringify(buildView(plan, markers)));
             return 0;
         }
         case 'check': {

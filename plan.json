@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 18,
+  "revision": 19,
   "nextId": 37,
   "root": {
     "id": "T-1",
@@ -296,7 +296,7 @@
             "id": "T-30",
             "name": "Web review UI",
             "status": "Not Started",
-            "mscw": "Should",
+            "mscw": "Must",
             "description": "Browser page for reviewing the plan: accept or decline proposals, re-prioritise, see progress. Mock-up: https://claude.ai/artifact/1a9rDxj9fqQqQpCcX4sb8d",
             "log": [
               {
@@ -312,6 +312,11 @@
                 "at": "2026-10-22T22:46:56.445Z",
                 "agent": "claude-panel",
                 "text": "Use Anthropic's Frontend Design plugin when building this (Alex's suggestion): https://claude.com/marketplace/plugins/frontend-design"
+              },
+              {
+                "at": "2026-10-22T23:17:07.260Z",
+                "agent": "claude-panel",
+                "text": "priority Should -> Must; Alex chose to make the web UI a Must (decision card, 2026-10-22)"
               }
             ],
             "subtasks": [

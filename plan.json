@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 14,
-  "nextId": 33,
+  "revision": 15,
+  "nextId": 34,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -364,6 +364,27 @@
                 "log": [
                   {
                     "at": "2026-10-22T23:15:42.150Z",
+                    "agent": "claude-panel",
+                    "text": "Proposed under T-30"
+                  }
+                ]
+              },
+              {
+                "id": "T-33",
+                "name": "Live updates while agents work",
+                "status": "Not Started",
+                "mscw": "Should",
+                "proposed": true,
+                "description": "The page refreshes on its own when agents claim, update or propose, without losing the reader's place.",
+                "acceptance": [
+                  {
+                    "text": "A claim made in another session appears within 30 seconds",
+                    "done": false
+                  }
+                ],
+                "log": [
+                  {
+                    "at": "2026-10-22T23:15:44.700Z",
                     "agent": "claude-panel",
                     "text": "Proposed under T-30"
                   }

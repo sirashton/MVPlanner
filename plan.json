@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 50,
+  "revision": 51,
   "nextId": 44,
   "root": {
     "id": "T-1",
@@ -359,21 +359,21 @@
               {
                 "id": "T-32",
                 "name": "Interactive plan page",
-                "status": "In Progress",
+                "status": "Complete",
                 "mscw": "Must",
                 "description": "Single page drawn from the view JSON: progress ladder, collapsible tree with who's working where, accept or decline proposals, change priority and status inline. Built with the Frontend Design plugin.",
                 "acceptance": [
                   {
                     "text": "Every action in the Claude Code panel is also possible here",
-                    "done": false
+                    "done": true
                   },
                   {
                     "text": "Change a task's priority or status without leaving the tree",
-                    "done": false
+                    "done": true
                   },
                   {
                     "text": "Works at phone width",
-                    "done": false
+                    "done": true
                   }
                 ],
                 "log": [
@@ -390,13 +390,16 @@
                     "at": "2026-10-22T23:37:48.790Z",
                     "agent": "claude-panel",
                     "text": "Claimed on claude/project-thread-mr24nb"
+                  },
+                  {
+                    "at": "2026-10-22T23:39:03.031Z",
+                    "agent": "claude-panel",
+                    "text": "status In Progress -> Complete; checked \"Every action in the Claude Code panel is also possible here\"; checked \"Change a task's priority or status without leaving the tree\"; checked \"Works at phone width\"; linked https://github.com/sirashton/MVPlanner/pull/5; Merged in PR #5"
                   }
                 ],
-                "claimedBy": {
-                  "agent": "claude-panel",
-                  "at": "2026-10-22T23:37:48.789Z",
-                  "branch": "claude/project-thread-mr24nb"
-                }
+                "links": [
+                  "https://github.com/sirashton/MVPlanner/pull/5"
+                ]
               },
               {
                 "id": "T-33",

@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 4,
+  "revision": 5,
   "nextId": 30,
   "root": {
     "id": "T-1",
@@ -236,7 +236,7 @@
         "id": "T-26",
         "name": "Plan viewer",
         "status": "In Progress",
-        "mscw": "Could",
+        "mscw": "Must",
         "subtasks": [
           {
             "id": "T-27",
@@ -249,6 +249,13 @@
             "name": "Panel beside the chat in Claude Code",
             "status": "Not Started",
             "mscw": "Could"
+          }
+        ],
+        "log": [
+          {
+            "at": "2026-10-22T22:42:01.542Z",
+            "agent": "claude-pr4",
+            "text": "priority Could -> Must; Alex: the human review UI is a key feature"
           }
         ]
       },

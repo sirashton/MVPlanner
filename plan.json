@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 17,
-  "nextId": 36,
+  "revision": 18,
+  "nextId": 37,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -415,6 +415,21 @@
                 "log": [
                   {
                     "at": "2026-10-22T23:15:49.610Z",
+                    "agent": "claude-panel",
+                    "text": "Proposed under T-30"
+                  }
+                ]
+              },
+              {
+                "id": "T-36",
+                "name": "Edit the plan's shape from the page",
+                "status": "Not Started",
+                "mscw": "Could",
+                "proposed": true,
+                "description": "Add, rename and move tasks in the browser. Until then, structure changes go through agents or the CLI.",
+                "log": [
+                  {
+                    "at": "2026-10-22T23:15:52.016Z",
                     "agent": "claude-panel",
                     "text": "Proposed under T-30"
                   }

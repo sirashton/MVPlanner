@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 28,
+  "revision": 29,
   "nextId": 44,
   "root": {
     "id": "T-1",
@@ -325,7 +325,6 @@
                 "name": "mvplan serve: local web server for the plan",
                 "status": "Not Started",
                 "mscw": "Must",
-                "proposed": true,
                 "description": "One command starts a server on 127.0.0.1 that serves the page and a small JSON API over the same store and operations the CLI uses. No new storage, no accounts.",
                 "acceptance": [
                   {
@@ -342,6 +341,10 @@
                     "at": "2026-10-22T23:15:39.559Z",
                     "agent": "claude-panel",
                     "text": "Proposed under T-30"
+                  },
+                  {
+                    "at": "2026-10-22T23:23:01.781Z",
+                    "text": "Proposal accepted"
                   }
                 ]
               },

@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 10,
+  "revision": 11,
   "nextId": 31,
   "root": {
     "id": "T-1",
@@ -299,6 +299,11 @@
               {
                 "at": "2026-10-22T22:44:14.969Z",
                 "text": "Proposal accepted"
+              },
+              {
+                "at": "2026-10-22T22:46:56.445Z",
+                "agent": "claude-panel",
+                "text": "Use Anthropic's Frontend Design plugin when building this (Alex's suggestion): https://claude.com/marketplace/plugins/frontend-design"
               }
             ]
           }

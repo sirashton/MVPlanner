@@ -1,0 +1,243 @@
+{
+  "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
+  "version": 2,
+  "revision": 1,
+  "nextId": 30,
+  "root": {
+    "id": "T-1",
+    "name": "MVPlanner",
+    "status": "In Progress",
+    "mscw": "Must",
+    "description": "One prioritised plan that humans and agent swarms work from, so agents stop drifting from what was agreed.",
+    "subtasks": [
+      {
+        "id": "T-2",
+        "name": "Core library",
+        "status": "In Progress",
+        "mscw": "Must",
+        "description": "Plan schema, do-more rollup, critical path and markers, shared by every tool.",
+        "subtasks": [
+          {
+            "id": "T-3",
+            "name": "Schema v2 with stable ids and migration from v1",
+            "status": "Complete",
+            "mscw": "Must",
+            "acceptance": [
+              {
+                "text": "Every task has a T-n id",
+                "done": true
+              },
+              {
+                "text": "A v1 plan.json migrates without losing tasks",
+                "done": true
+              }
+            ]
+          },
+          {
+            "id": "T-4",
+            "name": "Do-more rollup and critical path outside the webview",
+            "status": "Complete",
+            "mscw": "Must"
+          },
+          {
+            "id": "T-5",
+            "name": "Deferral markers: MVP(id) and TODO(id)",
+            "status": "Complete",
+            "mscw": "Must"
+          },
+          {
+            "id": "T-6",
+            "name": "Settle how a parent's own status relates to its subtasks",
+            "status": "Not Started",
+            "mscw": "Should",
+            "description": "Today a parent's status is ignored unless all its subtasks are deferrals or proposals."
+          }
+        ]
+      },
+      {
+        "id": "T-7",
+        "name": "Shared storage",
+        "status": "In Progress",
+        "mscw": "Must",
+        "subtasks": [
+          {
+            "id": "T-8",
+            "name": "Plan branch on GitHub with fetch, push and retry",
+            "status": "Complete",
+            "mscw": "Must",
+            "acceptance": [
+              {
+                "text": "Two clones writing at once both land",
+                "done": true
+              },
+              {
+                "text": "The working tree is never touched",
+                "done": true
+              }
+            ]
+          },
+          {
+            "id": "T-9",
+            "name": "Single plan file in the main checkout",
+            "status": "Complete",
+            "mscw": "Should"
+          },
+          {
+            "id": "T-10",
+            "name": "Hosted MVPlanner service",
+            "status": "Not Started",
+            "mscw": "Could",
+            "description": "A remote MCP server for instant claims and plans spanning several repos."
+          }
+        ]
+      },
+      {
+        "id": "T-11",
+        "name": "Agent tools",
+        "status": "Complete",
+        "mscw": "Must",
+        "subtasks": [
+          {
+            "id": "T-12",
+            "name": "mvplan CLI",
+            "status": "Complete",
+            "mscw": "Must"
+          },
+          {
+            "id": "T-13",
+            "name": "MCP server",
+            "status": "Complete",
+            "mscw": "Must"
+          }
+        ]
+      },
+      {
+        "id": "T-14",
+        "name": "Claude Code plugin",
+        "status": "In Progress",
+        "mscw": "Must",
+        "subtasks": [
+          {
+            "id": "T-15",
+            "name": "Plugin manifest and marketplace",
+            "status": "Complete",
+            "mscw": "Must"
+          },
+          {
+            "id": "T-16",
+            "name": "Hooks harness with off, warn and enforce",
+            "status": "Complete",
+            "mscw": "Must"
+          },
+          {
+            "id": "T-17",
+            "name": "Skills and agents",
+            "status": "Complete",
+            "mscw": "Must"
+          },
+          {
+            "id": "T-18",
+            "name": "Start the live plan branch for this repo",
+            "status": "Not Started",
+            "mscw": "Must",
+            "description": "Run mvplan init --from plan.json, then remove plan.json from main.",
+            "acceptance": [
+              {
+                "text": "mvplanner/plan exists on GitHub",
+                "done": false
+              },
+              {
+                "text": "plan.json is removed from main",
+                "done": false
+              }
+            ]
+          },
+          {
+            "id": "T-19",
+            "name": "Try it in real Claude Code sessions",
+            "status": "Not Started",
+            "mscw": "Must",
+            "acceptance": [
+              {
+                "text": "Installs from the marketplace in a fresh session",
+                "done": false
+              },
+              {
+                "text": "Two agents in different projects pick different tasks without talking",
+                "done": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "T-20",
+        "name": "Cross-repo plans",
+        "status": "Not Started",
+        "mscw": "Should",
+        "subtasks": [
+          {
+            "id": "T-21",
+            "name": "Resolve dependencies on other repos' plans",
+            "status": "Not Started",
+            "mscw": "Should",
+            "description": "Today a dependency like owner/repo#T-3 always counts as unmet."
+          }
+        ]
+      },
+      {
+        "id": "T-22",
+        "name": "CI",
+        "status": "In Progress",
+        "mscw": "Should",
+        "subtasks": [
+          {
+            "id": "T-23",
+            "name": "Typecheck, tests and bundle check on every PR",
+            "status": "Complete",
+            "mscw": "Must"
+          },
+          {
+            "id": "T-24",
+            "name": "Fail feature PRs that touch plan.json or carry bad markers",
+            "status": "Not Started",
+            "mscw": "Must"
+          }
+        ]
+      },
+      {
+        "id": "T-25",
+        "name": "Scope checks against a task's declared files",
+        "status": "Not Started",
+        "mscw": "Could",
+        "description": "PreToolUse warns when an edit falls outside the claimed task's scope globs."
+      },
+      {
+        "id": "T-26",
+        "name": "Plan viewer",
+        "status": "In Progress",
+        "mscw": "Could",
+        "subtasks": [
+          {
+            "id": "T-27",
+            "name": "Terminal tree view (mvplan show)",
+            "status": "Complete",
+            "mscw": "Must"
+          },
+          {
+            "id": "T-28",
+            "name": "Panel beside the chat in Claude Code",
+            "status": "Not Started",
+            "mscw": "Could"
+          }
+        ]
+      },
+      {
+        "id": "T-29",
+        "name": "Retire the VS Code extension",
+        "status": "Complete",
+        "mscw": "Must"
+      }
+    ]
+  }
+}

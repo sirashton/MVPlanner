@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 1,
+  "revision": 2,
   "nextId": 30,
   "root": {
     "id": "T-1",
@@ -138,7 +138,7 @@
           {
             "id": "T-18",
             "name": "Start the live plan branch for this repo",
-            "status": "Not Started",
+            "status": "In Progress",
             "mscw": "Must",
             "description": "Run mvplan init --from plan.json, then remove plan.json from main.",
             "acceptance": [
@@ -149,6 +149,18 @@
               {
                 "text": "plan.json is removed from main",
                 "done": false
+              }
+            ],
+            "claimedBy": {
+              "agent": "claude-pr4",
+              "at": "2026-10-22T22:38:51.897Z",
+              "branch": "claude/project-thread-mr24nb"
+            },
+            "log": [
+              {
+                "at": "2026-10-22T22:38:51.898Z",
+                "agent": "claude-pr4",
+                "text": "Claimed on claude/project-thread-mr24nb"
               }
             ]
           },

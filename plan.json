@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 13,
-  "nextId": 32,
+  "revision": 14,
+  "nextId": 33,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -335,6 +335,35 @@
                 "log": [
                   {
                     "at": "2026-10-22T23:15:39.559Z",
+                    "agent": "claude-panel",
+                    "text": "Proposed under T-30"
+                  }
+                ]
+              },
+              {
+                "id": "T-32",
+                "name": "Interactive plan page",
+                "status": "Not Started",
+                "mscw": "Must",
+                "proposed": true,
+                "description": "Single page drawn from the view JSON: progress ladder, collapsible tree with who's working where, accept or decline proposals, change priority and status inline. Built with the Frontend Design plugin.",
+                "acceptance": [
+                  {
+                    "text": "Every action in the Claude Code panel is also possible here",
+                    "done": false
+                  },
+                  {
+                    "text": "Change a task's priority or status without leaving the tree",
+                    "done": false
+                  },
+                  {
+                    "text": "Works at phone width",
+                    "done": false
+                  }
+                ],
+                "log": [
+                  {
+                    "at": "2026-10-22T23:15:42.150Z",
                     "agent": "claude-panel",
                     "text": "Proposed under T-30"
                   }

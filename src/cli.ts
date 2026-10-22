@@ -4,11 +4,12 @@ import path from 'node:path';
 import { parseArgs } from 'node:util';
 import {
     PlanError, checkMarkers, claimTask, decideProposal, deferTask, getTask, migrateV1, nextTasks, newPlan,
-    parsePlan, proposeTask, releaseTask, serializePlan, taskPath, updateTask, validatePlan, MSCW, STATUSES,
+    applyEdits, moveTask, parsePlan, proposeTask, releaseTask, removeTask, serializePlan, taskPath, updateTask, validatePlan, MSCW, STATUSES,
 } from './core/index.ts';
 import type { Mscw, Plan, Status } from './core/index.ts';
 import { renderNext, renderTask, renderTree } from './format.ts';
 import { scanRepo } from './scan.ts';
+import { openInBrowser, startServer } from './serve.ts';
 import { buildView } from './view.ts';
 import { currentBranch, repoTopLevel } from './storage/git.ts';
 import { FileStore, GitBranchStore, openStore } from './storage/stores.ts';
@@ -22,6 +23,7 @@ Reading
   mvplan get <id>                   One task in full
   mvplan check                      Validate the plan and the MVP()/TODO() markers in this repo
   mvplan view [--no-markers]        The review view as JSON, for the panel and the web UI
+  mvplan serve [--port N] [--no-open]   The interactive plan page on localhost
 
 Changing
   mvplan claim <id> --agent A       Claim a task before working on it
@@ -32,6 +34,9 @@ Changing
   mvplan defer <parent-id> <name> [--mscw P] [--trigger T] [--file F]...
   mvplan accept <id> [--mscw P]     Accept a proposed task
   mvplan decline <id>               Decline a proposed task (sets it to Won't)
+  mvplan move <id> <parent-id> [--position N]
+  mvplan remove <id>                Delete a task and its subtasks (prefer --mscw Won't to keep a record)
+  mvplan apply <file|->             Apply a JSON array of edits in one save (see plan_edit)
 
 Setting up
   mvplan init [--from FILE] [--name NAME]   Create the live plan (migrates a version 1 plan.json)
@@ -86,6 +91,10 @@ export async function main(argv: string[], cwd = process.cwd()): Promise<number>
             trigger: { type: 'string' },
             file: { type: 'string', multiple: true },
             from: { type: 'string' },
+            position: { type: 'string' },
+            'approved-by': { type: 'string' },
+            port: { type: 'string' },
+            'no-open': { type: 'boolean' },
             help: { type: 'boolean', short: 'h' },
         },
     });
@@ -154,6 +163,18 @@ export async function main(argv: string[], cwd = process.cwd()): Promise<number>
             out(JSON.stringify(buildView(plan, markers)));
             return 0;
         }
+        case 'serve': {
+            await store.read({ fresh: true });
+            const server = await startServer({ store, cwd, port: values.port ? Number.parseInt(values.port, 10) : 4747 })
+                .catch(() => startServer({ store, cwd }));
+            out(`The plan is at ${server.url}\nChanges you make there are saved to ${store.describe()}. Press Ctrl+C to stop.`);
+            if (!values['no-open']) {
+                openInBrowser(server.url);
+            }
+            await new Promise<void>(resolve => process.once('SIGINT', resolve).once('SIGTERM', resolve));
+            await server.close();
+            return 0;
+        }
         case 'check': {
             const plan = await store.read({ fresh: true });
             const problems = [...validatePlan(plan)];
@@ -217,6 +238,37 @@ export async function main(argv: string[], cwd = process.cwd()): Promise<number>
             const id = args[0] ?? fail(`Usage: mvplan ${command} <id>`);
             await store.mutate(`${command} proposal ${id}`, p => decideProposal(p, id, command === 'accept', asMscw(values.mscw)));
             out(`${command === 'accept' ? 'Accepted' : 'Declined'} ${id}.`);
+            return 0;
+        }
+        case 'move': {
+            const [id, parent] = args;
+            if (!id || !parent) {
+                fail('Usage: mvplan move <id> <parent-id> [--position N]');
+            }
+            const position = values.position === undefined ? undefined : Number.parseInt(values.position, 10);
+            await store.mutate(`${agent} moves ${id} under ${parent}`, p => moveTask(p, id, parent, agent, position));
+            out(`Moved ${id} under ${parent}.`);
+            return 0;
+        }
+        case 'remove': {
+            const id = args[0] ?? fail('Usage: mvplan remove <id>');
+            const { result } = await store.mutate(`${agent} removes ${id}`, p => removeTask(p, id, agent));
+            out(`Removed ${id} "${result.name}".`);
+            return 0;
+        }
+        case 'apply': {
+            const source = args[0] ?? fail('Usage: mvplan apply <file|->');
+            const json = source === '-' ? await new Promise<string>(resolve => {
+                let data = '';
+                process.stdin.on('data', chunk => (data += chunk)).on('end', () => resolve(data));
+            }) : await fs.readFile(source, 'utf-8');
+            const edits = JSON.parse(json);
+            if (!Array.isArray(edits)) {
+                fail('apply expects a JSON array of edits.');
+            }
+            const { result } = await store.mutate(`${agent} applies ${edits.length} edit(s)`, p =>
+                applyEdits(p, agent, edits, values['approved-by'] ?? agent));
+            out(result.join('\n'));
             return 0;
         }
         default:

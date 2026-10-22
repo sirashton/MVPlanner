@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400..900&display=swap" rel="stylesheet">
+<style>
+/* Priority is the organising idea: the less a task matters to the project, the quieter it is set. */
+:root {
+  --paper: #eef1f4;
+  --sheet: #f8fafb;
+  --ink: #1d2a3a;
+  --ink-soft: #5d6b7c;
+  --rule: #d5dce4;
+  --must: #3b3fb6;
+  --should: #1f7a74;
+  --could: #a36a12;
+  --wont: #8a94a3;
+  --live: #c2307a;
+  --done: #2f8a4c;
+  --danger: #b3261e;
+  --focus: #3b3fb6;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #141a22; --sheet: #1b232d; --ink: #e3e9f0; --ink-soft: #9aa7b6; --rule: #2d3844;
+    --must: #9da2ff; --should: #5cc4bb; --could: #e0a54a; --wont: #6f7b8a; --live: #ff6fb0; --done: #6fcf8d;
+    --danger: #ff8a80; --focus: #9da2ff; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #141a22; --sheet: #1b232d; --ink: #e3e9f0; --ink-soft: #9aa7b6; --rule: #2d3844;
+  --must: #9da2ff; --should: #5cc4bb; --could: #e0a54a; --wont: #6f7b8a; --live: #ff6fb0; --done: #6fcf8d;
+  --danger: #ff8a80; --focus: #9da2ff; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--paper); color: var(--ink); }
+body { font: 400 15px/1.45 "Schibsted Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif; }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 24px 16px 80px; }
+
+header.top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; }
+header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spacing: -0.02em; margin: 0; }
+.status-line { color: var(--ink-soft); font-size: 15px; }
+.conn { margin-left: auto; font-size: 13px; color: var(--ink-soft); display: flex; align-items: center; gap: 6px; }
+.conn i { width: 8px; height: 8px; border-radius: 50%; background: var(--wont); display: inline-block; }
+.conn.live i { background: var(--done); }
+.conn.saving i { background: var(--live); }
+
+.ladder { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 18px 0 20px; }
+.rung { font-size: 13px; color: var(--ink-soft); }
+.rung b { color: var(--ink); font-weight: 650; }
+.rung.current b { color: var(--must); }
+.bar { height: 6px; background: var(--rule); border-radius: 3px; margin-top: 6px; overflow: hidden; }
+.bar span { display: block; height: 100%; background: var(--ink-soft); border-radius: 3px; }
+.rung.current .bar span { background: var(--must); }
+
+.capture { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: var(--sheet); border: 1px solid var(--rule);
+  border-radius: 10px; padding: 8px; }
+.capture input[type=text] { flex: 1 1 260px; min-width: 0; border: 0; background: transparent; padding: 8px; font-size: 16px; }
+.capture input[type=text]:focus-visible { outline: none; }
+.capture:focus-within { border-color: var(--focus); }
+.capture .under { font-size: 13px; color: var(--ink-soft); display: flex; align-items: center; gap: 6px; }
+.capture select { border: 1px solid var(--rule); background: var(--paper); border-radius: 6px; padding: 4px 6px; max-width: 220px; }
+.hint { font-size: 12px; color: var(--ink-soft); margin: 6px 2px 0; }
+
+.prio { display: inline-flex; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; flex: none; }
+.prio button { border: 0; background: transparent; width: 26px; height: 24px; font-size: 12px; font-weight: 700; cursor: pointer; color: var(--ink-soft); }
+.prio button + button { border-left: 1px solid var(--rule); }
+.prio button[aria-pressed=true][data-p=Must] { background: var(--must); color: var(--sheet); }
+.prio button[aria-pressed=true][data-p=Should] { background: var(--should); color: var(--sheet); }
+.prio button[aria-pressed=true][data-p=Could] { background: var(--could); color: var(--sheet); }
+.prio button[aria-pressed=true][data-p="Won't"] { background: var(--wont); color: var(--sheet); }
+
+.decisions { margin: 20px 0 0; border-left: 3px solid var(--live); padding: 4px 0 4px 14px; }
+.decisions h2, .board h2 { font-size: 17px; font-weight: 750; margin: 0 0 8px; display: flex; align-items: center; gap: 10px; }
+.decisions ul { list-style: none; margin: 0; padding: 0; }
+.decisions li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; padding: 5px 0; }
+.decisions .where { color: var(--ink-soft); font-size: 13px; }
+.btn { border: 1px solid var(--rule); background: var(--sheet); border-radius: 6px; padding: 3px 10px; font-size: 13px; cursor: pointer; }
+.btn:hover { border-color: var(--ink-soft); }
+.btn.primary { background: var(--ink); color: var(--sheet); border-color: var(--ink); }
+.btn.danger { color: var(--danger); }
+.btn:disabled { opacity: .5; cursor: default; }
+
+.board { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 24px; margin-top: 24px; align-items: start; }
+.board.nodetail { grid-template-columns: minmax(0, 1fr); }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }
+.toolbar .legend { font-size: 12px; color: var(--ink-soft); margin-left: auto; display: flex; gap: 12px; flex-wrap: wrap; }
+.toggle { border: 1px solid var(--rule); background: transparent; border-radius: 999px; padding: 2px 10px; font-size: 13px; cursor: pointer; }
+.toggle[aria-pressed=true] { background: var(--ink); color: var(--sheet); border-color: var(--ink); }
+
+.tree { list-style: none; margin: 0; padding: 0; }
+.row { display: flex; align-items: center; gap: 8px; min-height: 36px; padding: 2px 6px 2px calc(var(--depth) * 22px); border-radius: 6px; position: relative; }
+.row:hover { background: color-mix(in srgb, var(--sheet) 70%, transparent); }
+.row.selected { background: var(--sheet); box-shadow: inset 3px 0 0 var(--focus); }
+.row.drop { box-shadow: inset 0 0 0 2px var(--focus); }
+.row .caret { width: 22px; height: 22px; flex: none; border: 0; background: transparent; cursor: pointer; color: var(--ink-soft); font-size: 11px; }
+.row .caret[disabled] { visibility: hidden; }
+.mark { width: 12px; height: 12px; flex: none; border-radius: 50%; border: 1.5px solid var(--ink-soft); position: relative; }
+.mark.progress { background: linear-gradient(90deg, var(--ink-soft) 50%, transparent 50%); }
+.mark.blocked { border-color: var(--danger); background: var(--danger); }
+.mark.working { border-color: var(--live); background: var(--live); box-shadow: 0 0 0 3px color-mix(in srgb, var(--live) 22%, transparent); }
+.mark.done { border: 0; border-radius: 0; }
+.mark.done::after { content: ""; position: absolute; left: 3px; top: 0; width: 5px; height: 9px; border: solid var(--done); border-width: 0 2px 2px 0; transform: rotate(45deg); }
+.legend .mark { display: inline-block; vertical-align: -1px; margin-right: 4px; }
+.name { flex: 1 1 auto; min-width: 0; cursor: default; overflow-wrap: anywhere; padding: 4px 0; }
+.name[contenteditable=true] { outline: 1px solid var(--focus); border-radius: 4px; padding: 3px 6px; background: var(--sheet); cursor: text; }
+/* Effective priority sets the weight of the whole line. */
+.row[data-eff=Must] .name { font-weight: 640; }
+.row[data-eff=Should] .name { font-weight: 450; }
+.row[data-eff=Could] .name { font-weight: 400; color: var(--ink-soft); }
+.row[data-eff="Won't"] .name { font-weight: 400; color: var(--wont); text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--wont) 60%, transparent); }
+.row[data-status=Complete] .name { color: var(--ink-soft); font-weight: 400; }
+.row.proposed .name { font-style: italic; }
+.tag { font-size: 12px; border-radius: 999px; padding: 1px 8px; flex: none; white-space: nowrap; }
+.tag.agent { color: var(--live); border: 1px solid color-mix(in srgb, var(--live) 50%, transparent); }
+.tag.next { color: var(--could); border: 1px solid color-mix(in srgb, var(--could) 50%, transparent); }
+.tag.proposed { color: var(--live); border: 1px dashed var(--live); }
+.tag.muted { color: var(--ink-soft); }
+.row .prio { display: none; }
+.row:hover .prio, .row.selected .prio, .row:focus-within .prio { display: inline-flex; }
+.row:hover .chip, .row.selected .chip, .row:focus-within .chip { display: none; }
+.chip { flex: none; width: 54px; text-align: right; font-size: 12px; font-weight: 600; }
+.chip::after { content: attr(data-p); }
+.chip[data-p=Must] { color: var(--must); }
+.chip[data-p=Should] { color: var(--should); }
+.chip[data-p=Could] { color: var(--could); }
+.chip[data-p="Won't"] { color: var(--wont); }
+.row .acts { display: flex; gap: 2px; opacity: 0; flex: none; }
+.row:hover .acts, .row.selected .acts, .row:focus-within .acts { opacity: 1; }
+.icon { border: 0; background: transparent; width: 26px; height: 26px; border-radius: 5px; cursor: pointer; color: var(--ink-soft); font-size: 15px; }
+.icon:hover { background: var(--rule); color: var(--ink); }
+.more { font-size: 12px; color: var(--ink-soft); border: 0; background: none; cursor: pointer; padding: 2px 4px; }
+@keyframes changed { from { background: color-mix(in srgb, var(--live) 22%, transparent); } to { background: transparent; } }
+.row.changed { animation: changed 2.4s ease-out; }
+@media (prefers-reduced-motion: reduce) { .row.changed { animation: none; } }
+
+aside.detail { position: sticky; top: 16px; background: var(--sheet); border: 1px solid var(--rule); border-radius: 12px; padding: 16px; }
+aside.detail h3 { margin: 0; font-size: 19px; line-height: 1.25; font-weight: 750; }
+aside.detail .path { font-size: 12px; color: var(--ink-soft); margin: 2px 0 12px; }
+aside.detail label { display: block; font-size: 12px; color: var(--ink-soft); margin: 12px 0 4px; }
+aside.detail textarea { width: 100%; min-height: 80px; resize: vertical; border: 1px solid var(--rule); border-radius: 6px; padding: 8px; background: var(--paper); }
+aside.detail select { width: 100%; border: 1px solid var(--rule); border-radius: 6px; padding: 6px; background: var(--paper); }
+aside.detail ul { margin: 0; padding-left: 18px; font-size: 14px; }
+aside.detail .log { list-style: none; padding: 0; font-size: 13px; color: var(--ink-soft); }
+aside.detail .log li { padding: 3px 0; }
+aside.detail .foot { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+.close { float: right; }
+
+.toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--ink); color: var(--sheet); padding: 8px 14px;
+  border-radius: 8px; font-size: 14px; max-width: calc(100% - 32px); }
+.toast.error { background: var(--danger); }
+.empty { color: var(--ink-soft); padding: 24px 0; }
+
+@media (max-width: 860px) {
+  .board { grid-template-columns: minmax(0, 1fr); }
+  aside.detail { position: fixed; left: 0; right: 0; bottom: 0; top: auto; max-height: 70vh; overflow: auto; border-radius: 14px 14px 0 0; z-index: 5;
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, .18); }
+  .ladder { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .row { padding-left: calc(var(--depth) * 12px); gap: 6px; }
+  .row .acts, .row .more { display: none; }
+  .chip { width: 14px; }
+  .chip::after { content: attr(data-letter); }
+  .row:hover .prio, .row:focus-within .prio { display: none; }
+  .row:hover .chip, .row:focus-within .chip { display: block; }
+  .row.selected .prio { display: inline-flex; }
+  .row.selected .chip { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1 id="name">Plan</h1>
+    <span class="status-line" id="status"></span>
+    <span class="conn" id="conn"><i></i><span>Connecting</span></span>
+  </header>
+  <section class="ladder" id="ladder" aria-label="Progress by priority"></section>
+
+  <form class="capture" id="capture" autocomplete="off">
+    <input type="text" id="capture-name" placeholder="Add a task" aria-label="New task name">
+    <span class="under">under <select id="capture-parent" aria-label="Parent task"></select></span>
+    <span class="prio" id="capture-prio" role="group" aria-label="Priority"></span>
+    <button class="btn primary" type="submit">Add</button>
+  </form>
+  <p class="hint">Enter adds and keeps the box ready for the next one. Select a row and press A to add under it, 1 to 4 to set its priority, R to rename.</p>
+
+  <section class="decisions" id="decisions" hidden></section>
+
+  <div class="board nodetail" id="board">
+    <section aria-label="Plan">
+      <div class="toolbar">
+        <button class="toggle" id="focus-toggle" aria-pressed="true" title="Show only what matters now">Focus</button>
+        <button class="toggle" id="wont-toggle" aria-pressed="false">Show Won't</button>
+        <span class="legend"><span><i class="mark working"></i>being worked on</span><span><i class="mark progress"></i>in progress</span><span><i class="mark"></i>not started</span><span><i class="mark done"></i>done</span></span>
+      </div>
+      <ul class="tree" id="tree" role="tree" aria-label="Tasks"></ul>
+    </section>
+    <aside class="detail" id="detail" hidden></aside>
+  </div>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+<script>
+const P = ['Must', 'Should', 'Could', "Won't"];
+const RANK = Object.fromEntries(P.map((p, i) => [p, i]));
+const LETTER = { Must: 'M', Should: 'S', Could: 'C', "Won't": 'W' };
+const STATUSES = ['Not Started', 'In Progress', 'Blocked', 'Complete'];
+const $ = id => document.getElementById(id);
+const el = (tag, attrs = {}, ...kids) => {
+  const node = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (v === undefined || v === false) continue;
+    if (k.startsWith('on')) node.addEventListener(k.slice(2), v);
+    else if (k === 'class') node.className = v;
+    else node.setAttribute(k, v === true ? '' : v);
+  }
+  for (const kid of kids.flat()) if (kid !== null && kid !== undefined && kid !== false) node.append(kid);
+  return node;
+};
+
+const saved = (() => { try { return JSON.parse(localStorage.getItem('mvplanner-ui') || '{}'); } catch { return {}; } })();
+const ui = {
+  view: null,
+  focus: saved.focus ?? true,
+  showWont: saved.showWont ?? false,
+  open: new Set(saved.open ?? []),
+  closed: new Set(saved.closed ?? []),
+  selected: null,
+  captureParent: null,
+  capturePrio: 'Must',
+  renaming: null,
+  prev: new Map(),
+};
+const remember = () => { try { localStorage.setItem('mvplanner-ui', JSON.stringify({ focus: ui.focus, showWont: ui.showWont, open: [...ui.open], closed: [...ui.closed] })); } catch {} };
+
+// Edits queue up while one save is in flight and go together in the next save, so a burst of typing is one round trip.
+let queue = [];
+let inFlight = false;
+function edit(...edits) {
+  queue.push(...edits);
+  flush();
+}
+async function flush() {
+  if (inFlight || queue.length === 0) return;
+  inFlight = true;
+  const batch = queue;
+  queue = [];
+  setConn('saving');
+  try {
+    const res = await fetch('/api/edits', { method: 'POST', headers: { 'content-type': 'application/json', 'x-mvplanner': '1' }, body: JSON.stringify({ edits: batch }) });
+    const body = await res.json();
+    if (!res.ok) throw new Error(body.error || res.statusText);
+    show(body.view);
+    toast(body.results.length === 1 ? body.results[0] : `${body.results.length} changes saved`);
+  } catch (error) {
+    toast(`Not saved: ${error.message}`, true);
+  } finally {
+    inFlight = false;
+    setConn(source && source.readyState === 1 ? 'live' : 'off');
+    flush();
+  }
+}
+
+let toastTimer;
+function toast(text, isError = false) {
+  const t = $('toast');
+  t.textContent = text;
+  t.className = isError ? 'toast error' : 'toast';
+  t.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => (t.hidden = true), isError ? 6000 : 2200);
+}
+function setConn(state) {
+  const c = $('conn');
+  c.className = `conn ${state}`;
+  c.lastElementChild.textContent = state === 'live' ? 'Live' : state === 'saving' ? 'Saving' : 'Reconnecting';
+}
+
+function prioControl(value, onPick, label) {
+  return el('span', { class: 'prio', role: 'group', 'aria-label': label },
+    P.map(p => el('button', { type: 'button', 'data-p': p, 'aria-pressed': String(p === value), title: p, onclick: e => { e.stopPropagation(); onPick(p); } }, LETTER[p])));
+}
+
+// The project-level priority of a task: the least important priority on its way up.
+function effective(row, byId) {
+  let rank = RANK[row.mscw];
+  for (let p = byId.get(row.parent); p && p.parent; p = byId.get(p.parent)) rank = Math.max(rank, RANK[p.mscw]);
+  return P[rank];
+}
+
+function markFor(row) {
+  if (row.agent) return 'working';
+  if (row.status === 'Complete') return 'done';
+  if (row.status === 'Blocked') return 'blocked';
+  if (row.status === 'In Progress') return 'progress';
+  return '';
+}
+
+function isOpen(row, byId, kids) {
+  if (ui.open.has(row.id)) return true;
+  if (ui.closed.has(row.id)) return false;
+  if (!ui.focus || row.depth === 0) return true;
+  // In focus, open branches where something is happening: claimed work, the critical path, or proposals to decide.
+  return row.hasActiveWork || (row.isOnPath && row.status !== 'Complete') || (kids.get(row.id) || []).some(k => k.isProposed);
+}
+
+function render() {
+  const v = ui.view;
+  if (!v) return;
+  document.title = `${v.name} plan`;
+  $('name').textContent = v.name;
+  $('status').textContent = v.status;
+  $('ladder').replaceChildren(...v.ladder.map(r => el('div', { class: r.isCurrent ? 'rung current' : 'rung' },
+    el('b', {}, r.label), ` ${r.done} of ${r.total} done`,
+    el('div', { class: 'bar' }, el('span', { style: `width:${r.total ? (100 * r.done / r.total).toFixed(1) : 0}%` })))));
+
+  const byId = new Map(v.tree.map(r => [r.id, r]));
+  const kids = new Map();
+  for (const r of v.tree) if (r.parent) kids.set(r.parent, [...(kids.get(r.parent) || []), r]);
+  const nextIds = new Set(v.next.map(n => n.id));
+
+  // Capture parent options, in tree order.
+  if (!ui.captureParent || !byId.has(ui.captureParent)) ui.captureParent = v.tree[0].id;
+  $('capture-parent').replaceChildren(...v.tree.filter(r => r.status !== 'Complete' || r.depth === 0).map(r =>
+    el('option', { value: r.id, selected: r.id === ui.captureParent }, `${'  '.repeat(r.depth)}${r.name}`)));
+  $('capture-prio').replaceChildren(...prioControl(ui.capturePrio, p => { ui.capturePrio = p; render(); }, 'Priority').childNodes);
+
+  // Decisions.
+  const dec = $('decisions');
+  dec.hidden = v.proposals.length === 0;
+  dec.replaceChildren(
+    el('h2', {}, `Needs your decision (${v.proposals.length})`,
+      v.proposals.length > 1 ? el('button', { class: 'btn', onclick: () => edit(...v.proposals.map(p => ({ op: 'accept', id: p.id }))) }, 'Accept all') : null),
+    el('ul', {}, v.proposals.map(p => el('li', {},
+      el('span', {}, el('b', {}, p.name), ` (${p.mscw})`),
+      el('span', { class: 'where' }, `under ${p.path}${p.by ? `, from ${p.by}` : ''}`),
+      el('button', { class: 'btn primary', onclick: () => edit({ op: 'accept', id: p.id }) }, 'Accept'),
+      el('button', { class: 'btn', onclick: () => edit({ op: 'decline', id: p.id }) }, 'Decline')))));
+
+  // Tree.
+  const items = [];
+  const visit = (row, eff) => {
+    const all = (kids.get(row.id) || []).filter(k => ui.showWont || k.mscw !== "Won't");
+    const open = isOpen(row, byId, kids);
+    // In focus, finished work inside an open branch is counted rather than listed, unless it was opened by hand.
+    const children = ui.focus && !ui.open.has(row.id) ? all.filter(k => k.status !== 'Complete' || k.hasActiveWork) : all;
+    const hiddenDone = all.length - children.length;
+    const before = ui.prev.get(row.id);
+    const sig = `${row.name}|${row.mscw}|${row.status}|${row.agent || ''}|${row.parent || ''}`;
+    const changed = before !== undefined && before !== sig;
+    const node = rowFor(row, eff, all.length, open, nextIds.has(row.id) && !row.agent, changed);
+    items.push(node);
+    if (open) {
+      if (hiddenDone) node.querySelector('.more').textContent = `${hiddenDone} done`;
+      for (const k of children) visit(k, effective(k, byId));
+    } else if (all.length) {
+      node.querySelector('.more').textContent = `${all.length} inside`;
+    }
+  };
+  visit(v.tree[0], 'Must');
+  ui.prev = new Map(v.tree.map(r => [r.id, `${r.name}|${r.mscw}|${r.status}|${r.agent || ''}|${r.parent || ''}`]));
+  $('tree').replaceChildren(...items);
+  if (ui.renaming) {
+    const name = document.querySelector(`.row[data-id="${ui.renaming}"] .name`);
+    if (name) startRename(name, ui.renaming);
+  }
+
+  renderDetail(byId);
+  $('focus-toggle').setAttribute('aria-pressed', String(ui.focus));
+  $('wont-toggle').setAttribute('aria-pressed', String(ui.showWont));
+}
+
+function rowFor(row, eff, childCount, open, isNext, changed) {
+  const li = el('li', {
+    class: ['row', row.agent && 'working', row.isProposed && 'proposed', ui.selected === row.id && 'selected', changed && 'changed'].filter(Boolean).join(' '),
+    role: 'treeitem', 'aria-expanded': childCount ? String(open) : undefined, 'aria-selected': String(ui.selected === row.id),
+    'data-id': row.id, 'data-eff': eff, 'data-status': row.status, tabindex: ui.selected === row.id || (!ui.selected && row.depth === 0) ? '0' : '-1',
+    style: `--depth:${row.depth}`, draggable: row.depth > 0 ? 'true' : undefined,
+    onclick: () => select(row.id),
+    ondragstart: e => { e.dataTransfer.setData('text/plain', row.id); e.dataTransfer.effectAllowed = 'move'; },
+    ondragover: e => { e.preventDefault(); li.classList.add('drop'); },
+    ondragleave: () => li.classList.remove('drop'),
+    ondrop: e => {
+      e.preventDefault();
+      li.classList.remove('drop');
+      const id = e.dataTransfer.getData('text/plain');
+      if (id && id !== row.id) { ui.open.add(row.id); ui.closed.delete(row.id); edit({ op: 'move', id, parent: row.id }); }
+    },
+  },
+    el('button', { class: 'caret', disabled: !childCount, 'aria-label': open ? 'Collapse' : 'Expand', tabindex: '-1',
+      onclick: e => { e.stopPropagation(); toggle(row.id, !open); } }, childCount ? (open ? '▼' : '▶') : ''),
+    el('span', { class: `mark ${markFor(row)}`, role: 'img', 'aria-label': row.agent ? `being worked on by ${row.agent}` : row.status }),
+    el('span', { class: 'name', ondblclick: e => { e.stopPropagation(); startRename(e.currentTarget, row.id); } }, row.name),
+    el('button', { class: 'more', tabindex: '-1', onclick: e => { e.stopPropagation(); toggle(row.id, true); } }),
+    row.agent ? el('span', { class: 'tag agent' }, row.agent) : null,
+    isNext ? el('span', { class: 'tag next' }, 'next') : null,
+    row.isProposed ? el('span', { class: 'tag proposed' }, 'proposed') : null,
+    row.isDeferred ? el('span', { class: 'tag muted' }, 'deferred') : null,
+    row.depth > 0 ? el('span', { class: 'chip', 'data-p': row.mscw, 'data-letter': LETTER[row.mscw], title: row.mscw }) : null,
+    row.depth > 0 ? prioControl(row.mscw, p => edit({ op: 'update', id: row.id, mscw: p }), `Priority of ${row.name}`) : null,
+    el('span', { class: 'acts' },
+      el('button', { class: 'icon', title: 'Add a task under this one', 'aria-label': `Add under ${row.name}`, onclick: e => { e.stopPropagation(); addUnder(row.id); } }, '+')));
+  return li;
+}
+
+function toggle(id, open) {
+  (open ? ui.open : ui.closed).add(id);
+  (open ? ui.closed : ui.open).delete(id);
+  remember();
+  render();
+}
+function select(id) {
+  ui.selected = ui.selected === id ? null : id;
+  render();
+  if (ui.selected) document.querySelector(`.row[data-id="${id}"]`)?.focus();
+}
+function addUnder(id) {
+  ui.captureParent = id;
+  ui.selected = id;
+  render();
+  $('capture-name').focus();
+}
+function startRename(node, id) {
+  ui.renaming = id;
+  node.contentEditable = 'true';
+  node.focus();
+  getSelection().selectAllChildren(node);
+  const original = node.textContent;
+  const finish = save => {
+    node.removeEventListener('blur', onBlur);
+    node.contentEditable = 'false';
+    ui.renaming = null;
+    const name = node.textContent.trim();
+    if (save && name && name !== original) edit({ op: 'update', id, name });
+    else node.textContent = original;
+  };
+  const onBlur = () => finish(true);
+  node.addEventListener('blur', onBlur);
+  node.onkeydown = e => {
+    e.stopPropagation();
+    if (e.key === 'Enter') { e.preventDefault(); finish(true); }
+    if (e.key === 'Escape') { e.preventDefault(); finish(false); }
+  };
+}
+
+function renderDetail(byId) {
+  const aside = $('detail');
+  const row = ui.selected && byId.get(ui.selected);
+  $('board').classList.toggle('nodetail', !row);
+  aside.hidden = !row;
+  if (!row) return;
+  if (aside.contains(document.activeElement) && aside.dataset.id === row.id && document.activeElement.tagName === 'TEXTAREA') return;
+  aside.dataset.id = row.id;
+  const descendants = new Set([row.id]);
+  for (const r of ui.view.tree) if (descendants.has(r.parent)) descendants.add(r.id);
+  aside.replaceChildren(...[
+    el('button', { class: 'icon close', 'aria-label': 'Close', onclick: () => select(row.id) }, '×'),
+    el('h3', {}, row.name),
+    el('div', { class: 'path' }, `${row.id}${row.path ? ` in ${row.path}` : ''}`),
+    row.agent ? el('p', {}, el('span', { class: 'tag agent' }, row.agent), ' is working on this') : null,
+    row.isProposed ? el('p', {}, el('button', { class: 'btn primary', onclick: () => edit({ op: 'accept', id: row.id }) }, 'Accept'), ' ',
+      el('button', { class: 'btn', onclick: () => edit({ op: 'decline', id: row.id }) }, 'Decline')) : null,
+    row.depth > 0 ? [el('label', {}, 'Priority under its parent'), prioControl(row.mscw, p => edit({ op: 'update', id: row.id, mscw: p }), 'Priority')] : null,
+    el('label', { for: 'd-status' }, 'Status'),
+    el('select', { id: 'd-status', onchange: e => edit({ op: 'update', id: row.id, status: e.target.value }) },
+      STATUSES.map(s => el('option', { value: s, selected: s === row.status }, s))),
+    el('label', { for: 'd-desc' }, 'Description'),
+    el('textarea', { id: 'd-desc', placeholder: 'What this is and why it matters', onblur: e => {
+      if (e.target.value !== (row.description || '')) edit({ op: 'update', id: row.id, description: e.target.value });
+    } }, row.description || ''),
+    row.depth > 0 ? [el('label', { for: 'd-move' }, 'Belongs under'),
+      el('select', { id: 'd-move', onchange: e => edit({ op: 'move', id: row.id, parent: e.target.value }) },
+        ui.view.tree.filter(r => !descendants.has(r.id)).map(r => el('option', { value: r.id, selected: r.id === row.parent }, `${'  '.repeat(r.depth)}${r.name}`)))] : null,
+    row.acceptance.length ? [el('label', {}, 'Done when'), el('ul', {}, row.acceptance.map(c => el('li', {}, `${c.done ? '✓ ' : ''}${c.text}`)))] : null,
+    row.dependsOn.length ? [el('label', {}, 'Waits for'), el('p', {}, row.dependsOn.join(', '))] : null,
+    row.links.length ? [el('label', {}, 'Links'), el('ul', {}, row.links.map(l => el('li', {}, /^https?:/.test(l) ? el('a', { href: l, target: '_blank', rel: 'noreferrer' }, l) : l)))] : null,
+    row.log.length ? [el('label', {}, 'Recent changes'), el('ul', { class: 'log' }, row.log.map(entry => el('li', {}, `${ago(entry.at)}${entry.agent ? ` ${entry.agent}` : ''}: ${entry.text}`)))] : null,
+    el('div', { class: 'foot' },
+      el('button', { class: 'btn', onclick: () => addUnder(row.id) }, 'Add a task under this'),
+      row.depth > 0 && row.mscw !== "Won't" ? el('button', { class: 'btn', onclick: () => edit({ op: 'update', id: row.id, mscw: "Won't" }) }, "Set to Won't") : null,
+      row.depth > 0 ? el('button', { class: 'btn danger', onclick: () => {
+        if (confirm(`Remove "${row.name}" and everything under it? Setting it to Won't keeps a record instead.`)) { ui.selected = null; edit({ op: 'remove', id: row.id }); }
+      } }, 'Remove') : null),
+  ].flat().filter(Boolean));
+}
+
+function ago(at) {
+  const s = Math.max(0, (Date.now() - Date.parse(at)) / 1000);
+  return s < 60 ? 'just now' : s < 3600 ? `${Math.round(s / 60)}m ago` : s < 86400 ? `${Math.round(s / 3600)}h ago` : `${Math.round(s / 86400)}d ago`;
+}
+
+function show(view) {
+  ui.view = view;
+  if (ui.selected && !view.tree.some(r => r.id === ui.selected)) ui.selected = null;
+  const active = document.activeElement;
+  const keep = active && active.closest('.row') ? active.closest('.row').dataset.id : null;
+  render();
+  if (keep && !ui.renaming) document.querySelector(`.row[data-id="${keep}"]`)?.focus();
+}
+
+$('capture').addEventListener('submit', e => {
+  e.preventDefault();
+  const name = $('capture-name').value.trim();
+  if (!name) return;
+  ui.open.add(ui.captureParent);
+  ui.closed.delete(ui.captureParent);
+  edit({ op: 'add', parent: ui.captureParent, name, mscw: ui.capturePrio });
+  $('capture-name').value = '';
+});
+$('capture-parent').addEventListener('change', e => (ui.captureParent = e.target.value));
+$('focus-toggle').addEventListener('click', () => { ui.focus = !ui.focus; ui.open.clear(); ui.closed.clear(); remember(); render(); });
+$('wont-toggle').addEventListener('click', () => { ui.showWont = !ui.showWont; remember(); render(); });
+
+document.addEventListener('keydown', e => {
+  const row = e.target.closest && e.target.closest('.row');
+  if (!row || e.target.isContentEditable || e.metaKey || e.ctrlKey || e.altKey) return;
+  const id = row.dataset.id;
+  const rows = [...document.querySelectorAll('.row')];
+  const i = rows.indexOf(row);
+  const data = ui.view.tree.find(r => r.id === id);
+  const go = r => { if (r) { r.focus(); } };
+  if (e.key === 'ArrowDown') { e.preventDefault(); go(rows[i + 1]); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); go(rows[i - 1]); }
+  else if (e.key === 'ArrowRight') { e.preventDefault(); toggle(id, true); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); toggle(id, false); }
+  else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(id); }
+  else if (e.key === 'a' || e.key === 'A') { e.preventDefault(); addUnder(id); }
+  else if ((e.key === 'r' || e.key === 'R') && data) { e.preventDefault(); startRename(row.querySelector('.name'), id); }
+  else if (/^[1-4]$/.test(e.key) && data && data.depth > 0) { e.preventDefault(); edit({ op: 'update', id, mscw: P[Number(e.key) - 1] }); }
+});
+
+let source;
+function connect() {
+  source = new EventSource('/api/events');
+  source.onopen = () => setConn('live');
+  source.onmessage = e => show(JSON.parse(e.data));
+  source.onerror = () => setConn('off');
+}
+connect();
+</script>
+</body>
+</html>

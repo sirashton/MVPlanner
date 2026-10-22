@@ -26,7 +26,11 @@ export interface PlanView {
     next: (TaskSummary & { blockedBy: string[]; acceptance: string[] })[];
     deferred: (TaskSummary & { trigger?: string; markers: { file: string; line: number; kind: string }[] })[];
     activity: { at: string; agent?: string; id: string; name: string; text: string }[];
-    tree: (TaskSummary & { parent?: string; depth: number; level: DoMore; isOnPath: boolean; agent?: string; hasActiveWork: boolean; badges: string[] })[];
+    tree: (TaskSummary & {
+        parent?: string; depth: number; level: DoMore; isOnPath: boolean; agent?: string; hasActiveWork: boolean; badges: string[];
+        description?: string; acceptance: { text: string; done: boolean }[]; isProposed: boolean; isDeferred: boolean; dependsOn: string[];
+        links: string[]; log: { at: string; agent?: string; text: string }[];
+    })[];
 }
 
 const STALE_MS = 2 * 60 * 60 * 1000;
@@ -105,6 +109,13 @@ export function buildView(plan: Plan, markers: Marker[] = [], now = Date.now()):
             hasActiveWork: [...walk(e.task)].some(({ task }) => task.claimedBy),
             level: levels.get(e.task.id) ?? 'Must',
             isOnPath: onPath.has(e.task.id),
+            description: e.task.description,
+            acceptance: e.task.acceptance ?? [],
+            isProposed: Boolean(e.task.proposed),
+            isDeferred: Boolean(e.task.deferred),
+            dependsOn: e.task.dependsOn ?? [],
+            links: e.task.links ?? [],
+            log: (e.task.log ?? []).slice(-6).reverse(),
             badges: [
                 ...(e.task.claimedBy ? [e.task.claimedBy.agent] : []),
                 ...(e.task.proposed ? ['proposed'] : []),

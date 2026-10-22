@@ -135,7 +135,7 @@ export function briefing(plan: Plan, agent: string, where: string): string {
         '',
         'Rules:',
         `1. The live plan is held in ${where}. Any plan.json in this checkout or worktree may be stale: never read, edit or commit it.`,
-        '2. Read and change the plan only through the MVPlanner tools (plan_overview, plan_next, task_get, task_claim, task_release, task_update, task_propose, task_defer, plan_check; task_add only for a breakdown a human has approved).',
+        '2. Read and change the plan only through the MVPlanner tools (plan_overview, plan_next, task_get, task_claim, task_release, task_update, task_propose, task_defer, plan_check; task_add and plan_edit only when a human has approved the change in this conversation).',
         '3. Claim one task (task_claim) before editing code, and work only on that task.',
         '4. Found new work? Propose it with task_propose instead of building it. Want to keep something minimal? Use task_defer and leave MVP(<id>) or TODO(<id>) in the code.',
         '5. Before you finish, update your task with task_update: status, checked acceptance criteria, and a short note.',

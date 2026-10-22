@@ -161,3 +161,34 @@ test('the review view summarises progress, proposals, claims and deferrals', asy
     assert.deepEqual(view.deferred.map(d => [d.id, d.markers.length]), [[deferred.id, 1]]);
     assert.equal(view.tree.length, 11);
 });
+
+test('tasks move and are removed, but never into themselves or out from under a claim', async () => {
+    const { moveTask, removeTask } = await import('../src/core/index.ts');
+    const plan = todoApp();
+    moveTask(plan, 'T-5', 'T-6', 'a', 0);
+    assert.deepEqual(plan.root.subtasks![1].subtasks!.map(t => t.id), ['T-5', 'T-7']);
+    assert.throws(() => moveTask(plan, 'T-2', 'T-4', 'a'), /inside it/);
+    assert.throws(() => moveTask(plan, 'T-1', 'T-2', 'a'), /root/);
+    claimTask(plan, 'T-9', 'agent-b');
+    assert.throws(() => removeTask(plan, 'T-8', 'agent-a'), /claimed by agent-b/);
+    removeTask(plan, 'T-8', 'agent-b');
+    assert.deepEqual(plan.root.subtasks!.map(t => t.id), ['T-2', 'T-6']);
+    assert.deepEqual(validatePlan(plan), []);
+});
+
+test('a batch of edits applies in order, links new tasks by ref, and fails as a whole', async () => {
+    const { applyEdits } = await import('../src/core/index.ts');
+    const plan = todoApp();
+    const lines = applyEdits(plan, 'agent-a', [
+        { op: 'add', parent: 'T-1', ref: 'share', name: 'Sharing', mscw: 'Could' },
+        { op: 'add', parent: '$share', name: 'Share link' },
+        { op: 'move', id: 'T-8', parent: '$share' },
+        { op: 'update', id: 'T-6', mscw: "Won't" },
+    ], 'Alex, in a scoping chat');
+    assert.equal(lines.length, 4);
+    const sharing = plan.root.subtasks!.at(-1)!;
+    assert.equal(sharing.name, 'Sharing');
+    assert.deepEqual(sharing.subtasks!.map(t => t.name), ['Share link', 'Quantum sorting']);
+    assert.equal(sharing.subtasks![0].mscw, 'Must');
+    assert.throws(() => applyEdits(plan, 'agent-a', [{ op: 'remove', id: '$nope' }], 'Alex'), /Edit 1 \(remove\) failed: Unknown ref/);
+});

@@ -1,6 +1,6 @@
 import { MSCW, STATUSES } from './types.ts';
 import type { Mscw, Plan, Status, Task } from './types.ts';
-import { PlanError, getTask } from './plan.ts';
+import { PlanError, findTask, getTask, walk } from './plan.ts';
 
 // Every operation mutates the plan in place. Storage backends re-run an operation on a fresh copy when
 // another writer got there first, so operations must be safe to replay.
@@ -200,4 +200,55 @@ export function decideProposal(plan: Plan, id: string, accept: boolean, mscw?: M
         addLog(task, "Proposal declined (set to Won't)");
     }
     return task;
+}
+
+function isWithin(task: Task, id: string): boolean {
+    return task.id === id || (task.subtasks ?? []).some(sub => isWithin(sub, id));
+}
+
+// Moves a task, with everything under it, to another parent. Scoping sessions reshape the plan constantly.
+export function moveTask(plan: Plan, id: string, parentId: string, agent: string | undefined, position?: number): Task {
+    const found = findTask(plan, id);
+    if (!found) {
+        throw new PlanError(`No task with id ${id}`);
+    }
+    if (found.parents.length === 0) {
+        throw new PlanError('The root task cannot be moved.');
+    }
+    const target = getTask(plan, parentId);
+    if (isWithin(found.task, parentId)) {
+        throw new PlanError(`${id} cannot move under ${parentId}, which is inside it.`);
+    }
+    const from = found.parents.at(-1)!;
+    from.subtasks = from.subtasks!.filter(t => t.id !== id);
+    const siblings = [...(target.subtasks ?? [])];
+    siblings.splice(Math.max(0, Math.min(position ?? siblings.length, siblings.length)), 0, found.task);
+    target.subtasks = siblings;
+    if (from.id !== target.id) {
+        addLog(found.task, `Moved from ${from.id} to ${target.id}`, agent);
+    }
+    return found.task;
+}
+
+// Deletes a task and everything under it. Setting a task to Won't keeps a record and is usually better; removal is
+// for mistakes and duplicates.
+export function removeTask(plan: Plan, id: string, agent: string | undefined): Task {
+    const found = findTask(plan, id);
+    if (!found) {
+        throw new PlanError(`No task with id ${id}`);
+    }
+    if (found.parents.length === 0) {
+        throw new PlanError('The root task cannot be removed.');
+    }
+    const claimed = [...walk(found.task)].find(e => e.task.claimedBy && e.task.claimedBy.agent !== agent);
+    if (claimed) {
+        throw new PlanError(`${claimed.task.id} is claimed by ${claimed.task.claimedBy!.agent}, so ${id} cannot be removed.`);
+    }
+    const parent = found.parents.at(-1)!;
+    parent.subtasks = parent.subtasks!.filter(t => t.id !== id);
+    if (parent.subtasks.length === 0) {
+        delete parent.subtasks;
+    }
+    addLog(parent, `Removed ${id} "${found.task.name}"`, agent);
+    return found.task;
 }

@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 12,
-  "nextId": 31,
+  "revision": 13,
+  "nextId": 32,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -312,6 +312,33 @@
                 "at": "2026-10-22T22:46:56.445Z",
                 "agent": "claude-panel",
                 "text": "Use Anthropic's Frontend Design plugin when building this (Alex's suggestion): https://claude.com/marketplace/plugins/frontend-design"
+              }
+            ],
+            "subtasks": [
+              {
+                "id": "T-31",
+                "name": "mvplan serve: local web server for the plan",
+                "status": "Not Started",
+                "mscw": "Must",
+                "proposed": true,
+                "description": "One command starts a server on 127.0.0.1 that serves the page and a small JSON API over the same store and operations the CLI uses. No new storage, no accounts.",
+                "acceptance": [
+                  {
+                    "text": "Binds to localhost only and opens the browser",
+                    "done": false
+                  },
+                  {
+                    "text": "Reads with buildView and writes through the core operations as the human",
+                    "done": false
+                  }
+                ],
+                "log": [
+                  {
+                    "at": "2026-10-22T23:15:39.559Z",
+                    "agent": "claude-panel",
+                    "text": "Proposed under T-30"
+                  }
+                ]
               }
             ]
           }

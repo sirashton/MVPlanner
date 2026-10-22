@@ -22,6 +22,8 @@ await build({
     banner: { js: "#!/usr/bin/env node\nimport { createRequire as __mvplannerRequire } from 'node:module';\nconst require = __mvplannerRequire(import.meta.url);" },
 });
 
+await fs.copyFile(path.join(root, 'src', 'web', 'page.html'), path.join(outdir, 'page.html'));
+
 for (const file of await fs.readdir(outdir)) {
     await fs.chmod(path.join(outdir, file), 0o755);
 }

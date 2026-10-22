@@ -2,7 +2,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
 import {
-    MSCW, PlanError, STATUSES, addTask, checkMarkers, claimTask, criticalPath, deferTask, findMarkers, getTask, nextTasks,
+    MSCW, PlanError, STATUSES, addTask, applyEdits, checkMarkers, claimTask, criticalPath, deferTask, findMarkers, getTask, nextTasks,
     proposeTask, releaseTask, taskPath, updateTask,
 } from './core/index.ts';
 import { renderNext, renderTask, renderTree } from './format.ts';
@@ -137,6 +137,36 @@ export function createServer(cwd: string, storePromise: Promise<PlanStore> = ope
         const { result } = await (await storePromise).mutate(`${agent} defers "${name}"`, p =>
             deferTask(p, parent, agent, { name, trigger, files, mscw }));
         return `Deferred as ${result.id} (${result.mscw}). Write MVP(${result.id}) or TODO(${result.id}) in the comment at the spot in the code.`;
+    }));
+
+    const ref = z.string().min(1).describe('A task id such as T-12, or "$ref" for a task added earlier in this batch');
+    server.registerTool('plan_edit', {
+        description: 'Change the shape of the plan in one quick save: add, update, move or remove tasks, and accept or decline proposals. '
+            + 'Only use this while a human is directing the plan in this conversation, such as a scoping session; otherwise use task_propose. '
+            + 'Batch every change from one exchange into a single call. Prefer setting a task to Won\'t over removing it, so the decision is kept.',
+        inputSchema: {
+            agent: agentArg,
+            approved_by: z.string().min(1).describe('Who is directing these changes, and where, such as "Alex, in this conversation"'),
+            edits: z.array(z.discriminatedUnion('op', [
+                z.object({
+                    op: z.literal('add'), parent: ref, ref: z.string().optional().describe('Name this task so later edits can use "$name"'),
+                    name: z.string().min(1), description: z.string().optional(), mscw: mscwArg.optional().describe('Defaults to Must'),
+                    acceptance: z.array(z.string()).optional(), dependsOn: z.array(z.string()).optional(),
+                }),
+                z.object({
+                    op: z.literal('update'), id: ref, status: z.enum(STATUSES).optional(), mscw: mscwArg.optional(),
+                    name: z.string().min(1).optional(), description: z.string().optional(), note: z.string().optional(),
+                }),
+                z.object({ op: z.literal('move'), id: ref, parent: ref, position: z.number().int().min(0).optional().describe('Index among the new siblings; defaults to last') }),
+                z.object({ op: z.literal('remove'), id: ref }),
+                z.object({ op: z.literal('accept'), id: ref, mscw: mscwArg.optional() }),
+                z.object({ op: z.literal('decline'), id: ref }),
+            ])).min(1),
+        },
+    }, ({ agent, approved_by, edits }) => guarded(async () => {
+        const { plan, result } = await (await storePromise).mutate(`${agent} applies ${edits.length} edit(s) directed by ${approved_by}`, p =>
+            applyEdits(p, agent, edits, approved_by));
+        return `${result.join('\n')}\n\nPlan is now at revision ${plan.revision}.`;
     }));
 
     server.registerTool('plan_check', {

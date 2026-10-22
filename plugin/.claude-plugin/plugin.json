@@ -3,23 +3,39 @@
   "displayName": "MVPlanner",
   "version": "0.2.0",
   "description": "One prioritised plan that every agent works from: claim before editing, propose instead of drifting, defer with MVP()/TODO() markers",
-  "author": { "name": "Alex Ashton", "url": "https://github.com/sirashton" },
+  "author": {
+    "name": "Alex Ashton",
+    "url": "https://github.com/sirashton"
+  },
   "repository": "https://github.com/sirashton/mvplanner",
   "license": "MIT",
-  "keywords": ["planning", "agents", "scope", "moscow", "todo"],
+  "keywords": [
+    "planning",
+    "agents",
+    "scope",
+    "moscow",
+    "todo"
+  ],
   "userConfig": {
     "strictness": {
       "type": "string",
       "title": "Strictness",
       "description": "off: hooks do nothing. warn: nudge agents that edit without a claimed task. enforce: block those edits.",
-      "options": ["off", "warn", "enforce"],
+      "options": [
+        "off",
+        "warn",
+        "enforce"
+      ],
       "default": "warn"
     },
     "backend": {
       "type": "string",
       "title": "Where the live plan is held",
       "description": "git: a branch on the repo's remote, shared by every session and project. file: one plan.json in the main checkout, for a single machine.",
-      "options": ["git", "file"],
+      "options": [
+        "git",
+        "file"
+      ],
       "default": "git"
     },
     "branch": {
@@ -28,5 +44,6 @@
       "description": "The branch that holds the live plan when the backend is git",
       "default": "mvplanner/plan"
     }
-  }
+  },
+  "types": "./types/index.d.ts"
 }

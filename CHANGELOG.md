@@ -1,9 +1,14 @@
-# Change Log
+# Changelog
 
-All notable changes to the "mvplanner" extension will be documented in this file.
+## 0.2.0
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+- Rebuilt as a Claude Code plugin: MCP server, hooks, skills and agents, installable from this repo's marketplace.
+- Plan format version 2: stable task ids, acceptance criteria, claims, dependencies, deferrals, proposals and a log. `mvplan migrate` converts version 1.
+- The live plan is held on a `mvplanner/plan` branch, shared by every worktree, session and project; a single-file backend is available for one machine.
+- `MVP(id)` and `TODO(id)` deferral markers, checked by hooks and `mvplan check`.
+- `mvplan` CLI.
+- Retired the VS Code extension.
 
-## [Unreleased]
+## 0.0.1
 
-- Initial release
+- VS Code extension with an interactive plan viewer.

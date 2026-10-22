@@ -1,0 +1,178 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
+  "title": "MVPlanner plan",
+  "description": "A prioritised task tree shared by humans and agents. Change it through the MVPlanner tools rather than by hand.",
+  "type": "object",
+  "required": [
+    "version",
+    "revision",
+    "nextId",
+    "root"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "version": {
+      "const": 2
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Bumped on every write"
+    },
+    "nextId": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Number used for the next task id"
+    },
+    "root": {
+      "$ref": "#/$defs/task"
+    }
+  },
+  "$defs": {
+    "task": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "status",
+        "mscw"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^T-\\d+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "Not Started",
+            "In Progress",
+            "Complete",
+            "Blocked"
+          ]
+        },
+        "mscw": {
+          "enum": [
+            "Must",
+            "Should",
+            "Could",
+            "Won't"
+          ],
+          "description": "Priority relative to the parent task"
+        },
+        "acceptance": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "text",
+              "done"
+            ],
+            "properties": {
+              "text": {
+                "type": "string"
+              },
+              "done": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "claimedBy": {
+          "type": "object",
+          "required": [
+            "agent",
+            "at"
+          ],
+          "properties": {
+            "agent": {
+              "type": "string"
+            },
+            "branch": {
+              "type": "string"
+            },
+            "at": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "scope": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Globs of files this task expects to touch"
+        },
+        "dependsOn": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^([\\w.-]+/[\\w.-]+#)?T-\\d+$"
+          }
+        },
+        "deferred": {
+          "type": "object",
+          "properties": {
+            "trigger": {
+              "type": "string"
+            },
+            "files": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "proposed": {
+          "type": "boolean",
+          "description": "Suggested by an agent and not yet accepted by a human"
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "log": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "at",
+              "text"
+            ],
+            "properties": {
+              "at": {
+                "type": "string"
+              },
+              "agent": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "subtasks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/task"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

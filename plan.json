@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 23,
-  "nextId": 39,
+  "revision": 24,
+  "nextId": 40,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -504,6 +504,21 @@
             "log": [
               {
                 "at": "2026-10-22T23:19:23.171Z",
+                "agent": "claude-panel",
+                "text": "Proposed under T-37"
+              }
+            ]
+          },
+          {
+            "id": "T-39",
+            "name": "Batch plan edits in one call",
+            "status": "Not Started",
+            "mscw": "Must",
+            "proposed": true,
+            "description": "One tool call applies many adds, moves, renames and priority changes in a single fetch and push, so a burst of ideas lands in about a second instead of one round trip each.",
+            "log": [
+              {
+                "at": "2026-10-22T23:19:25.224Z",
                 "agent": "claude-panel",
                 "text": "Proposed under T-37"
               }

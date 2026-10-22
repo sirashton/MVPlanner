@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 39,
+  "revision": 40,
   "nextId": 44,
   "root": {
     "id": "T-1",
@@ -592,13 +592,16 @@
             "name": "Turn a meeting transcript into plan changes",
             "status": "Not Started",
             "mscw": "Should",
-            "proposed": true,
             "description": "Paste or attach a transcript and the agent proposes the additions and changes for a human to confirm.",
             "log": [
               {
                 "at": "2026-10-22T23:19:31.560Z",
                 "agent": "claude-panel",
                 "text": "Proposed under T-37"
+              },
+              {
+                "at": "2026-10-22T23:23:25.744Z",
+                "text": "Proposal accepted"
               }
             ]
           },

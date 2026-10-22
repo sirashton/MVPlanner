@@ -12,6 +12,37 @@ const view = atom({ plugin: 'mvplanner', key: 'view' } as const, null)
 const error = atom({ plugin: 'mvplanner', key: 'error' } as const, null)
 const notice = atom({ plugin: 'mvplanner', key: 'notice' } as const, null)
 const updatedAt = atom({ plugin: 'mvplanner', key: 'updatedAt' } as const, 0)
+const showAll = atom({ plugin: 'mvplanner', key: 'showAll' } as const, false)
+
+type TreeRow = PanelView['tree'][number]
+
+// Focused, the tree keeps the top two levels, the critical path and every branch with claimed work;
+// finished and off-path branches fold into a count on their parent.
+function visibleRows(tree: TreeRow[], all: boolean): { row: TreeRow; hidden: number }[] {
+  const shown = (row: TreeRow) => all || row.depth <= 1 || row.hasActiveWork || (row.isOnPath && row.status !== 'Complete')
+  const byParent = new Map<string, TreeRow[]>()
+  for (const row of tree) {
+    if (row.parent) byParent.set(row.parent, [...(byParent.get(row.parent) ?? []), row])
+  }
+  const out: { row: TreeRow; hidden: number }[] = []
+  const visit = (row: TreeRow) => {
+    const children = byParent.get(row.id) ?? []
+    const kept = children.filter(shown)
+    out.push({ row, hidden: children.length - kept.length })
+    kept.forEach(visit)
+  }
+  const root = tree[0]
+  if (root) visit(root)
+  return out
+}
+
+function markFor(row: TreeRow): string {
+  if (row.agent) return '▶'
+  if (row.status === 'Complete') return '✓'
+  if (row.status === 'Blocked') return '!'
+  if (row.status === 'In Progress') return '~'
+  return '·'
+}
 
 const bar = (done: number, total: number, width: number) => {
   const filled = total === 0 ? width : Math.round((done / total) * width)
@@ -91,6 +122,7 @@ export const register: Register = (on, options) => {
     const plan = await read($, view)
     const problem = await read($, error)
     const message = await read($, notice)
+    const all = await read($, showAll)
     const width = Math.max(24, e.props.bodyColumns)
     const now = Date.now()
 
@@ -154,6 +186,32 @@ export const register: Register = (on, options) => {
               </Box>
             </Box>
           ))}
+        </Box>
+
+        <Box flexDirection="column">
+          <Box gap={1}>
+            {section('Plan')}
+            <Button key="tree-mode" label={all ? 'Focus' : 'Show all'} onPress={() => update($, showAll, value => !value)} />
+          </Box>
+          <Text dimColor>▶ being worked on  ~ in progress  · not started  ✓ done  next = up for grabs</Text>
+          {visibleRows(plan.tree, all).map(({ row, hidden }) => {
+            const isNext = !row.agent && plan.next.some(task => task.id === row.id)
+            const indent = '  '.repeat(row.depth)
+            const room = width - indent.length - 2
+            const isDone = row.status === 'Complete'
+            const label = clip(row.name, Math.max(8, room - (row.agent ? row.agent.length + 3 : 0) - (isNext ? 5 : 0) - (hidden ? 9 : 0)))
+            return (
+              <Text dimColor={isDone || (!row.isOnPath && !row.agent && row.status === 'Not Started')}>
+                {indent}
+                <Text color={row.agent ? 'cyan' : isDone ? 'green' : undefined}>{markFor(row)} </Text>
+                {row.agent ? <Text weight="bold">{label}</Text> : label}
+                {row.agent ? <Text color="cyan"> ← {row.agent}</Text> : null}
+                {isNext ? <Text color="yellow"> next</Text> : null}
+                {row.depth > 0 && row.mscw !== 'Must' && !isDone ? <Text dimColor> {row.mscw}</Text> : null}
+                {hidden ? <Text dimColor> +{hidden} more</Text> : null}
+              </Text>
+            )
+          })}
         </Box>
 
         <Box flexDirection="column">

@@ -26,7 +26,7 @@ export interface PlanView {
     next: (TaskSummary & { blockedBy: string[]; acceptance: string[] })[];
     deferred: (TaskSummary & { trigger?: string; markers: { file: string; line: number; kind: string }[] })[];
     activity: { at: string; agent?: string; id: string; name: string; text: string }[];
-    tree: (TaskSummary & { depth: number; level: DoMore; isOnPath: boolean; badges: string[] })[];
+    tree: (TaskSummary & { parent?: string; depth: number; level: DoMore; isOnPath: boolean; agent?: string; hasActiveWork: boolean; badges: string[] })[];
 }
 
 const STALE_MS = 2 * 60 * 60 * 1000;
@@ -98,7 +98,11 @@ export function buildView(plan: Plan, markers: Marker[] = [], now = Date.now()):
             .slice(0, 20),
         tree: entries.map(e => ({
             ...summary(e.task, e.parents),
+            parent: e.parents.at(-1)?.id,
             depth: e.parents.length,
+            agent: e.task.claimedBy?.agent,
+            // True when this task or anything beneath it is claimed, so the tree can keep that branch open.
+            hasActiveWork: [...walk(e.task)].some(({ task }) => task.claimedBy),
             level: levels.get(e.task.id) ?? 'Must',
             isOnPath: onPath.has(e.task.id),
             badges: [

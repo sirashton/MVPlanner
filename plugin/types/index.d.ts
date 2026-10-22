@@ -15,6 +15,7 @@ export type PanelView = {
   next: (PanelTask & { blockedBy: string[]; acceptance: string[] })[]
   deferred: (PanelTask & { trigger?: string; markers: { file: string; line: number; kind: string }[] })[]
   activity: { at: string; agent?: string; id: string; name: string; text: string }[]
+  tree: (PanelTask & { parent?: string; depth: number; level: string; isOnPath: boolean; agent?: string; hasActiveWork: boolean; badges: string[] })[]
 }
 
 declare module 'claude-code' {
@@ -24,6 +25,7 @@ declare module 'claude-code' {
       error: string | null
       notice: string | null
       updatedAt: number
+      showAll: boolean
     }
   }
 }

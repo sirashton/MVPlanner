@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 20,
+  "revision": 21,
   "nextId": 37,
   "root": {
     "id": "T-1",
@@ -434,7 +434,7 @@
                 "id": "T-36",
                 "name": "Edit the plan's shape from the page",
                 "status": "Not Started",
-                "mscw": "Could",
+                "mscw": "Must",
                 "proposed": true,
                 "description": "Add, rename and move tasks in the browser. Until then, structure changes go through agents or the CLI.",
                 "log": [
@@ -442,6 +442,11 @@
                     "at": "2026-10-22T23:15:52.016Z",
                     "agent": "claude-panel",
                     "text": "Proposed under T-30"
+                  },
+                  {
+                    "at": "2026-10-22T23:19:07.010Z",
+                    "agent": "claude-panel",
+                    "text": "priority Could -> Must; Alex: quick iteration in scoping sessions needs add, rename, move and park from the page"
                   }
                 ]
               }

@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 56,
-  "nextId": 44,
+  "revision": 57,
+  "nextId": 45,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -199,6 +199,21 @@
                 "at": "2026-10-22T23:41:10.211Z",
                 "agent": "claude-panel",
                 "text": "Dry run 2026-10-22 in the cloud container: installed mvplanner@mvplanner from the GitHub marketplace; two headless sessions in separate clones of a shared remote, started at the same moment, claimed T-2 and T-3 (the second saw the first's claim and moved on). Left open for Alex to try on his own machine."
+              }
+            ]
+          },
+          {
+            "id": "T-44",
+            "name": "Distinct agent ids for sessions started from inside another session",
+            "status": "Not Started",
+            "mscw": "Should",
+            "proposed": true,
+            "description": "A claude process launched from inside another Claude Code session inherits its session id, so both get the same agent id and the second can re-claim the first's task. Seen in the T-19 dry run. Add something unique per process, or detect the inherited id.",
+            "log": [
+              {
+                "at": "2026-10-22T23:41:12.537Z",
+                "agent": "claude-panel",
+                "text": "Proposed under T-14"
               }
             ]
           }

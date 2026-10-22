@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 15,
-  "nextId": 34,
+  "revision": 16,
+  "nextId": 35,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -385,6 +385,21 @@
                 "log": [
                   {
                     "at": "2026-10-22T23:15:44.700Z",
+                    "agent": "claude-panel",
+                    "text": "Proposed under T-30"
+                  }
+                ]
+              },
+              {
+                "id": "T-34",
+                "name": "Task detail drawer",
+                "status": "Not Started",
+                "mscw": "Should",
+                "proposed": true,
+                "description": "Click a task to see its description, acceptance criteria, log, links, dependencies and code markers.",
+                "log": [
+                  {
+                    "at": "2026-10-22T23:15:47.143Z",
                     "agent": "claude-panel",
                     "text": "Proposed under T-30"
                   }

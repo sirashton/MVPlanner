@@ -3,7 +3,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { parseArgs } from 'node:util';
 import {
-    PlanError, checkMarkers, checkPullRequest, claimTask, decideProposal, deferTask, getTask, migrateV1, nextTasks, newPlan, parentsWithoutNeed,
+    PlanError, checkMarkers, checkPullRequest, claimTask, decideProposal, deferTask, getTask, migrateV1, nextTasks, newPlan, parentsWithoutNeed, requireServes,
     applyEdits, moveTask, parsePlan, proposeTask, releaseTask, removeTask, serializePlan, taskPath, updateTask, validatePlan, MSCW, STATUSES,
 } from './core/index.ts';
 import type { Mscw, Plan, Status } from './core/index.ts';
@@ -35,7 +35,7 @@ Changing
   mvplan release <id> --agent A [--note N]
   mvplan update <id> [--agent A] [--status S] [--mscw P] [--note N] [--done 0,1]
                      [--criterion TEXT]... [--link URL]... [--name N] [--description D]
-  mvplan propose <parent-id> <name> [--mscw P] [--description D] [--criterion TEXT]...
+  mvplan propose <parent-id> <name> --serves S [--mscw P] [--description D] [--criterion TEXT]...
   mvplan defer <parent-id> <name> [--mscw P] [--trigger T] [--file F]...
   mvplan accept <id> [--mscw P]     Accept a proposed task
   mvplan decline <id>               Decline a proposed task (sets it to Won't)
@@ -98,6 +98,7 @@ export async function main(argv: string[], cwd = process.cwd()): Promise<number>
             body: { type: 'string' },
             description: { type: 'string' },
             trigger: { type: 'string' },
+            serves: { type: 'string' },
             file: { type: 'string', multiple: true },
             from: { type: 'string' },
             position: { type: 'string' },
@@ -263,7 +264,8 @@ export async function main(argv: string[], cwd = process.cwd()): Promise<number>
             if (!parent || !name) {
                 fail(`Usage: mvplan ${command} <parent-id> <name>`);
             }
-            const spec = { name, description: values.description, mscw: asMscw(values.mscw), acceptance: values.criterion, trigger: values.trigger, files: values.file };
+            const spec = { name, description: values.description, mscw: asMscw(values.mscw), acceptance: values.criterion, trigger: values.trigger, files: values.file,
+                serves: command === 'propose' ? requireServes(values.serves, parent) : undefined };
             const { result } = await store.mutate(`${agent} ${command === 'defer' ? 'defers' : 'proposes'} "${name}"`, p =>
                 command === 'defer' ? deferTask(p, parent, agent, spec) : proposeTask(p, parent, agent, spec));
             out(command === 'defer'

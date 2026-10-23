@@ -145,6 +145,10 @@
           "type": "boolean",
           "description": "Suggested by an agent and not yet accepted by a human"
         },
+        "serves": {
+          "type": "string",
+          "description": "On a proposal: the part of the parent's need it serves"
+        },
         "links": {
           "type": "array",
           "items": {

@@ -114,6 +114,8 @@ kbd { font: inherit; font-size: 12px; border: 1px solid var(--rule); border-bott
 .proposal .chip { display: inline-block; width: auto; text-align: left; margin-left: 6px; }
 .proposal .title { font-size: 16px; }
 .proposal .why { margin: 2px 0; }
+.proposal .serves { margin: 2px 0; padding-left: 8px; border-left: 2px solid var(--rule); }
+.proposal .serves b { font-weight: 650; }
 .prio.decide button { width: 34px; height: 30px; font-size: 13px; }
 .prio.decide button[data-suggested=true] { box-shadow: inset 0 0 0 2px var(--p); }
 .suggested { font-size: 13px; color: var(--ink-soft); }
@@ -539,6 +541,8 @@ function render() {
         el('div', { class: 'proposal' },
           el('div', { class: 'title' }, el('span', { class: 'tid' }, p.id), ` `, el('b', {}, p.name)),
           el('div', { class: 'where' }, `Under ${p.path}${p.by ? `, proposed by ${p.by}` : ''}`),
+          p.serves ? el('p', { class: 'serves' }, el('b', {}, 'Serves: '), p.serves)
+            : el('p', { class: 'serves muted' }, "Doesn't say which part of its parent's need it serves."),
           p.description ? el('p', { class: 'why' }, p.description) : el('p', { class: 'why muted' }, 'No description was given.'),
           row && row.acceptance.length ? el('ul', { class: 'criteria' }, row.acceptance.map(c => el('li', {}, `Done when: ${c.text}`))) : null,
           kidsOf.length ? el('p', { class: 'where' }, `Includes ${kidsOf.length} proposed subtask${kidsOf.length > 1 ? 's' : ''}: ${kidsOf.map(k => k.name).join('; ')}`) : null,
@@ -701,6 +705,7 @@ function renderDetail(byId) {
     row.isProposed && !ui.deciding.has(row.id) ? [el('label', {}, `Decide: ${row.mscw} suggested. M, S or C accepts at that priority; W declines`), decisionControl(row)] : null,
     row.depth > 0 ? [el('label', {}, 'Priority under its parent'), prioControl(row.mscw, p => edit({ op: 'update', id: row.id, mscw: p }), 'Priority'),
       effective(row, byId) !== row.mscw ? el('p', { class: 'counts' }, `Counts as ${effective(row, byId)} for the project, because a task above it is ${effective(row, byId)}.`) : null] : null,
+    row.serves ? [el('label', {}, "Serves its parent's need"), el('p', {}, row.serves)] : null,
     el('label', { for: 'd-status' }, 'Status'),
     el('select', { id: 'd-status', onchange: e => edit({ op: 'update', id: row.id, status: e.target.value }) },
       STATUSES.map(s => el('option', { value: s, selected: s === row.status }, s))),

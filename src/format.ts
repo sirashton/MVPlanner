@@ -66,6 +66,9 @@ export function renderTask(plan: Plan, task: Task, path?: string): string {
     if (task.need) {
         lines.push(`Need it meets: ${task.need}`);
     }
+    if (task.serves) {
+        lines.push(`Serves: ${task.serves}`);
+    }
     if (task.description) {
         lines.push(`Description: ${task.description}`);
     }

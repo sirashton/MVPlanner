@@ -3,7 +3,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { z } from 'zod';
 import {
     MSCW, PlanError, STATUSES, addTask, applyEdits, checkMarkers, claimTask, criticalPath, deferTask, findMarkers, getTask, nextTasks,
-    crowdingHint, needHint, parentsWithoutNeed, proposeTask, releaseTask, taskPath, updateTask,
+    crowdingHint, needHint, requireServes, parentsWithoutNeed, proposeTask, releaseTask, taskPath, updateTask,
 } from './core/index.ts';
 import { renderNeedless, renderNext, renderTask, renderTree } from './format.ts';
 import { scanRepo } from './scan.ts';
@@ -94,18 +94,20 @@ export function createServer(cwd: string, storePromise: Promise<PlanStore> = ope
     }));
 
     server.registerTool('task_propose', {
-        description: 'Propose new work as a subtask instead of building it. Proposals do not count towards the plan until a human accepts them.',
+        description: 'Propose new work as a subtask instead of building it. Tasks come out of their parent\'s need, so say which part of that need this serves. Proposals do not count towards the plan until a human accepts them.',
         inputSchema: {
             parent: idArg.describe(PARENT_HINT),
             agent: agentArg,
             name: z.string().min(1),
+            serves: z.string().describe('The part of the parent\'s need this serves, quoted or paraphrased from it. If no parent\'s need explains the idea, say which parent\'s need would have to change and how; the human decides'),
             description: z.string().optional(),
-            mscw: mscwArg.optional(),
+            mscw: mscwArg.optional().describe('Your suggested priority relative to the parent: how much the parent\'s need depends on this. The human decides'),
             acceptance: z.array(z.string()).optional().describe('How we will know it is done'),
         },
-    }, ({ parent, agent, name, description, mscw, acceptance }) => guarded(async () => {
+    }, ({ parent, agent, name, serves, description, mscw, acceptance }) => guarded(async () => {
+        const line = requireServes(serves, parent);
         const { plan, result } = await (await storePromise).mutate(`${agent} proposes "${name}"`, p =>
-            proposeTask(p, parent, agent, { name, description, mscw, acceptance }));
+            proposeTask(p, parent, agent, { name, serves: line, description, mscw, acceptance }));
         return `Proposed as ${result.id} under ${parent}. Carry on with your claimed task; a human will accept or decline it.${crowdingHint(plan, [parent])}${needHint(plan, [parent])}`;
     }));
 

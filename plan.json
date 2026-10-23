@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 191,
+  "revision": 192,
   "nextId": 86,
   "root": {
     "id": "T-1",
@@ -2187,17 +2187,17 @@
           {
             "id": "T-84",
             "name": "Review a proposal with its route from the top task",
-            "status": "In Progress",
+            "status": "Complete",
             "mscw": "Must",
             "description": "On the page, each proposal shows the chain from the top task down to it, with each step's priority and stated need, and the AI-suggested MoSCoW. Without it, the human judges a task on its own instead of \"does this parent need this?\".",
             "acceptance": [
               {
                 "text": "Each proposal card shows every ancestor with its priority and need",
-                "done": false
+                "done": true
               },
               {
                 "text": "Checked by eye on desktop and phone",
-                "done": false
+                "done": true
               }
             ],
             "log": [
@@ -2214,13 +2214,16 @@
                 "at": "2026-10-23T03:57:55.048Z",
                 "agent": "claude-c4c20c01",
                 "text": "Claimed on claude/project-thread-cjyw4x"
+              },
+              {
+                "at": "2026-10-23T04:00:07.741Z",
+                "agent": "claude-c4c20c01",
+                "text": "status In Progress -> Complete; checked \"Each proposal card shows every ancestor with its priority and need\"; checked \"Checked by eye on desktop and phone\"; linked https://github.com/sirashton/MVPlanner/pull/29; Merged PR #29. routeFor() in src/web/page.html builds the route client-side from view.tree (parent, mscw, need), so PlanView is unchanged: Top task, then each ancestor with priority and need (\"No need stated\" otherwise), ending in the proposal with its suggested priority outlined (\"Must?\"). Replaces the \"Under A > B\" line. Checked in Chromium at 1280px and 390px on a demo plan; screenshots in project files mvplanner/top-down/. The Claude Code panel (plugin/hooks/panel.tsx) still shows the old line. Beyond the criteria: nothing."
               }
             ],
-            "claimedBy": {
-              "agent": "claude-c4c20c01",
-              "at": "2026-10-23T03:57:55.048Z",
-              "branch": "claude/project-thread-cjyw4x"
-            }
+            "links": [
+              "https://github.com/sirashton/MVPlanner/pull/29"
+            ]
           },
           {
             "id": "T-85",

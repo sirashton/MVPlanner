@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 176,
+  "revision": 177,
   "nextId": 86,
   "root": {
     "id": "T-1",
@@ -2056,7 +2056,6 @@
             "name": "Agents propose anything the criteria don't name before building it",
             "status": "Not Started",
             "mscw": "Must",
-            "proposed": true,
             "description": "Briefing rules and the next skill: build only what the task's criteria name. Anything else a person would notice (a shortcut, setting, button, mode) is proposed first at whatever priority the agent suggests, Must included; no fixed Could rule (Alex). Completing a task asks what was built beyond the criteria. Without it, the keyboard shortcuts case repeats. Add alongside briefing rule 4's \"say what happens without it\" test, not replacing it.",
             "acceptance": [
               {
@@ -2073,6 +2072,10 @@
                 "at": "2026-10-23T03:29:33.905Z",
                 "agent": "claude-f555c004",
                 "text": "Proposed under T-78"
+              },
+              {
+                "at": "2026-10-23T03:37:04.313Z",
+                "text": "Proposal accepted"
               }
             ]
           },

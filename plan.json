@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 112,
+  "revision": 113,
   "nextId": 65,
   "root": {
     "id": "T-1",
@@ -962,7 +962,7 @@
           {
             "id": "T-62",
             "name": "Logo and favicon",
-            "status": "Not Started",
+            "status": "In Progress",
             "mscw": "Could",
             "description": "Alex asked for a logo. The design review sketched three concepts (ladder, weighted wordmark, scope box) and recommends the ladder: four bars Must to Won't in the priority colours. Sketches: mvplanner/design-review/logos.html in the project files.",
             "acceptance": [
@@ -984,8 +984,18 @@
               {
                 "at": "2026-10-23T01:06:18.862Z",
                 "text": "Proposal accepted"
+              },
+              {
+                "at": "2026-10-23T01:14:58.201Z",
+                "agent": "claude-9cc89b7b",
+                "text": "Claimed on claude/project-thread-e0welq"
               }
-            ]
+            ],
+            "claimedBy": {
+              "agent": "claude-9cc89b7b",
+              "at": "2026-10-23T01:14:58.201Z",
+              "branch": "claude/project-thread-e0welq"
+            }
           },
           {
             "id": "T-64",

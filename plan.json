@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 119,
+  "revision": 120,
   "nextId": 67,
   "root": {
     "id": "T-1",
@@ -182,16 +182,16 @@
           {
             "id": "T-19",
             "name": "Try it in real Claude Code sessions",
-            "status": "In Progress",
+            "status": "Complete",
             "mscw": "Must",
             "acceptance": [
               {
                 "text": "Installs from the marketplace in a fresh session",
-                "done": false
+                "done": true
               },
               {
                 "text": "Two agents in different projects pick different tasks without talking",
-                "done": false
+                "done": true
               }
             ],
             "log": [
@@ -204,13 +204,13 @@
                 "at": "2026-10-23T00:14:41.615Z",
                 "agent": "claude-5f5428c4",
                 "text": "Claimed on claude/project-thread-mr24nb"
+              },
+              {
+                "at": "2026-10-23T02:38:54.782Z",
+                "agent": "claude-5f5428c4",
+                "text": "status In Progress -> Complete; checked \"Installs from the marketplace in a fresh session\"; checked \"Two agents in different projects pick different tasks without talking\"; Alex agreed this counts (2026-10-23). Handoff: a fresh cloud session installed the plugin through the environment setup script and got the briefing. On 2026-10-23 a second project (agent claude-167688b6) and this one worked from the plan at the same time and never claimed the same task: 7 PRs (#9 to #15), all merged. Gotchas found: agents mark a task complete when the PR opens, not when it merges, and parallel PRs clash on the rebuilt plugin/dist bundle, so each needs a rebuild after the one before it merges. Left out: a test on Alex's own Windows machine."
               }
-            ],
-            "claimedBy": {
-              "agent": "claude-5f5428c4",
-              "at": "2026-10-23T00:14:41.615Z",
-              "branch": "claude/project-thread-mr24nb"
-            }
+            ]
           },
           {
             "id": "T-44",

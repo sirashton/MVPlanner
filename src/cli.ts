@@ -11,6 +11,7 @@ import { renderNext, renderTask, renderTree } from './format.ts';
 import { scanRepo } from './scan.ts';
 import { openInBrowser, startServer } from './serve.ts';
 import { writeRepoSetup } from './setup.ts';
+import { currentSession } from './session.ts';
 import { buildView } from './view.ts';
 import { currentBranch, repoTopLevel } from './storage/git.ts';
 import { FileStore, GitBranchStore, openStore } from './storage/stores.ts';
@@ -207,7 +208,7 @@ export async function main(argv: string[], cwd = process.cwd()): Promise<number>
         case 'claim': {
             const id = args[0] ?? fail('Usage: mvplan claim <id> --agent A');
             const branch = await currentBranch(cwd);
-            const { plan, result } = await store.mutate(`${agent} claims ${id}`, p => claimTask(p, id, agent, branch));
+            const { plan, result } = await store.mutate(`${agent} claims ${id}`, p => claimTask(p, id, agent, branch, currentSession()));
             out(`Claimed.\n\n${renderTask(plan, result, taskPath(plan, id))}`);
             return 0;
         }

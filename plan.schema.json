@@ -103,6 +103,9 @@
             "at": {
               "type": "string",
               "format": "date-time"
+            },
+            "session": {
+              "type": "string"
             }
           }
         },

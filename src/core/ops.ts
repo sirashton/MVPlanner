@@ -15,7 +15,7 @@ function newId(plan: Plan): string {
     return `T-${plan.nextId++}`;
 }
 
-export function claimTask(plan: Plan, id: string, agent: string, branch?: string): Task {
+export function claimTask(plan: Plan, id: string, agent: string, branch?: string, session?: string): Task {
     const task = getTask(plan, id);
     if (task.claimedBy && task.claimedBy.agent !== agent) {
         throw new PlanError(`${id} is already claimed by ${task.claimedBy.agent}. Pick another task or ask a human to reassign it.`);
@@ -23,7 +23,7 @@ export function claimTask(plan: Plan, id: string, agent: string, branch?: string
     if (task.status === 'Complete') {
         throw new PlanError(`${id} is already complete.`);
     }
-    task.claimedBy = { agent, at: now(), ...(branch ? { branch } : {}) };
+    task.claimedBy = { agent, at: now(), ...(branch ? { branch } : {}), ...(session ? { session } : {}) };
     if (task.status === 'Not Started') {
         task.status = 'In Progress';
     }

@@ -66,7 +66,7 @@ export function renderTask(plan: Plan, task: Task, path?: string): string {
         lines.push(`Description: ${task.description}`);
     }
     if (task.claimedBy) {
-        lines.push(`Claimed by ${task.claimedBy.agent}${task.claimedBy.branch ? ` on ${task.claimedBy.branch}` : ''} at ${task.claimedBy.at}.`);
+        lines.push(`Claimed by ${task.claimedBy.agent}${task.claimedBy.branch ? ` on ${task.claimedBy.branch}` : ''} at ${task.claimedBy.at}.${task.claimedBy.session ? ` Session: ${task.claimedBy.session}` : ''}`);
     }
     if (task.acceptance?.length) {
         lines.push('Acceptance criteria:');

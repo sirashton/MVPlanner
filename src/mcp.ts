@@ -7,6 +7,7 @@ import {
 } from './core/index.ts';
 import { renderNext, renderTask, renderTree } from './format.ts';
 import { scanRepo } from './scan.ts';
+import { currentSession } from './session.ts';
 import { currentBranch, repoTopLevel } from './storage/git.ts';
 import { openStore } from './storage/stores.ts';
 import type { PlanStore } from './storage/stores.ts';
@@ -56,7 +57,7 @@ export function createServer(cwd: string, storePromise: Promise<PlanStore> = ope
         inputSchema: { id: idArg, agent: agentArg },
     }, ({ id, agent }) => guarded(async () => {
         const branch = await currentBranch(cwd);
-        const { plan, result } = await (await storePromise).mutate(`${agent} claims ${id}`, p => claimTask(p, id, agent, branch));
+        const { plan, result } = await (await storePromise).mutate(`${agent} claims ${id}`, p => claimTask(p, id, agent, branch, currentSession()));
         const offPath = !criticalPath(plan).has(id)
             ? '\n\nNote: this task is not on the critical path, so more important work is still open. Check plan_next unless a human asked for this one.'
             : '';

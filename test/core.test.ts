@@ -6,6 +6,8 @@ import {
     parsePlan, proposeTask, serializePlan, updateTask, validatePlan,
 } from '../src/core/index.ts';
 import type { Plan } from '../src/core/index.ts';
+import { renderTask } from '../src/format.ts';
+import { currentSession } from '../src/session.ts';
 
 // The worked example from the README: a Could feature with Must subtasks must not block "done all we Must".
 function todoApp(): Plan {
@@ -191,4 +193,18 @@ test('a batch of edits applies in order, links new tasks by ref, and fails as a 
     assert.deepEqual(sharing.subtasks!.map(t => t.name), ['Share link', 'Quantum sorting']);
     assert.equal(sharing.subtasks![0].mscw, 'Must');
     assert.throws(() => applyEdits(plan, 'agent-a', [{ op: 'remove', id: '$nope' }], 'Alex'), /Edit 1 \(remove\) failed: Unknown ref/);
+});
+
+test('a claim records the session behind it', async () => {
+    const { buildView } = await import('../src/view.ts');
+    assert.equal(currentSession({ CLAUDE_CODE_REMOTE_SESSION_ID: 'cse_01AbC', CLAUDE_CODE_SESSION_ID: 'local-id' }), 'https://claude.ai/code/session_01AbC');
+    assert.equal(currentSession({ CLAUDE_CODE_SESSION_ID: 'local-id' }), 'local-id');
+    assert.equal(currentSession({}), undefined);
+
+    const plan = todoApp();
+    const task = claimTask(plan, 'T-4', 'agent-a', 'feature/x', 'https://claude.ai/code/session_01AbC');
+    assert.equal(task.claimedBy!.session, 'https://claude.ai/code/session_01AbC');
+    assert.match(renderTask(plan, task), /Session: https:\/\/claude\.ai\/code\/session_01AbC/);
+    assert.equal(buildView(plan).claims[0].session, 'https://claude.ai/code/session_01AbC');
+    assert.deepEqual(validatePlan(plan), []);
 });

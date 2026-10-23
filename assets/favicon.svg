@@ -1,11 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-  <!-- The MVPlanner tree on a 16px grid: the top task, three subtasks, and the critical path down to one leaf. -->
-  <style>.m { fill: #3b3fb6 } @media (prefers-color-scheme: dark) { .m { fill: #9da2ff } }</style>
-  <rect class="m" x="4" y="0" width="8" height="3" rx="1"/>
-  <rect class="m" x="7" y="3" width="2" height="3"/>
-  <rect x="0" y="6" width="4" height="3" rx="1" fill="#1d7570"/>
-  <rect class="m" x="5" y="6" width="6" height="4" rx="1"/>
-  <rect x="12" y="6" width="4" height="3" rx="1" fill="#8a5a0f"/>
-  <rect class="m" x="7" y="10" width="2" height="3"/>
-  <rect class="m" x="7" y="12" width="7" height="4" rx="1"/>
+  <!-- The M-path mark on a 16px grid, with fewer, larger nodes so it holds up in a browser tab. -->
+  <rect width="16" height="16" rx="3.5" fill="#1d2a3a"/>
+  <path d="M8 9.5L12 4.5V12" stroke="#6b7a8c" stroke-width="1.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M4 12V4.5L8 9.5" stroke="#9da2ff" stroke-width="1.8" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+  <circle cx="4" cy="4.5" r="1.5" fill="#9da2ff"/><circle cx="8" cy="9.5" r="1.5" fill="#9da2ff"/>
+  <circle cx="12" cy="4.5" r="1.4" fill="#5cc4bb"/><circle cx="12" cy="12" r="1.4" fill="#e0a54a"/>
 </svg>

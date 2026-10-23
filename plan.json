@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 73,
+  "revision": 74,
   "nextId": 55,
   "root": {
     "id": "T-1",
@@ -243,7 +243,7 @@
           {
             "id": "T-45",
             "name": "Enforce claims by default in new plans",
-            "status": "Not Started",
+            "status": "In Progress",
             "mscw": "Must",
             "description": "mvplan init and the plugin default to strictness enforce, so an agent cannot edit code without a claimed task unless a human turns it down to warn.",
             "acceptance": [
@@ -257,8 +257,17 @@
                 "at": "2026-10-23T00:14:39.123Z",
                 "agent": "claude-5f5428c4",
                 "text": "Added under T-14, approved by Alex, in the project thread"
+              },
+              {
+                "at": "2026-10-23T00:52:27.779Z",
+                "agent": "claude-167688b6",
+                "text": "Claimed"
               }
-            ]
+            ],
+            "claimedBy": {
+              "agent": "claude-167688b6",
+              "at": "2026-10-23T00:52:27.693Z"
+            }
           },
           {
             "id": "T-46",

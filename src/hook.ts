@@ -224,8 +224,8 @@ const HANDLERS: Record<string, (ctx: HookContext) => Promise<HookOutput>> = {
 };
 
 export async function runHook(event: string, input: HookInput, env: NodeJS.ProcessEnv = process.env): Promise<HookOutput> {
-    const raw = (env.CLAUDE_PLUGIN_OPTION_STRICTNESS ?? env.MVPLANNER_STRICTNESS ?? 'warn').toLowerCase();
-    const strictness: Strictness = raw === 'off' || raw === 'enforce' ? raw : 'warn';
+    const raw = (env.CLAUDE_PLUGIN_OPTION_STRICTNESS ?? env.MVPLANNER_STRICTNESS ?? 'enforce').toLowerCase();
+    const strictness: Strictness = raw === 'off' || raw === 'warn' ? raw : 'enforce';
     const handler = HANDLERS[event];
     if (!handler || strictness === 'off') {
         return undefined;

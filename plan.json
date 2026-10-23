@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 130,
+  "revision": 131,
   "nextId": 70,
   "root": {
     "id": "T-1",
@@ -1183,7 +1183,7 @@
           {
             "id": "T-69",
             "name": "Focus label reads as a label, not a button",
-            "status": "Not Started",
+            "status": "In Progress",
             "mscw": "Should",
             "description": "The word 'Focus' sits in the same box as the level buttons, so it looks clickable. Show it as plain text beside them.",
             "acceptance": [
@@ -1197,8 +1197,18 @@
                 "at": "2026-10-23T02:50:16.440Z",
                 "agent": "claude-9cc89b7b",
                 "text": "Added under T-26, approved by Alex, in the \"Web UI design review\" thread (said 'Focus' looks like a button)"
+              },
+              {
+                "at": "2026-10-23T02:50:22.406Z",
+                "agent": "claude-9cc89b7b",
+                "text": "Claimed on claude/project-thread-e0welq"
               }
-            ]
+            ],
+            "claimedBy": {
+              "agent": "claude-9cc89b7b",
+              "at": "2026-10-23T02:50:22.406Z",
+              "branch": "claude/project-thread-e0welq"
+            }
           }
         ],
         "log": [

@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 134,
+  "revision": 135,
   "nextId": 71,
   "root": {
     "id": "T-1",
@@ -1213,17 +1213,17 @@
           {
             "id": "T-70",
             "name": "Grid-path logo",
-            "status": "In Progress",
+            "status": "Complete",
             "mscw": "Could",
             "description": "Replace the M-path logo with Alex's design R: a white tile, the critical path stepping down through a 3x3 grid of tasks as a diagonal M in Must indigo, and skipped tasks as smaller Should teal and Could amber dots on faint links to their parents.",
             "acceptance": [
               {
                 "text": "assets/icon.svg, assets/favicon.svg and assets/wordmark.svg use design R",
-                "done": false
+                "done": true
               },
               {
                 "text": "The page header icon and the favicon use design R and read at 16px",
-                "done": false
+                "done": true
               }
             ],
             "log": [
@@ -1236,13 +1236,13 @@
                 "at": "2026-10-23T02:51:38.269Z",
                 "agent": "claude-9cc89b7b",
                 "text": "Claimed on claude/project-thread-e0welq"
+              },
+              {
+                "at": "2026-10-23T02:52:57.389Z",
+                "agent": "claude-9cc89b7b",
+                "text": "status In Progress -> Complete; checked \"assets/icon.svg, assets/favicon.svg and assets/wordmark.svg use design R\"; checked \"The page header icon and the favicon use design R and read at 16px\"; icon, favicon (16px grid, links dropped), wordmark, page header and inlined favicon now use design R; checked at 96/32/16px, in light and dark tabs and page headers."
               }
-            ],
-            "claimedBy": {
-              "agent": "claude-9cc89b7b",
-              "at": "2026-10-23T02:51:38.269Z",
-              "branch": "claude/project-thread-e0welq"
-            }
+            ]
           }
         ],
         "log": [

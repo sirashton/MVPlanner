@@ -25,7 +25,7 @@ Then create the live plan for a repository, once, from a checkout that can push 
 mvplan init --name "My project"        # or: mvplan init --from plan.json
 ```
 
-`init` also writes `.claude/settings.json` and a short section of `CLAUDE.md`, so Claude Code offers the plugin to everyone who opens the repo, and an agent that starts without it stops and says so instead of working blind. Commit both. For an existing plan, `mvplan setup` writes them.
+`init` also writes `.claude/settings.json`, a short section of `CLAUDE.md` and a `.github/workflows/mvplanner.yml` check. Claude Code then offers the plugin to everyone who opens the repo, an agent that starts without it stops and says so instead of working blind, and a pull request fails the check unless it names a task (such as T-12, in its title, branch or description) that is claimed or complete. Commit all three. For an existing plan, `mvplan setup` writes them.
 
 The repo settings also turn on auto-update for the MVPlanner marketplace, which Claude Code leaves off for third-party marketplaces. Running sessions pick up an update with `/reload-plugins`; new sessions load it by themselves. To update by hand: `claude plugin marketplace update mvplanner && claude plugin update mvplanner@mvplanner`.
 

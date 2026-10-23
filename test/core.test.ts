@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-    checkMarkers, claimTask, getTask, decideProposal, computeDoMore, criticalPath, deferTask, findMarkers, migrateV1, nextTasks, overallLevel,
+    checkMarkers, checkPullRequest, claimTask, getTask, decideProposal, computeDoMore, criticalPath, deferTask, findMarkers, migrateV1, nextTasks, overallLevel,
     parsePlan, proposeTask, serializePlan, updateTask, validatePlan,
 } from '../src/core/index.ts';
 import type { Plan } from '../src/core/index.ts';
@@ -209,4 +209,19 @@ test('deciding a proposal twice in one batch is not an error', async () => {
     assert.equal(getTask(plan, a.id).mscw, 'Must');
     assert.equal(getTask(plan, b.id).mscw, "Won't");
     assert.throws(() => applyEdits(plan, undefined, [{ op: 'decline', id: a.id }], 'Alex'), /not a proposal/);
+});
+
+test('a pull request must name a claimed or complete task', () => {
+    const plan = todoApp();
+    claimTask(plan, 'T-4', 'agent-a');
+    updateTask(plan, 'T-3', 'a', { status: 'Complete' });
+    const proposal = proposeTask(plan, 'T-2', 'agent-b', { name: 'Undo' });
+    assert.equal(checkPullRequest(plan, { title: 'Tidy things', branch: 'fix', body: '' }).ok, false);
+    assert.equal(checkPullRequest(plan, { title: 'Add sorting', branch: 'claude/T-4-sorting' }).ok, true);
+    assert.equal(checkPullRequest(plan, { title: 'Done work (T-3)' }).ok, true);
+    assert.equal(checkPullRequest(plan, { body: `Implements ${proposal.id}` }).ok, false);
+    const unclaimed = checkPullRequest(plan, { title: 'T-5', body: 'Mentions T-999' });
+    assert.equal(unclaimed.ok, false);
+    assert.match(unclaimed.message, /T-5 .* is not claimed/);
+    assert.match(unclaimed.message, /T-999 is not in the plan/);
 });

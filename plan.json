@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 110,
+  "revision": 111,
   "nextId": 65,
   "root": {
     "id": "T-1",
@@ -890,7 +890,7 @@
           {
             "id": "T-60",
             "name": "Show the plan first on a phone",
-            "status": "Not Started",
+            "status": "In Progress",
             "mscw": "Should",
             "description": "From the web page design review (findings 4, 11). At 390px wide the first task row is ~1,650px down, below the add box, a four-line hint and the proposals. The detail sheet covers 70% of the screen with no backdrop and hides the tapped row.",
             "acceptance": [
@@ -912,8 +912,18 @@
               {
                 "at": "2026-10-23T01:06:18.862Z",
                 "text": "Proposal accepted"
+              },
+              {
+                "at": "2026-10-23T01:13:05.701Z",
+                "agent": "claude-9cc89b7b",
+                "text": "Claimed on claude/project-thread-e0welq"
               }
-            ]
+            ],
+            "claimedBy": {
+              "agent": "claude-9cc89b7b",
+              "at": "2026-10-23T01:13:05.701Z",
+              "branch": "claude/project-thread-e0welq"
+            }
           },
           {
             "id": "T-61",

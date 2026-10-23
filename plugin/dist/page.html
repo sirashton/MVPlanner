@@ -131,14 +131,19 @@ header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spac
 .row.drop { box-shadow: inset 0 0 0 2px var(--focus); }
 .row .caret { width: 22px; height: 22px; flex: none; border: 0; background: transparent; cursor: pointer; color: var(--ink-soft); font-size: 11px; }
 .row .caret[disabled] { visibility: hidden; }
-.mark { width: 12px; height: 12px; flex: none; border-radius: 50%; border: 1.5px solid var(--ink-soft); position: relative; }
+.mark { width: 12px; height: 12px; margin: 0 4px; flex: none; border-radius: 50%; border: 1.5px solid var(--ink-soft); position: relative; }
+/* A task with subtasks shows which priority levels beneath it are done: one pip each for Must, Should and Could. */
+.tiers { display: inline-flex; gap: 2px; width: 20px; height: 13px; flex: none; align-items: stretch; }
+.tiers i { flex: 1; border-radius: 1.5px; background: var(--rule); }
+.tiers i.done { background: var(--p); }
 .mark.progress { background: linear-gradient(90deg, var(--ink-soft) 50%, transparent 50%); }
 .mark.blocked { border-color: var(--danger); background: var(--danger); }
 .mark.working { border-color: var(--live); background: var(--live); box-shadow: 0 0 0 3px color-mix(in srgb, var(--live) 22%, transparent); }
 .mark.proposed { border-style: dashed; }
 .mark.done { border: 0; border-radius: 0; }
 .mark.done::after { content: ""; position: absolute; left: 3px; top: 0; width: 5px; height: 9px; border: solid var(--done); border-width: 0 2px 2px 0; transform: rotate(45deg); }
-.legend .mark { display: inline-block; vertical-align: -1px; margin-right: 4px; }
+.legend .mark, .legend .tiers { display: inline-flex; vertical-align: -1px; margin-right: 4px; }
+.legend > span { cursor: help; }
 .name { flex: 1 1 auto; min-width: 0; cursor: default; overflow-wrap: anywhere; padding: 4px 0; }
 .name[contenteditable=true] { outline: 1px solid var(--focus); border-radius: 4px; padding: 3px 6px; background: var(--sheet); cursor: text; }
 /* Effective priority sets the weight of the whole line. */
@@ -249,7 +254,7 @@ aside.detail .foot { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap;
         <span class="levels" id="focus-levels" role="group" aria-label="Focus on"><span class="levels-label">Focus</span></span>
         <button class="toggle" id="wont-toggle" aria-pressed="false">Show Won't</button>
         <details class="keys"><summary>Shortcuts</summary><p>Enter in the add box adds and keeps it ready for the next one. Select a row, then: arrows to move and open, A to add under it, 1 to 4 to set its priority, R to rename.</p></details>
-        <span class="legend"><span><i class="mark working"></i>being worked on</span><span><i class="mark progress"></i>in progress</span><span><i class="mark"></i>not started</span><span><i class="mark done"></i>done</span></span>
+        <span class="legend"><span title="A task with subtasks shows how far it is done: one bar each for Must, Should and Could. This one has done all we Must and all we Should."><i class="tiers"><i class="done" data-p="Must"></i><i class="done" data-p="Should"></i><i data-p="Could"></i></i>done all we Should</span><span><i class="mark working"></i>being worked on</span><span><i class="mark progress"></i>in progress</span><span><i class="mark"></i>not started</span><span><i class="mark done"></i>done</span></span>
       </div>
       <ul class="tree" id="tree" role="tree" aria-label="Tasks"></ul>
     </section>
@@ -399,6 +404,21 @@ function claimTag(row) {
     : el('span', { class: 'tag agent', title: label.title }, label.text);
 }
 
+// How far a task with subtasks is done, from its do-more level: the levels above the one where work remains are done.
+const TIER_WORDS = {
+  Must: 'Not yet done all we Must',
+  Should: 'Done all we Must',
+  Could: 'Done all we Should',
+};
+const ALL_DONE = 'Done all we Could';
+function tiersFor(row) {
+  const done = Math.min(3, RANK[row.level] ?? 3);
+  const text = TIER_WORDS[row.level] ?? ALL_DONE;
+  return el('span', { class: 'tiers', role: 'img', 'aria-label': text, title: text },
+    ['Must', 'Should', 'Could'].map((p, i) => el('i', { class: i < done ? 'done' : undefined, 'data-p': p })));
+}
+
+const MARK_WORDS = { working: 'Being worked on', done: 'Done', blocked: 'Blocked', progress: 'In progress', '': 'Not started' };
 function markFor(row) {
   if (row.agent) return 'working';
   if (row.status === 'Complete') return 'done';
@@ -479,7 +499,8 @@ function render() {
     const before = ui.prev.get(row.id);
     const sig = `${row.name}|${row.mscw}|${row.status}|${row.agent || ''}|${row.parent || ''}`;
     const changed = before !== undefined && before !== sig;
-    const node = rowFor(row, eff, all.length, open, nextIds.has(row.id) && !row.agent, changed);
+    const hasWork = (kids.get(row.id) || []).some(k => !k.isProposed && !k.isDeferred);
+    const node = rowFor(row, eff, all.length, open, nextIds.has(row.id) && !row.agent, changed, hasWork);
     items.push(node);
     if (open) {
       if (hiddenDone) node.querySelector('.more').textContent = `${hiddenDone} done`;
@@ -504,7 +525,7 @@ function render() {
   $('wont-toggle').setAttribute('aria-pressed', String(ui.showWont));
 }
 
-function rowFor(row, eff, childCount, open, isNext, changed) {
+function rowFor(row, eff, childCount, open, isNext, changed, hasWork) {
   const li = el('li', {
     class: ['row', row.agent && 'working', row.isProposed && 'proposed', ui.selected === row.id && 'selected', changed && 'changed'].filter(Boolean).join(' '),
     role: 'treeitem', 'aria-expanded': childCount ? String(open) : undefined, 'aria-selected': String(ui.selected === row.id),
@@ -523,7 +544,9 @@ function rowFor(row, eff, childCount, open, isNext, changed) {
   },
     el('button', { class: 'caret', disabled: !childCount, 'aria-label': open ? 'Collapse' : 'Expand', tabindex: '-1',
       onclick: e => { e.stopPropagation(); toggle(row.id, !open); } }, childCount ? (open ? '▼' : '▶') : ''),
-    el('span', { class: `mark ${markFor(row)}${row.isProposed && !row.agent ? ' proposed' : ''}`, role: 'img', 'aria-label': row.agent ? `being worked on by ${row.agent}` : row.status }),
+    hasWork && !row.agent ? tiersFor(row) : el('span', { class: `mark ${markFor(row)}${row.isProposed && !row.agent ? ' proposed' : ''}`, role: 'img',
+      'aria-label': row.agent ? `Being worked on by ${row.agent}` : row.isProposed ? 'Proposed, waiting for a decision' : MARK_WORDS[markFor(row)],
+      title: row.agent ? `Being worked on by ${row.agent}` : row.isProposed ? 'Proposed, waiting for a decision' : MARK_WORDS[markFor(row)] }),
     el('span', { class: 'tid' }, row.id),
     el('span', { class: 'name', ondblclick: e => { e.stopPropagation(); startRename(e.currentTarget, row.id); } }, row.name),
     el('button', { class: 'more', tabindex: '-1', onclick: e => { e.stopPropagation(); toggle(row.id, true); } }),
@@ -598,6 +621,7 @@ function renderDetail(byId) {
     el('button', { class: 'icon close', 'aria-label': 'Close', onclick: () => select(row.id) }, '×'),
     el('h3', {}, row.name),
     el('div', { class: 'path' }, `${row.id}${row.path ? ` in ${row.path}` : ''}`),
+    ui.view.tree.some(r => r.parent === row.id && !r.isProposed && !r.isDeferred) ? el('p', { class: 'counts' }, tiersFor(row), ` ${TIER_WORDS[row.level] ?? ALL_DONE}`) : null,
     row.agent ? el('p', {}, claimTag(row), ' is working on this', el('br'), el('span', { class: 'counts' }, claimLabel(row).title)) : null,
     row.isProposed && !ui.deciding.has(row.id) ? [el('label', {}, `Decide: ${row.mscw} suggested. M, S or C accepts at that priority; W declines`), decisionControl(row)] : null,
     row.depth > 0 ? [el('label', {}, 'Priority under its parent'), prioControl(row.mscw, p => edit({ op: 'update', id: row.id, mscw: p }), 'Priority'),

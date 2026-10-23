@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 145,
+  "revision": 146,
   "nextId": 75,
   "root": {
     "id": "T-1",
@@ -457,10 +457,10 @@
           },
           {
             "id": "T-73",
-            "name": "Nudge agents to group related subtasks",
+            "name": "Nudge agents to group subtasks and challenge Musts (p3g10)",
             "status": "In Progress",
             "mscw": "Should",
-            "description": "Soft prompting so agents put related subtasks under a themed parent instead of growing long flat lists. No hard limits.",
+            "description": "Soft prompting, no hard limits: agents put related subtasks under a themed parent instead of growing long flat lists, and challenge each Must with p3g10 (pi is 3, gravity is 10): could a basic assumption or stripped-back version get it working, with refinement as a Should or Could?",
             "acceptance": [
               {
                 "text": "Plan and scope skills and the planner agent ask agents to group as they go (about 3-7 subtasks per parent, themed parents named for the outcome)",
@@ -485,6 +485,11 @@
                 "at": "2026-10-23T03:01:49.282Z",
                 "agent": "claude-59d579af",
                 "text": "Claimed"
+              },
+              {
+                "at": "2026-10-23T03:03:34.836Z",
+                "agent": "claude-59d579af",
+                "text": "renamed from \"Nudge agents to group related subtasks\"; description updated; Alex added the p3g10 principle to this change."
               }
             ],
             "claimedBy": {

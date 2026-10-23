@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 173,
+  "revision": 174,
   "nextId": 86,
   "root": {
     "id": "T-1",
@@ -1972,7 +1972,6 @@
         "name": "Tasks come out of their parent's need",
         "status": "Not Started",
         "mscw": "Must",
-        "proposed": true,
         "description": "Alex's proposed core philosophy (Keyboard shortcuts introspection thread, 2026-10-23): tasks come out of parents, not suggestions that go looking for a parent. A parent states a need, like a user story, and its children are what that need takes, each prioritised by how much the parent needs it. Without it, extras like the page's keyboard shortcuts get built with no priority ever decided.",
         "acceptance": [
           {
@@ -1989,6 +1988,10 @@
             "at": "2026-10-23T03:29:15.849Z",
             "agent": "claude-f555c004",
             "text": "Proposed under T-1"
+          },
+          {
+            "at": "2026-10-23T03:36:26.920Z",
+            "text": "Proposal accepted"
           }
         ],
         "subtasks": [

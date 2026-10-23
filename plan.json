@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 102,
+  "revision": 103,
   "nextId": 64,
   "root": {
     "id": "T-1",
@@ -898,13 +898,13 @@
           {
             "id": "T-61",
             "name": "Readable contrast for Could and Won't labels",
-            "status": "In Progress",
+            "status": "Complete",
             "mscw": "Should",
             "description": "From the web page design review (finding 10). In the light theme Could (#a36a12) is 4.0:1 and Won't (#8a94a3) is 2.7:1 against the page background at 12px; WCAG AA needs 4.5:1.",
             "acceptance": [
               {
                 "text": "All priority label colours reach 4.5:1 against their background in both themes",
-                "done": false
+                "done": true
               }
             ],
             "log": [
@@ -921,12 +921,13 @@
                 "at": "2026-10-23T01:08:01.396Z",
                 "agent": "claude-9cc89b7b",
                 "text": "Claimed"
+              },
+              {
+                "at": "2026-10-23T01:08:43.766Z",
+                "agent": "claude-9cc89b7b",
+                "text": "status In Progress -> Complete; checked \"All priority label colours reach 4.5:1 against their background in both themes\"; Light: Should #1d7570 (4.8:1), Could #8a5a0f (5.2:1), Won't #616c7b (4.7:1); dark Won't #8a96a6 (5.8:1). Handoff: on branch claude/project-thread-e0welq, shipped in the same PR as T-58/T-59/T-60."
               }
-            ],
-            "claimedBy": {
-              "agent": "claude-9cc89b7b",
-              "at": "2026-10-23T01:08:01.396Z"
-            }
+            ]
           },
           {
             "id": "T-62",

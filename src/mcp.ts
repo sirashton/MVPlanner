@@ -53,7 +53,7 @@ export function createServer(cwd: string, storePromise: Promise<PlanStore> = ope
     }));
 
     server.registerTool('task_claim', {
-        description: 'Claim a task before editing any code for it. Fails if another agent holds it. One task at a time.',
+        description: 'Claim a task before editing any code for it. Fails if another agent holds it, unless their claim has been quiet for 2 hours, in which case you take it over. One task at a time.',
         inputSchema: { id: idArg, agent: agentArg },
     }, ({ id, agent }) => guarded(async () => {
         const branch = await currentBranch(cwd);
@@ -73,16 +73,19 @@ export function createServer(cwd: string, storePromise: Promise<PlanStore> = ope
     }));
 
     server.registerTool('task_update', {
-        description: 'Update your task: status, checked acceptance criteria, links to PRs or commits, and a short progress note. Completing a task requires every acceptance criterion to be checked.',
+        description: 'Update your task: status, checked acceptance criteria, links to PRs or commits, and a short progress note. Completing a task requires every acceptance criterion to be checked, and a handoff note.',
         inputSchema: {
             id: idArg,
             agent: agentArg,
             status: z.enum(STATUSES).optional(),
-            note: z.string().optional().describe('What changed, in a sentence'),
+            note: z.string().optional().describe('What changed, in a sentence. When completing, a handoff note for the next agent: what changed, decisions and why, gotchas, what you left out (with T-ids) and where to look'),
             acceptance_done: z.array(z.number().int().min(0)).optional().describe('Indexes of acceptance criteria now met'),
             links: z.array(z.string()).optional().describe('PR or commit URLs'),
         },
     }, ({ id, agent, status, note, acceptance_done, links }) => guarded(async () => {
+        if (status === 'Complete' && !note?.trim()) {
+            throw new PlanError(`Completing ${id} needs a handoff note: what changed, decisions and why, gotchas, what you left out (with T-ids) and where to look.`);
+        }
         const { plan, result } = await (await storePromise).mutate(`${agent} updates ${id}`, p =>
             updateTask(p, id, agent, { status, note, acceptanceDone: acceptance_done, links }));
         return renderTask(plan, result, taskPath(plan, id));

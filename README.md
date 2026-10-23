@@ -4,7 +4,7 @@ One prioritised plan that you and every agent work from.
 
 Agents are good at doing the next thing and bad at remembering what was agreed. Give a swarm a big feature and you get drift: work nobody asked for, quiet gaps where a Must should be, and agents treading on each other. MVPlanner keeps the plan in one place every agent can reach, and a Claude Code plugin makes agents use it:
 
-- **Claim before editing.** Each agent claims a task before it changes code, so two agents never take the same work.
+- **Claim before editing.** Each agent claims a task before it changes code, so two agents never take the same work. A claim with no activity for 2 hours can be taken over by another agent, and the task log records the takeover.
 - **Propose, don't drift.** New ideas become proposed tasks for a human to accept, rather than code.
 - **Defer on purpose.** Keeping something minimal is fine, as long as it's recorded: `task_defer` creates a task and the code gets an `MVP(T-42)` or `TODO(T-43)` marker.
 - **Know when you're done.** Priorities are MoSCoW, relative to each parent, and roll up into "done all we Must / Should / Could".
@@ -25,7 +25,7 @@ Then create the live plan for a repository, once, from a checkout that can push 
 mvplan init --name "My project"        # or: mvplan init --from plan.json
 ```
 
-`init` also writes `.claude/settings.json` and a short section of `CLAUDE.md`, so Claude Code offers the plugin to everyone who opens the repo, and an agent that starts without it stops and says so instead of working blind. Commit both. For an existing plan, `mvplan setup` writes them.
+`init` also writes `.claude/settings.json`, a short section of `CLAUDE.md` and a `.github/workflows/mvplanner.yml` check. Claude Code then offers the plugin to everyone who opens the repo, an agent that starts without it stops and says so instead of working blind, and a pull request fails the check unless it names a task (such as T-12, in its title, branch or description) that is claimed or complete. Commit all three. For an existing plan, `mvplan setup` writes them.
 
 The repo settings also turn on auto-update for the MVPlanner marketplace, which Claude Code leaves off for third-party marketplaces. Running sessions pick up an update with `/reload-plugins`; new sessions load it by themselves. To update by hand: `claude plugin marketplace update mvplanner && claude plugin update mvplanner@mvplanner`.
 
@@ -57,7 +57,7 @@ Rules agents are given at the start of every session and subagent:
 | Part | What it does |
 | :- | :- |
 | MCP server | `plan_overview`, `plan_next`, `task_get`, `task_claim`, `task_release`, `task_update`, `task_propose`, `task_add`, `task_defer`, `plan_edit` (batch add, move, rename, remove and decide, for human-directed sessions), `plan_check` |
-| Hooks | **SessionStart** and **SubagentStart** brief the agent: its id, the rules, its task or the next ones. **PreToolUse** denies direct edits to `plan.json`, and warns about (or blocks) edits with no claimed task. **PostToolUse** sends back markers that name no task. **Stop** and **SubagentStop** nudge once when files changed but no progress was recorded |
+| Hooks | **SessionStart** and **SubagentStart** brief the agent: its id, the rules, its task or the next ones. **PreToolUse** denies direct edits to `plan.json`, and blocks (or, in `warn` mode, warns about) edits with no claimed task. **PostToolUse** sends back markers that name no task. **Stop** and **SubagentStop** nudge once when files changed but no progress was recorded |
 | Skills | `/mvplanner:scope` to shape a product with you as you talk, `/mvplanner:plan` to break work down with you, `/mvplanner:next` to pick up and finish a task, `/mvplanner:defer` for markers |
 | Agents | `planner` maintains the plan; `scope-reviewer` checks a change against its task |
 | Plan panel | A panel beside the chat for the human: progress by priority, the plan as a tree marking what's being worked on, proposals to accept or decline, next up, deferred work and recent activity. Opens by itself in repos with a plan; `/plan-panel` reopens it |
@@ -66,7 +66,7 @@ Rules agents are given at the start of every session and subagent:
 
 Settings (asked for when you enable the plugin, and in `/config`):
 
-- **Strictness:** `warn` (the default) nudges agents, `enforce` blocks edits without a claimed task, `off` disables the hooks.
+- **Strictness:** `enforce` (the default) blocks edits without a claimed task, `warn` only nudges agents, `off` disables the hooks.
 - **Backend:** `git` (the default) or `file`.
 - **Plan branch:** `mvplanner/plan` by default.
 

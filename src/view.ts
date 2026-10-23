@@ -1,5 +1,6 @@
 import { computeDoMore, criticalPath, isLeafWork, nextTasks, overallLevel } from './core/domore.ts';
 import { walk } from './core/plan.ts';
+import { isClaimStale, lastClaimActivity } from './core/ops.ts';
 import type { Marker } from './core/markers.ts';
 import type { DoMore, Mscw, Plan, Status, Task } from './core/types.ts';
 import { MSCW } from './core/types.ts';
@@ -33,8 +34,6 @@ export interface PlanView {
     })[];
 }
 
-const STALE_MS = 2 * 60 * 60 * 1000;
-
 const rank = (m: Mscw) => MSCW.indexOf(m);
 
 export function buildView(plan: Plan, markers: Marker[] = [], now = Date.now()): PlanView {
@@ -57,7 +56,6 @@ export function buildView(plan: Plan, markers: Marker[] = [], now = Date.now()):
     });
     ladder.push({ label: 'Everything', done: leaves.filter(e => e.task.status === 'Complete').length, total: leaves.length, isCurrent: false });
 
-    const lastLog = (task: Task) => task.log?.at(-1)?.at ?? task.claimedBy?.at ?? '';
     const markersById = new Map<string, Marker[]>();
     for (const marker of markers) {
         if (marker.id) {
@@ -75,15 +73,14 @@ export function buildView(plan: Plan, markers: Marker[] = [], now = Date.now()):
             ...summary(e.task, e.parents), description: e.task.description, by: e.task.log?.[0]?.agent,
         })),
         claims: entries.filter(e => e.task.claimedBy).map(e => {
-            const last = lastLog(e.task);
             return {
                 ...summary(e.task, e.parents),
                 agent: e.task.claimedBy!.agent,
                 branch: e.task.claimedBy!.branch,
                 session: e.task.claimedBy!.session,
                 since: e.task.claimedBy!.at,
-                lastActivity: last,
-                isStale: now - Date.parse(last) > STALE_MS,
+                lastActivity: lastClaimActivity(e.task),
+                isStale: isClaimStale(e.task, now),
             };
         }),
         next: nextTasks(plan, { includeClaimed: false }).map(n => {

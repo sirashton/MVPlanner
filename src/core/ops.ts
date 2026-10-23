@@ -15,19 +15,33 @@ function newId(plan: Plan): string {
     return `T-${plan.nextId++}`;
 }
 
-export function claimTask(plan: Plan, id: string, agent: string, branch?: string, session?: string): Task {
+// A claim with no activity on its task for this long can be taken over by another agent.
+// MVP(T-55): a fixed limit rather than one a human can set.
+export const STALE_CLAIM_MS = 2 * 60 * 60 * 1000;
+
+export function lastClaimActivity(task: Task): string {
+    return task.log?.at(-1)?.at ?? task.claimedBy?.at ?? '';
+}
+
+export function isClaimStale(task: Task, at = Date.now()): boolean {
+    return !!task.claimedBy && at - Date.parse(lastClaimActivity(task)) > STALE_CLAIM_MS;
+}
+
+export function claimTask(plan: Plan, id: string, agent: string, branch?: string, session?: string, at = Date.now()): Task {
     const task = getTask(plan, id);
-    if (task.claimedBy && task.claimedBy.agent !== agent) {
-        throw new PlanError(`${id} is already claimed by ${task.claimedBy.agent}. Pick another task or ask a human to reassign it.`);
+    const previous = task.claimedBy && task.claimedBy.agent !== agent ? task.claimedBy : undefined;
+    if (previous && !isClaimStale(task, at)) {
+        throw new PlanError(`${id} is already claimed by ${previous.agent}. Pick another task, or ask a human to reassign it. It can be taken over once the claim has been quiet for 2 hours.`);
     }
     if (task.status === 'Complete') {
         throw new PlanError(`${id} is already complete.`);
     }
+    const quietSince = previous && lastClaimActivity(task);
     task.claimedBy = { agent, at: now(), ...(branch ? { branch } : {}), ...(session ? { session } : {}) };
     if (task.status === 'Not Started') {
         task.status = 'In Progress';
     }
-    addLog(task, `Claimed${branch ? ` on ${branch}` : ''}`, agent);
+    addLog(task, `${previous ? `Took over from ${previous.agent}, whose claim had been quiet since ${quietSince}. Claimed` : 'Claimed'}${branch ? ` on ${branch}` : ''}`, agent);
     return task;
 }
 

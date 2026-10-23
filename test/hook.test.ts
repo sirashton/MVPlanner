@@ -59,6 +59,14 @@ test('editing without a claim warns, or denies in enforce mode', async () => {
     assert.equal(await enforce.run('PreToolUse', edit(path.join(enforce.dir, 'a.ts'), 'x')), undefined);
 });
 
+test('a new plan blocks edits without a claim when no strictness is set', async () => {
+    const { dir, agent } = await setup();
+    const env = { MVPLANNER_BACKEND: 'file', CLAUDE_PLUGIN_DATA: path.join(dir, 'data') };
+    const denied = await runHook('PreToolUse', { session_id: 'abcdef1234', cwd: dir, ...edit(path.join(dir, 'a.ts'), 'x') }, env) as { hookSpecificOutput: Record<string, string> };
+    assert.equal(denied.hookSpecificOutput.permissionDecision, 'deny');
+    assert.match(denied.hookSpecificOutput.permissionDecisionReason, new RegExp(`agent id is "${agent}"`));
+});
+
 test('off disables every hook', async () => {
     const { run, dir } = await setup('off');
     assert.equal(await run('PreToolUse', edit(path.join(dir, 'plan.json'), '{}')), undefined);
@@ -89,4 +97,19 @@ test('stop nudges once when edits were made without recording progress', async (
     await new Promise(r => setTimeout(r, 5));
     await store.mutate('update', p => updateTask(p, 'T-2', agent, { note: 'did the thing' }));
     assert.equal(await run('Stop'), undefined, 'progress recorded after the edits');
+});
+
+test('a session started inside another one gets its own agent id', async () => {
+    const { resolveAgentId } = await import('../src/hook.ts');
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'mvplanner-owner-'));
+    const input: HookInput = { session_id: 'abcdef1234' };
+    // The test runner is alive, so it stands in for the outer session; pid 2147483646 is a process that has ended.
+    assert.equal(await resolveAgentId(input, dir, process.pid), 'claude-abcdef12');
+    assert.equal(await resolveAgentId(input, dir, process.pid), 'claude-abcdef12');
+    assert.equal(await resolveAgentId(input, dir, 4242), 'claude-abcdef12-p4242');
+    assert.equal(await resolveAgentId({ ...input, agent_id: 'sub1234567' }, dir, 4242), 'claude-abcdef12-sub12345-p4242');
+    // A resumed session runs in a new process after the old one has gone, and keeps its id.
+    const resumed = await fs.mkdtemp(path.join(os.tmpdir(), 'mvplanner-owner-'));
+    assert.equal(await resolveAgentId(input, resumed, 2147483646), 'claude-abcdef12');
+    assert.equal(await resolveAgentId(input, resumed, process.pid), 'claude-abcdef12');
 });

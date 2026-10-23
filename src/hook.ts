@@ -29,6 +29,8 @@ export interface HookContext {
     strictness: Strictness;
     store: PlanStore;
     stateDir: string;
+    // This session's agent id, from agentId and the session's owner record.
+    agent: string;
 }
 
 type HookOutput = Record<string, unknown> | undefined;
@@ -36,6 +38,44 @@ type HookOutput = Record<string, unknown> | undefined;
 export function agentId(input: HookInput): string {
     const session = (input.session_id ?? 'unknown').slice(0, 8);
     return input.agent_id ? `claude-${session}-${input.agent_id.slice(0, 8)}` : `claude-${session}`;
+}
+
+function isRunning(pid: number): boolean {
+    try {
+        process.kill(pid, 0);
+        return true;
+    } catch (error) {
+        return (error as NodeJS.ErrnoException).code === 'EPERM';
+    }
+}
+
+// A claude process started from inside another session inherits that session's id, so both would get the same agent
+// id. The first live process to use a session id owns it; any other process using it at the same time gets its pid
+// added to the id. A resumed session finds its old owner gone and takes the id back.
+export async function resolveAgentId(input: HookInput, stateDir: string, pid: number | undefined): Promise<string> {
+    const base = agentId(input);
+    if (!pid || !input.session_id) {
+        return base;
+    }
+    const dir = path.join(stateDir, 'owners');
+    const file = path.join(dir, `${input.session_id.replace(/[^\w-]/g, '')}.json`);
+    await fs.mkdir(dir, { recursive: true });
+    for (let attempt = 0; attempt < 2; attempt++) {
+        try {
+            await fs.writeFile(file, JSON.stringify({ pid }), { flag: 'wx' });
+            return base;
+        } catch {
+            const owner = await fs.readFile(file, 'utf-8').then(text => (JSON.parse(text) as { pid?: number }).pid).catch(() => undefined);
+            if (owner === pid) {
+                return base;
+            }
+            if (owner && isRunning(owner)) {
+                return `${base}-p${pid}`;
+            }
+            await fs.rm(file, { force: true });
+        }
+    }
+    return base;
 }
 
 function editedFile(input: HookInput): string | undefined {
@@ -84,7 +124,7 @@ async function sessionStart(ctx: HookContext): Promise<HookOutput> {
     if (!plan) {
         return undefined;
     }
-    return { hookSpecificOutput: { hookEventName: 'SessionStart', additionalContext: briefing(plan, agentId(ctx.input), ctx.store.describe()) } };
+    return { hookSpecificOutput: { hookEventName: 'SessionStart', additionalContext: briefing(plan, ctx.agent, ctx.store.describe()) } };
 }
 
 async function subagentStart(ctx: HookContext): Promise<HookOutput> {
@@ -92,7 +132,7 @@ async function subagentStart(ctx: HookContext): Promise<HookOutput> {
     if (!plan) {
         return undefined;
     }
-    return { hookSpecificOutput: { hookEventName: 'SubagentStart', additionalContext: briefing(plan, agentId(ctx.input), ctx.store.describe()) } };
+    return { hookSpecificOutput: { hookEventName: 'SubagentStart', additionalContext: briefing(plan, ctx.agent, ctx.store.describe()) } };
 }
 
 async function preToolUse(ctx: HookContext): Promise<HookOutput> {
@@ -105,7 +145,7 @@ async function preToolUse(ctx: HookContext): Promise<HookOutput> {
     if (path.basename(file).toLowerCase() === 'plan.json') {
         return deny(`This repository's live plan is held in ${ctx.store.describe()}, and any plan.json here may be stale. Change the plan through the MVPlanner tools (task_update, task_propose, task_defer) instead of editing the file.`);
     }
-    const agent = agentId(ctx.input);
+    const agent = ctx.agent;
     if (claimedBy(plan, agent).length > 0) {
         return undefined;
     }
@@ -117,7 +157,7 @@ async function preToolUse(ctx: HookContext): Promise<HookOutput> {
 }
 
 async function postToolUse(ctx: HookContext): Promise<HookOutput> {
-    const agent = agentId(ctx.input);
+    const agent = ctx.agent;
     const plan = await readPlan(ctx);
     if (!plan) {
         return undefined;
@@ -147,7 +187,7 @@ async function stop(ctx: HookContext): Promise<HookOutput> {
     if (ctx.input.stop_hook_active) {
         return undefined;
     }
-    const agent = agentId(ctx.input);
+    const agent = ctx.agent;
     const state = await loadState(ctx, agent);
     if (!state.pendingEditsSince) {
         return undefined;
@@ -184,15 +224,17 @@ const HANDLERS: Record<string, (ctx: HookContext) => Promise<HookOutput>> = {
 };
 
 export async function runHook(event: string, input: HookInput, env: NodeJS.ProcessEnv = process.env): Promise<HookOutput> {
-    const raw = (env.CLAUDE_PLUGIN_OPTION_STRICTNESS ?? env.MVPLANNER_STRICTNESS ?? 'warn').toLowerCase();
-    const strictness: Strictness = raw === 'off' || raw === 'enforce' ? raw : 'warn';
+    const raw = (env.CLAUDE_PLUGIN_OPTION_STRICTNESS ?? env.MVPLANNER_STRICTNESS ?? 'enforce').toLowerCase();
+    const strictness: Strictness = raw === 'off' || raw === 'warn' ? raw : 'enforce';
     const handler = HANDLERS[event];
     if (!handler || strictness === 'off') {
         return undefined;
     }
     const cwd = input.cwd ?? process.cwd();
     const stateDir = path.join(env.CLAUDE_PLUGIN_DATA ?? path.join(os.tmpdir(), 'mvplanner'), 'sessions');
-    return handler({ input, strictness, store: await openStore(cwd, configFromEnv(env)), stateDir });
+    const pid = Number(env.CLAUDE_PID) || undefined;
+    const agent = await resolveAgentId(input, stateDir, pid).catch(() => agentId(input));
+    return handler({ input, strictness, store: await openStore(cwd, configFromEnv(env)), stateDir, agent });
 }
 
 async function readStdin(): Promise<string> {

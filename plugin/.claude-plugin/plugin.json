@@ -19,13 +19,13 @@
     "strictness": {
       "type": "string",
       "title": "Strictness",
-      "description": "off: hooks do nothing. warn: nudge agents that edit without a claimed task. enforce: block those edits.",
+      "description": "enforce: block edits by agents without a claimed task. warn: only nudge them. off: hooks do nothing.",
       "options": [
         "off",
         "warn",
         "enforce"
       ],
-      "default": "warn"
+      "default": "enforce"
     },
     "backend": {
       "type": "string",

@@ -77,7 +77,8 @@ test('setup switches the plugin on for a repo once, keeping what is there', asyn
     await fs.mkdir(path.join(dir, '.claude'));
     await fs.writeFile(path.join(dir, '.claude', 'settings.json'), JSON.stringify({ permissions: { allow: ['Bash(npm test)'] } }));
     await fs.writeFile(path.join(dir, 'CLAUDE.md'), '# Project notes\n');
-    assert.deepEqual(await writeRepoSetup(dir), ['.claude/settings.json', 'CLAUDE.md']);
+    assert.deepEqual(await writeRepoSetup(dir), ['.claude/settings.json', 'CLAUDE.md', '.github/workflows/mvplanner.yml']);
+    assert.match(await fs.readFile(path.join(dir, '.github', 'workflows', 'mvplanner.yml'), 'utf-8'), /check-pr/);
     const settings = JSON.parse(await fs.readFile(path.join(dir, '.claude', 'settings.json'), 'utf-8'));
     assert.deepEqual(settings.permissions, { allow: ['Bash(npm test)'] });
     assert.equal(settings.enabledPlugins['mvplanner@mvplanner'], true);

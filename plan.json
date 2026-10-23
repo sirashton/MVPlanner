@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 116,
+  "revision": 117,
   "nextId": 67,
   "root": {
     "id": "T-1",
@@ -1415,7 +1415,7 @@
           {
             "id": "T-57",
             "name": "Show the claim's session link in the panel and web page",
-            "status": "Not Started",
+            "status": "In Progress",
             "mscw": "Must",
             "description": "Claims now carry a session link (T-53) and the view data includes it, but the panel and web page don't draw it yet. Make the claimed-by label link to the session when it is a URL.",
             "acceptance": [
@@ -1433,8 +1433,18 @@
               {
                 "at": "2026-10-23T00:59:56.523Z",
                 "text": "Proposal accepted"
+              },
+              {
+                "at": "2026-10-23T02:38:05.677Z",
+                "agent": "claude-5f5428c4",
+                "text": "Claimed on catchup"
               }
-            ]
+            ],
+            "claimedBy": {
+              "agent": "claude-5f5428c4",
+              "at": "2026-10-23T02:38:05.667Z",
+              "branch": "catchup"
+            }
           }
         ]
       }

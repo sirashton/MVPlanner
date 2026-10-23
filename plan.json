@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 135,
-  "nextId": 71,
+  "revision": 136,
+  "nextId": 72,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -1241,6 +1241,34 @@
                 "at": "2026-10-23T02:52:57.389Z",
                 "agent": "claude-9cc89b7b",
                 "text": "status In Progress -> Complete; checked \"assets/icon.svg, assets/favicon.svg and assets/wordmark.svg use design R\"; checked \"The page header icon and the favicon use design R and read at 16px\"; icon, favicon (16px grid, links dropped), wordmark, page header and inlined favicon now use design R; checked at 96/32/16px, in light and dark tabs and page headers."
+              }
+            ]
+          },
+          {
+            "id": "T-71",
+            "name": "Show what belongs to what in a deep tree",
+            "status": "Not Started",
+            "mscw": "Should",
+            "description": "With a few levels expanded it's hard to tell which task a row belongs to. Draw faint indent guide lines down from each open parent, darken the guide of the hovered or selected task's family, and tint that task's subtasks.",
+            "acceptance": [
+              {
+                "text": "Each open parent has a faint vertical guide line beside its subtasks",
+                "done": false
+              },
+              {
+                "text": "Hovering or selecting a task darkens its guide line and tints its subtasks",
+                "done": false
+              },
+              {
+                "text": "Works in light and dark mode and on a phone",
+                "done": false
+              }
+            ],
+            "log": [
+              {
+                "at": "2026-10-23T02:54:13.370Z",
+                "agent": "claude-9cc89b7b",
+                "text": "Added under T-26, approved by Alex, in the \"Web UI design review\" thread (said \"Yes please\" to indent guides plus hover/selection highlighting)"
               }
             ]
           }

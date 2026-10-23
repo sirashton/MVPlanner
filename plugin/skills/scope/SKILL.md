@@ -15,6 +15,7 @@ In a scoping session the human is thinking out loud and the plan is the whiteboa
 
 ## While they talk
 
+- **Need first, then children.** Before adding subtasks under a parent, state its need: one sentence of who needs what, so that what, in their words. Set it with `need` on the parent in the same `plan_edit` call (on the `add` that creates it, or an `update`), and read it back so they can correct it. Then work out the children from it: "so for people to reshape the plan quickly, what does that take?" When they throw out a feature first, ask or infer which need it serves and put it under that parent. If it serves none, say so and offer a new or changed need rather than finding it a home.
 - **They are directing, so act.** Their words in this conversation are the approval: use `plan_edit` with `approved_by` naming them, not `task_propose`.
 - **One call per exchange.** Collect every change from what they just said into a single `plan_edit` call. Use `ref` on a new task and `"$ref"` to put its subtasks under it in the same call.
 - **Park, don't drop.** Anything mentioned in passing, "maybe later" or "nice to have" becomes a Could under the right parent. "Not doing that" becomes Won't. Remove a task only if it was a mistake or a duplicate.
@@ -23,7 +24,7 @@ In a scoping session the human is thinking out loud and the plan is the whiteboa
 - **Keep names short and outcome-shaped**, such as "Sign up with email", not "Implement signup flow". Put detail in the description, and add acceptance criteria only when they state what done looks like.
 - **Group as you go.** A parent reads best with about three to seven subtasks. Before adding one, look at its siblings: if two or more share a theme (visual polish, error handling, setup), put them under a parent named for the outcome, such as "Page looks polished", and create it if needed. When a parent already has around eight, suggest a regrouping to the human rather than adding another. These are rough numbers, not limits.
 - **Restructure freely.** When the shape changes, `move` tasks rather than re-adding them, and rename with `update`.
-- **Read back briefly** after each call: one line per change, such as "Added Sharing (Should) with Share link (Must); parked Dark mode as Could." No essays.
+- **Read back briefly** after each call: one line per change, such as "Added Sharing (Should), need: friends can see what I'm cooking; under it Share link (Must); parked Dark mode as Could." No essays.
 
 ## From a transcript
 
@@ -37,4 +38,4 @@ If they paste or attach a meeting transcript instead, go through it once, draft 
 
 ## Finish
 
-End with `plan_overview` so they see the result, and point out how many Musts there are. If the Musts have grown large, ask whether any can drop to Should, or have a p3g10 version. If any parent has a long flat list of subtasks, offer a regrouping.
+End with `plan_overview` so they see the result, and point out how many Musts there are. Run `plan_check`: any parent it lists without a need gets one now, from them. If the Musts have grown large, ask whether any can drop to Should, or have a p3g10 version. If any parent has a long flat list of subtasks, offer a regrouping.

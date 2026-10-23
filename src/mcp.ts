@@ -159,6 +159,7 @@ export function createServer(cwd: string, storePromise: Promise<PlanStore> = ope
         description: 'Change the shape of the plan in one quick save: add, update, move or remove tasks, and accept or decline proposals. '
             + 'Only use this while a human is directing the plan in this conversation, such as a scoping session; otherwise use task_propose. '
             + 'Batch every change from one exchange into a single call. Prefer setting a task to Won\'t over removing it, so the decision is kept. '
+            + 'Work top down: give each parent a need (who needs what, so that what) before adding its subtasks, and draw the subtasks from that need. '
             + 'Keep parents to a handful of subtasks: put related work under a themed parent named for the outcome, adding it with a ref in the same call.',
         inputSchema: {
             agent: agentArg,

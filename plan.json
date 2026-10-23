@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 170,
-  "nextId": 85,
+  "revision": 171,
+  "nextId": 86,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -2123,6 +2123,35 @@
             "log": [
               {
                 "at": "2026-10-23T03:29:47.333Z",
+                "agent": "claude-f555c004",
+                "text": "Proposed under T-78"
+              }
+            ]
+          },
+          {
+            "id": "T-85",
+            "name": "Review only what's on the current path; the rest waits in a later pile",
+            "status": "Not Started",
+            "mscw": "Must",
+            "proposed": true,
+            "description": "Until the project has done all it Must, the decision inbox shows only proposals whose every ancestor is a Must; once at Should, Should-path ones join, and so on. The rest sits in a later pile, filterable by path level: on the Must path, on the Should path, on the Could path (Alex). An agent can still flag \"this suggests raising a parent to Must\" for review straight away. Without it, the human spends review time on work that can't matter yet.",
+            "acceptance": [
+              {
+                "text": "The inbox shows only proposals on the current do-more level's path",
+                "done": false
+              },
+              {
+                "text": "The later pile can be filtered by Must, Should and Could path",
+                "done": false
+              },
+              {
+                "text": "A flagged 'raise the parent' proposal shows in the inbox whatever its path",
+                "done": false
+              }
+            ],
+            "log": [
+              {
+                "at": "2026-10-23T03:29:51.756Z",
                 "agent": "claude-f555c004",
                 "text": "Proposed under T-78"
               }

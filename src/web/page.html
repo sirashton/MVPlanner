@@ -56,11 +56,16 @@ header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spac
 
 .ladder { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 18px 0 20px; }
 .rung { font-size: 13px; color: var(--ink-soft); }
-.rung b { color: var(--ink); font-weight: 650; }
-.rung.current b { color: var(--must); }
+.rung b { color: var(--p, var(--ink)); font-weight: 650; }
+.rung.current b { font-weight: 750; }
 .bar { height: 6px; background: var(--rule); border-radius: 3px; margin-top: 6px; overflow: hidden; }
-.bar span { display: block; height: 100%; background: var(--ink-soft); border-radius: 3px; }
-.rung.current .bar span { background: var(--must); }
+.bar span { display: block; height: 100%; background: var(--p, var(--ink-soft)); border-radius: 3px; }
+.rung:not(.current) .bar span { opacity: .55; }
+/* Each priority keeps one colour wherever it appears: pickers, decisions, focus levels, the ladder and the done marks. */
+[data-p=Must] { --p: var(--must); }
+[data-p=Should] { --p: var(--should); }
+[data-p=Could] { --p: var(--could); }
+[data-p="Won't"] { --p: var(--wont); }
 
 .capture { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: var(--sheet); border: 1px solid var(--rule);
   border-radius: 10px; padding: 8px; }
@@ -76,12 +81,10 @@ header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spac
 .keys p { margin: 6px 0 0; max-width: 60ch; }
 
 .prio { display: inline-flex; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; flex: none; }
-.prio button { border: 0; background: transparent; width: 26px; height: 24px; font-size: 12px; font-weight: 700; cursor: pointer; color: var(--ink-soft); }
+.prio button { border: 0; background: transparent; width: 26px; height: 24px; font-size: 12px; font-weight: 700; cursor: pointer; color: var(--p); }
 .prio button + button { border-left: 1px solid var(--rule); }
-.prio button[aria-pressed=true][data-p=Must] { background: var(--must); color: var(--sheet); }
-.prio button[aria-pressed=true][data-p=Should] { background: var(--should); color: var(--sheet); }
-.prio button[aria-pressed=true][data-p=Could] { background: var(--could); color: var(--sheet); }
-.prio button[aria-pressed=true][data-p="Won't"] { background: var(--wont); color: var(--sheet); }
+.prio button:hover { background: color-mix(in srgb, var(--p) 12%, transparent); }
+.prio button[aria-pressed=true], .prio button[aria-pressed=true]:hover { background: var(--p); color: var(--sheet); }
 
 .decisions { margin: 20px 0 0; border-left: 3px solid var(--ink); padding: 4px 0 4px 14px; }
 .decisions h2, .board h2 { font-size: 17px; font-weight: 750; margin: 0 0 8px; display: flex; align-items: center; gap: 10px; }
@@ -95,16 +98,9 @@ header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spac
 .proposal .title { font-size: 16px; }
 .proposal .why { margin: 2px 0; }
 .prio.decide button { width: 34px; height: 30px; font-size: 13px; }
-.prio.decide button[data-suggested=true] { box-shadow: inset 0 0 0 2px var(--p); color: var(--p); }
-.prio.decide button[data-p=Must] { --p: var(--must); }
-.prio.decide button[data-p=Should] { --p: var(--should); }
-.prio.decide button[data-p=Could] { --p: var(--could); }
-.prio.decide button[data-p="Won't"] { --p: var(--wont); }
+.prio.decide button[data-suggested=true] { box-shadow: inset 0 0 0 2px var(--p); }
 .suggested { font-size: 13px; color: var(--ink-soft); }
-.prio.decide button:hover[data-p=Must] { background: var(--must); color: var(--sheet); }
-.prio.decide button:hover[data-p=Should] { background: var(--should); color: var(--sheet); }
-.prio.decide button:hover[data-p=Could] { background: var(--could); color: var(--sheet); }
-.prio.decide button:hover[data-p="Won't"] { background: var(--wont); color: var(--sheet); }
+.prio.decide button:hover { background: var(--p); color: var(--sheet); }
 .proposal .muted { color: var(--ink-soft); font-style: italic; }
 .proposal .criteria { margin: 0; padding-left: 0; font-size: 14px; color: var(--ink-soft); }
 .acts-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 6px; }
@@ -125,8 +121,8 @@ header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spac
 .toggle[aria-pressed=true] { background: var(--ink); color: var(--sheet); border-color: var(--ink); }
 .levels { display: inline-flex; align-items: center; border: 1px solid var(--rule); border-radius: 999px; overflow: hidden; font-size: 13px; }
 .levels-label { padding: 2px 8px 2px 10px; color: var(--ink-soft); }
-.levels button { border: 0; border-left: 1px solid var(--rule); background: transparent; padding: 2px 10px; cursor: pointer; color: var(--ink-soft); }
-.levels button[aria-pressed=true] { background: var(--ink); color: var(--sheet); }
+.levels button { border: 0; border-left: 1px solid var(--rule); background: transparent; padding: 2px 10px; cursor: pointer; color: var(--p, var(--ink-soft)); font-weight: 600; }
+.levels button[aria-pressed=true] { background: var(--p, var(--ink)); color: var(--sheet); }
 
 .tree { list-style: none; margin: 0; padding: 0; }
 .row { display: flex; align-items: center; gap: 8px; min-height: 36px; padding: 2px 6px 2px calc(var(--depth) * 22px); border-radius: 6px; position: relative; }
@@ -165,10 +161,7 @@ header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spac
 .chip::after { content: attr(data-p); }
 .chip[data-differs] { text-decoration: underline dotted; text-underline-offset: 3px; cursor: help; }
 aside.detail .counts { font-size: 13px; color: var(--ink-soft); margin: 6px 0 0; }
-.chip[data-p=Must] { color: var(--must); }
-.chip[data-p=Should] { color: var(--should); }
-.chip[data-p=Could] { color: var(--could); }
-.chip[data-p="Won't"] { color: var(--wont); }
+.chip { color: var(--p); }
 .row .acts { display: flex; gap: 2px; opacity: 0; flex: none; }
 .row:hover .acts, .row.selected .acts, .row:focus-within .acts { opacity: 1; }
 .icon { border: 0; background: transparent; width: 26px; height: 26px; border-radius: 5px; cursor: pointer; color: var(--ink-soft); font-size: 15px; }
@@ -428,7 +421,7 @@ function render() {
   document.title = `${v.name} plan`;
   $('name').textContent = v.name;
   $('status').textContent = v.status;
-  $('ladder').replaceChildren(...v.ladder.map(r => el('div', { class: r.isCurrent ? 'rung current' : 'rung' },
+  $('ladder').replaceChildren(...v.ladder.map((r, i) => el('div', { class: r.isCurrent ? 'rung current' : 'rung', 'data-p': P[i] === "Won't" ? undefined : P[i] },
     el('b', {}, r.label), ` ${r.done} of ${r.total} done`,
     el('div', { class: 'bar' }, el('span', { style: `width:${r.total ? (100 * r.done / r.total).toFixed(1) : 0}%` })))));
 
@@ -504,7 +497,7 @@ function render() {
   }
 
   renderDetail(byId);
-  $('focus-levels').replaceChildren($('focus-levels').firstElementChild, ...LEVELS.map(l => el('button', { type: 'button', 'aria-pressed': String(l === ui.level),
+  $('focus-levels').replaceChildren($('focus-levels').firstElementChild, ...LEVELS.map(l => el('button', { type: 'button', 'aria-pressed': String(l === ui.level), 'data-p': l === 'All' ? undefined : l,
     title: { Must: 'Only Must work', Should: 'Must and Should work', Could: 'Must, Should and Could work', All: "Every task, finished ones too" }[l],
     onclick: () => { ui.level = l; ui.open.clear(); ui.closed.clear(); remember(); render(); } }, l)));
   $('wont-toggle').hidden = ui.level !== 'All';

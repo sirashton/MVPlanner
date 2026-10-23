@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 178,
+  "revision": 179,
   "nextId": 86,
   "root": {
     "id": "T-1",
@@ -2108,7 +2108,6 @@
             "name": "Scope review flags additions no parent need explains",
             "status": "Not Started",
             "mscw": "Should",
-            "proposed": true,
             "description": "The scope reviewer lists user-visible additions in a diff (new key handlers, controls, settings) and matches each to a criterion or accepted proposal. It runs as a required step before a PR opens. Without it, drift is caught only if the building agent reports it honestly.",
             "acceptance": [
               {
@@ -2121,6 +2120,10 @@
                 "at": "2026-10-23T03:29:42.859Z",
                 "agent": "claude-f555c004",
                 "text": "Proposed under T-78"
+              },
+              {
+                "at": "2026-10-23T03:37:19.090Z",
+                "text": "Proposal accepted"
               }
             ]
           },

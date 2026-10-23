@@ -344,6 +344,8 @@ const ui = {
   captureParent: null,
   capturePrio: 'Must',
   renaming: null,
+  // The task the keyboard last acted on, so shortcuts still have a target after focus leaves the tree.
+  cursor: null,
   decisionsOpen: false,
   // Proposals decided on this page but not yet saved, hidden so they can't be decided twice.
   deciding: new Set(),
@@ -545,7 +547,10 @@ function render() {
   };
   visit(v.tree[0], 'Must');
   ui.prev = new Map(v.tree.map(r => [r.id, `${r.name}|${r.mscw}|${r.status}|${r.agent || ''}|${r.parent || ''}`]));
+  // Redrawing replaces every row, so put focus back on the row that had it or the keys would stop working.
+  const focused = document.activeElement?.closest?.('.row')?.dataset.id;
   $('tree').replaceChildren(...items);
+  if (focused && !ui.renaming) document.querySelector(`.row[data-id="${focused}"]`)?.focus({ preventScroll: true });
   markFamily(ui.selected);
   if (ui.renaming) {
     const name = document.querySelector(`.row[data-id="${ui.renaming}"] .name`);
@@ -704,10 +709,7 @@ function show(view) {
   ui.view = view;
   for (const id of ui.deciding) if (!view.proposals.some(p => p.id === id)) ui.deciding.delete(id);
   if (ui.selected && !view.tree.some(r => r.id === ui.selected)) ui.selected = null;
-  const active = document.activeElement;
-  const keep = active && active.closest('.row') ? active.closest('.row').dataset.id : null;
   render();
-  if (keep && !ui.renaming) document.querySelector(`.row[data-id="${keep}"]`)?.focus();
 }
 
 $('backdrop').addEventListener('click', () => { ui.selected = null; render(); });
@@ -727,9 +729,17 @@ $('tree').addEventListener('pointerover', e => { if (e.pointerType === 'mouse') 
 $('tree').addEventListener('pointerleave', () => markFamily(ui.selected));
 $('wont-toggle').addEventListener('click', () => { ui.showWont = !ui.showWont; remember(); render(); });
 
+$('tree').addEventListener('focusin', e => { const row = e.target.closest('.row'); if (row) ui.cursor = row.dataset.id; });
 document.addEventListener('keydown', e => {
-  const row = e.target.closest && e.target.closest('.row');
-  if (!row || e.target.isContentEditable || e.metaKey || e.ctrlKey || e.altKey) return;
+  if (e.metaKey || e.ctrlKey || e.altKey || e.target.isContentEditable || e.target.closest?.('input, textarea, select')) return;
+  // Keys pressed with focus outside the tree, after a click on the page or a button, act on the selected or last used task.
+  let row = e.target.closest?.('.row');
+  if (!row) {
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.closest?.('button, a, summary')) return;
+    row = document.querySelector(`.row[data-id="${ui.selected || ui.cursor}"]`);
+    if (!row) return;
+    row.focus();
+  }
   const id = row.dataset.id;
   const rows = [...document.querySelectorAll('.row')];
   const i = rows.indexOf(row);

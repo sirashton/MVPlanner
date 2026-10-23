@@ -16,9 +16,9 @@
   --ink-soft: #5d6b7c;
   --rule: #d5dce4;
   --must: #3b3fb6;
-  --should: #1f7a74;
-  --could: #a36a12;
-  --wont: #8a94a3;
+  --should: #1d7570;
+  --could: #8a5a0f;
+  --wont: #616c7b;
   --live: #c2307a;
   --done: #2f8a4c;
   --danger: #b3261e;
@@ -28,7 +28,7 @@
 /* Light unless the viewer picks dark with the switch in the header. */
 :root[data-theme="dark"] {
   --paper: #141a22; --sheet: #1b232d; --ink: #e3e9f0; --ink-soft: #9aa7b6; --rule: #2d3844;
-  --must: #9da2ff; --should: #5cc4bb; --could: #e0a54a; --wont: #6f7b8a; --live: #ff6fb0; --done: #6fcf8d;
+  --must: #9da2ff; --should: #5cc4bb; --could: #e0a54a; --wont: #8a96a6; --live: #ff6fb0; --done: #6fcf8d;
   --danger: #ff8a80; --focus: #9da2ff; color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -44,7 +44,7 @@ header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spac
 .conn { margin-left: auto; font-size: 13px; color: var(--ink-soft); display: flex; align-items: center; gap: 6px; }
 .conn i { width: 8px; height: 8px; border-radius: 50%; background: var(--wont); display: inline-block; }
 .conn.live i { background: var(--done); }
-.conn.saving i { background: var(--live); }
+.conn.saving i { background: var(--must); }
 .theme { font-size: 13px; color: var(--ink-soft); background: none; border: 1px solid var(--rule); border-radius: 999px; padding: 2px 10px; cursor: pointer; }
 .theme:hover { color: var(--ink); }
 .tid { flex: none; font-size: 12px; color: var(--ink-soft); font-variant-numeric: tabular-nums; font-weight: 400; font-style: normal; }
@@ -64,7 +64,11 @@ header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spac
 .capture:focus-within { border-color: var(--focus); }
 .capture .under { font-size: 13px; color: var(--ink-soft); display: flex; align-items: center; gap: 6px; }
 .capture select { border: 1px solid var(--rule); background: var(--paper); border-radius: 6px; padding: 4px 6px; max-width: 220px; }
-.hint { font-size: 12px; color: var(--ink-soft); margin: 6px 2px 0; }
+.keys { font-size: 13px; color: var(--ink-soft); }
+.keys summary { cursor: pointer; list-style: none; border: 1px solid var(--rule); border-radius: 999px; padding: 2px 10px; }
+.keys summary::-webkit-details-marker { display: none; }
+.keys[open] summary { color: var(--ink); }
+.keys p { margin: 6px 0 0; max-width: 60ch; }
 
 .prio { display: inline-flex; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; flex: none; }
 .prio button { border: 0; background: transparent; width: 26px; height: 24px; font-size: 12px; font-weight: 700; cursor: pointer; color: var(--ink-soft); }
@@ -74,23 +78,29 @@ header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spac
 .prio button[aria-pressed=true][data-p=Could] { background: var(--could); color: var(--sheet); }
 .prio button[aria-pressed=true][data-p="Won't"] { background: var(--wont); color: var(--sheet); }
 
-.decisions { margin: 20px 0 0; border-left: 3px solid var(--live); padding: 4px 0 4px 14px; }
+.decisions { margin: 20px 0 0; border-left: 3px solid var(--ink); padding: 4px 0 4px 14px; }
 .decisions h2, .board h2 { font-size: 17px; font-weight: 750; margin: 0 0 8px; display: flex; align-items: center; gap: 10px; }
 .decisions ul { list-style: none; margin: 0; padding: 0; }
 .decisions > ul > li { padding: 10px 0; border-bottom: 1px solid var(--rule); }
 .decisions > ul > li:last-child { border-bottom: 0; }
 .proposal { display: grid; gap: 4px; max-width: 72ch; }
 .proposal .chip { display: inline-block; width: auto; text-align: left; margin-left: 6px; }
+.proposal .title { font-size: 16px; }
 .proposal .why { margin: 2px 0; }
 .prio.decide button { width: 34px; height: 30px; font-size: 13px; }
-.prio.decide button[data-suggested=true] { box-shadow: inset 0 0 0 2px var(--focus); color: var(--ink); }
+.prio.decide button[data-suggested=true] { box-shadow: inset 0 0 0 2px var(--p); color: var(--p); }
+.prio.decide button[data-p=Must] { --p: var(--must); }
+.prio.decide button[data-p=Should] { --p: var(--should); }
+.prio.decide button[data-p=Could] { --p: var(--could); }
+.prio.decide button[data-p="Won't"] { --p: var(--wont); }
+.suggested { font-size: 13px; color: var(--ink-soft); }
 .prio.decide button:hover[data-p=Must] { background: var(--must); color: var(--sheet); }
 .prio.decide button:hover[data-p=Should] { background: var(--should); color: var(--sheet); }
 .prio.decide button:hover[data-p=Could] { background: var(--could); color: var(--sheet); }
 .prio.decide button:hover[data-p="Won't"] { background: var(--wont); color: var(--sheet); }
 .proposal .muted { color: var(--ink-soft); font-style: italic; }
 .proposal .criteria { margin: 0; padding-left: 18px; font-size: 14px; color: var(--ink-soft); }
-.acts-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+.acts-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 6px; }
 .decisions .where { color: var(--ink-soft); font-size: 13px; }
 .btn { border: 1px solid var(--rule); background: var(--sheet); border-radius: 6px; padding: 3px 10px; font-size: 13px; cursor: pointer; }
 .btn:hover { border-color: var(--ink-soft); }
@@ -116,6 +126,7 @@ header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spac
 .mark.progress { background: linear-gradient(90deg, var(--ink-soft) 50%, transparent 50%); }
 .mark.blocked { border-color: var(--danger); background: var(--danger); }
 .mark.working { border-color: var(--live); background: var(--live); box-shadow: 0 0 0 3px color-mix(in srgb, var(--live) 22%, transparent); }
+.mark.proposed { border-style: dashed; }
 .mark.done { border: 0; border-radius: 0; }
 .mark.done::after { content: ""; position: absolute; left: 3px; top: 0; width: 5px; height: 9px; border: solid var(--done); border-width: 0 2px 2px 0; transform: rotate(45deg); }
 .legend .mark { display: inline-block; vertical-align: -1px; margin-right: 4px; }
@@ -131,7 +142,7 @@ header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spac
 .tag { font-size: 12px; border-radius: 999px; padding: 1px 8px; flex: none; white-space: nowrap; }
 .tag.agent { color: var(--live); border: 1px solid color-mix(in srgb, var(--live) 50%, transparent); }
 .tag.next { color: var(--could); border: 1px solid color-mix(in srgb, var(--could) 50%, transparent); }
-.tag.proposed { color: var(--live); border: 1px dashed var(--live); }
+.tag.proposed { color: var(--ink-soft); border: 1px dashed var(--ink-soft); }
 .tag.muted { color: var(--ink-soft); }
 .row .prio { display: none; }
 .row:hover .prio, .row.selected .prio, .row:focus-within .prio { display: inline-flex; }
@@ -200,7 +211,6 @@ aside.detail .foot { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap;
     <span class="prio" id="capture-prio" role="group" aria-label="Priority"></span>
     <button class="btn primary" type="submit">Add</button>
   </form>
-  <p class="hint">Proposals: pick M, S or C to accept at that priority, or W to decline. Enter adds and keeps the box ready for the next one. Select a row and press A to add under it, 1 to 4 to set its priority, R to rename.</p>
 
   <section class="decisions" id="decisions" hidden></section>
 
@@ -209,6 +219,7 @@ aside.detail .foot { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap;
       <div class="toolbar">
         <button class="toggle" id="focus-toggle" aria-pressed="true" title="Show only what matters now">Focus</button>
         <button class="toggle" id="wont-toggle" aria-pressed="false">Show Won't</button>
+        <details class="keys"><summary>Shortcuts</summary><p>Enter in the add box adds and keeps it ready for the next one. Select a row, then: arrows to move and open, A to add under it, 1 to 4 to set its priority, R to rename.</p></details>
         <span class="legend"><span><i class="mark working"></i>being worked on</span><span><i class="mark progress"></i>in progress</span><span><i class="mark"></i>not started</span><span><i class="mark done"></i>done</span></span>
       </div>
       <ul class="tree" id="tree" role="tree" aria-label="Tasks"></ul>
@@ -390,14 +401,14 @@ function render() {
       const kidsOf = (kids.get(p.id) || []).filter(k => k.isProposed);
       return el('li', {},
         el('div', { class: 'proposal' },
-          el('div', {}, el('span', { class: 'tid' }, p.id), ` `, el('b', {}, p.name), ` `, el('span', { class: 'chip', 'data-p': p.mscw, 'data-letter': LETTER[p.mscw] }),
-            el('span', { class: 'where' }, ` under ${p.path}${p.by ? `, proposed by ${p.by}` : ''}`)),
+          el('div', { class: 'title' }, el('span', { class: 'tid' }, p.id), ` `, el('b', {}, p.name)),
+          el('div', { class: 'where' }, `Under ${p.path}${p.by ? `, proposed by ${p.by}` : ''}`),
           p.description ? el('p', { class: 'why' }, p.description) : el('p', { class: 'why muted' }, 'No description was given.'),
           row && row.acceptance.length ? el('ul', { class: 'criteria' }, row.acceptance.map(c => el('li', {}, `Done when: ${c.text}`))) : null,
           kidsOf.length ? el('p', { class: 'where' }, `Includes ${kidsOf.length} proposed subtask${kidsOf.length > 1 ? 's' : ''}: ${kidsOf.map(k => k.name).join('; ')}`) : null,
           el('div', { class: 'acts-row' },
-            el('span', { class: 'where' }, 'Decide:'),
             decisionControl(p),
+            el('span', { class: 'suggested' }, `${p.mscw} suggested. M, S or C accepts at that priority; W declines.`),
             el('button', { class: 'btn', onclick: () => { ui.open.add(p.id); select(p.id); } }, 'Show in plan'))));
     })));
 
@@ -453,7 +464,7 @@ function rowFor(row, eff, childCount, open, isNext, changed) {
   },
     el('button', { class: 'caret', disabled: !childCount, 'aria-label': open ? 'Collapse' : 'Expand', tabindex: '-1',
       onclick: e => { e.stopPropagation(); toggle(row.id, !open); } }, childCount ? (open ? '▼' : '▶') : ''),
-    el('span', { class: `mark ${markFor(row)}`, role: 'img', 'aria-label': row.agent ? `being worked on by ${row.agent}` : row.status }),
+    el('span', { class: `mark ${markFor(row)}${row.isProposed && !row.agent ? ' proposed' : ''}`, role: 'img', 'aria-label': row.agent ? `being worked on by ${row.agent}` : row.status }),
     el('span', { class: 'tid' }, row.id),
     el('span', { class: 'name', ondblclick: e => { e.stopPropagation(); startRename(e.currentTarget, row.id); } }, row.name),
     el('button', { class: 'more', tabindex: '-1', onclick: e => { e.stopPropagation(); toggle(row.id, true); } }),
@@ -523,7 +534,7 @@ function renderDetail(byId) {
     el('h3', {}, row.name),
     el('div', { class: 'path' }, `${row.id}${row.path ? ` in ${row.path}` : ''}`),
     row.agent ? el('p', {}, el('span', { class: 'tag agent' }, row.agent), ' is working on this') : null,
-    row.isProposed && !ui.deciding.has(row.id) ? [el('label', {}, 'Decide: M, S or C accepts at that priority, W declines'), decisionControl(row)] : null,
+    row.isProposed && !ui.deciding.has(row.id) ? [el('label', {}, `Decide: ${row.mscw} suggested. M, S or C accepts at that priority; W declines`), decisionControl(row)] : null,
     row.depth > 0 ? [el('label', {}, 'Priority under its parent'), prioControl(row.mscw, p => edit({ op: 'update', id: row.id, mscw: p }), 'Priority')] : null,
     el('label', { for: 'd-status' }, 'Status'),
     el('select', { id: 'd-status', onchange: e => edit({ op: 'update', id: row.id, status: e.target.value }) },

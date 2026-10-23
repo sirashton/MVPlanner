@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 114,
-  "nextId": 65,
+  "revision": 115,
+  "nextId": 67,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -1032,6 +1032,58 @@
                 "at": "2026-10-23T01:13:00.943Z",
                 "agent": "claude-9cc89b7b",
                 "text": "status In Progress -> Complete; checked \"The Focus control offers Must, Should and Could levels plus showing everything\"; checked \"Each level hides tasks whose project-level priority is below it\"; checked \"The chosen level is remembered in the browser\"; Focus is now Must / Should / Could / All, filtering by project-level priority; default Could; remembered in localStorage (checked by reload in Playwright). Handoff: same PR as T-58..T-61."
+              }
+            ]
+          },
+          {
+            "id": "T-65",
+            "name": "Priority colours on every M, S, C, W control",
+            "status": "Not Started",
+            "mscw": "Should",
+            "description": "Alex: give M, S and C their distinct colours everywhere on the page for consistency: priority pickers, decision buttons, Focus levels and the ladder.",
+            "acceptance": [
+              {
+                "text": "Every M/S/C/W button shows its letter in its priority colour, and fills with that colour when chosen",
+                "done": false
+              },
+              {
+                "text": "Focus levels and ladder labels use the same priority colours",
+                "done": false
+              }
+            ],
+            "log": [
+              {
+                "at": "2026-10-23T02:36:52.525Z",
+                "agent": "claude-9cc89b7b",
+                "text": "Added under T-26, approved by Alex, in the \"Web UI design review\" thread"
+              }
+            ]
+          },
+          {
+            "id": "T-66",
+            "name": "Show how far each task is done, by priority",
+            "status": "Not Started",
+            "mscw": "Should",
+            "description": "Alex: a task's mark should show to what extent it is done based on its children: done all we Must, done all we Should, done all we Could, without needing words.",
+            "acceptance": [
+              {
+                "text": "A task with subtasks shows a compact mark of which priority levels beneath it are fully done, in the priority colours",
+                "done": false
+              },
+              {
+                "text": "Hovering the mark says it in words, e.g. 'All Musts done; Should work remains'",
+                "done": false
+              },
+              {
+                "text": "The legend explains the mark",
+                "done": false
+              }
+            ],
+            "log": [
+              {
+                "at": "2026-10-23T02:36:52.525Z",
+                "agent": "claude-9cc89b7b",
+                "text": "Added under T-26, approved by Alex, in the \"Web UI design review\" thread"
               }
             ]
           }

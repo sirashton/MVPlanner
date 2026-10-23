@@ -83,13 +83,19 @@ export function createServer(cwd: string, storePromise: Promise<PlanStore> = ope
             note: z.string().optional().describe('What changed, in a sentence. When completing, a handoff note for the next agent: what changed, decisions and why, gotchas, what you left out (with T-ids) and where to look'),
             acceptance_done: z.array(z.number().int().min(0)).optional().describe('Indexes of acceptance criteria now met'),
             links: z.array(z.string()).optional().describe('PR or commit URLs'),
+            beyond_criteria: z.string().optional().describe('Required when completing: anything a person would notice that you built but no acceptance criterion names, each with the id of the proposal a human accepted for it, or "nothing"'),
         },
-    }, ({ id, agent, status, note, acceptance_done, links }) => guarded(async () => {
+    }, ({ id, agent, status, note, acceptance_done, links, beyond_criteria }) => guarded(async () => {
         if (status === 'Complete' && !note?.trim()) {
             throw new PlanError(`Completing ${id} needs a handoff note: what changed, decisions and why, gotchas, what you left out (with T-ids) and where to look.`);
         }
+        // Extras built without being asked for are how features drift in, so completing asks for them by name.
+        if (status === 'Complete' && !beyond_criteria?.trim()) {
+            throw new PlanError(`Completing ${id} needs beyond_criteria: what did you build that no acceptance criterion names (a shortcut, setting, button, mode), with the proposal id a human accepted for each? Say "nothing" if there is none. If something was never proposed, propose it now with task_propose and say so.`);
+        }
+        const beyond = beyond_criteria?.trim() ? `Beyond the criteria: ${beyond_criteria.trim()}` : undefined;
         const { plan, result } = await (await storePromise).mutate(`${agent} updates ${id}`, p =>
-            updateTask(p, id, agent, { status, note, acceptanceDone: acceptance_done, links }));
+            updateTask(p, id, agent, { status, note: [note, beyond].filter(Boolean).join('. '), acceptanceDone: acceptance_done, links }));
         return renderTask(plan, result, taskPath(plan, id));
     }));
 

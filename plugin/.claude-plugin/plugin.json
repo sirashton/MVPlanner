@@ -1,7 +1,6 @@
 {
   "name": "mvplanner",
   "displayName": "MVPlanner",
-  "version": "0.2.0",
   "description": "One prioritised plan that every agent works from: claim before editing, propose instead of drifting, defer with MVP()/TODO() markers",
   "author": {
     "name": "Alex Ashton",

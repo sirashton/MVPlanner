@@ -27,6 +27,8 @@ mvplan init --name "My project"        # or: mvplan init --from plan.json
 
 `init` also writes `.claude/settings.json` and a short section of `CLAUDE.md`, so Claude Code offers the plugin to everyone who opens the repo, and an agent that starts without it stops and says so instead of working blind. Commit both. For an existing plan, `mvplan setup` writes them.
 
+The repo settings also turn on auto-update for the MVPlanner marketplace, which Claude Code leaves off for third-party marketplaces. Running sessions pick up an update with `/reload-plugins`; new sessions load it by themselves. To update by hand: `claude plugin marketplace update mvplanner && claude plugin update mvplanner@mvplanner`.
+
 Cloud sessions on claude.ai/code don't install plugins from a repo's settings. Add this to the cloud environment's setup script instead:
 
 ```

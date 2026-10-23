@@ -3,7 +3,8 @@ import path from 'node:path';
 
 // Files that make every Claude Code session in a repo load MVPlanner, and tell agents what to do when it hasn't.
 
-export const MARKETPLACE = { source: { source: 'github', repo: 'sirashton/MVPlanner' } };
+// autoUpdate: third-party marketplaces don't update by themselves unless asked to.
+export const MARKETPLACE = { source: { source: 'github', repo: 'sirashton/MVPlanner' }, autoUpdate: true };
 const PLUGIN = 'mvplanner@mvplanner';
 const CLAUDE_MD_MARKER = '<!-- mvplanner -->';
 
@@ -27,8 +28,9 @@ export async function writeRepoSetup(root: string): Promise<string[]> {
         extraKnownMarketplaces?: Record<string, unknown>;
         enabledPlugins?: Record<string, boolean>;
     };
-    if (!settings.extraKnownMarketplaces?.mvplanner || settings.enabledPlugins?.[PLUGIN] !== true) {
-        settings.extraKnownMarketplaces = { ...settings.extraKnownMarketplaces, mvplanner: MARKETPLACE };
+    const known = settings.extraKnownMarketplaces?.mvplanner as { autoUpdate?: boolean } | undefined;
+    if (!known || known.autoUpdate === undefined || settings.enabledPlugins?.[PLUGIN] !== true) {
+        settings.extraKnownMarketplaces = { ...settings.extraKnownMarketplaces, mvplanner: { ...MARKETPLACE, ...known } };
         settings.enabledPlugins = { ...settings.enabledPlugins, [PLUGIN]: true };
         await fs.mkdir(path.dirname(settingsFile), { recursive: true });
         await fs.writeFile(settingsFile, `${JSON.stringify(settings, null, 2)}\n`);

@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-    checkMarkers, claimTask, decideProposal, computeDoMore, criticalPath, deferTask, findMarkers, migrateV1, nextTasks, overallLevel,
+    checkMarkers, claimTask, getTask, decideProposal, computeDoMore, criticalPath, deferTask, findMarkers, migrateV1, nextTasks, overallLevel,
     parsePlan, proposeTask, serializePlan, updateTask, validatePlan,
 } from '../src/core/index.ts';
 import type { Plan } from '../src/core/index.ts';
@@ -191,4 +191,22 @@ test('a batch of edits applies in order, links new tasks by ref, and fails as a 
     assert.deepEqual(sharing.subtasks!.map(t => t.name), ['Share link', 'Quantum sorting']);
     assert.equal(sharing.subtasks![0].mscw, 'Must');
     assert.throws(() => applyEdits(plan, 'agent-a', [{ op: 'remove', id: '$nope' }], 'Alex'), /Edit 1 \(remove\) failed: Unknown ref/);
+});
+
+test('deciding a proposal twice in one batch is not an error', async () => {
+    const { applyEdits } = await import('../src/core/index.ts');
+    const plan = todoApp();
+    const a = proposeTask(plan, 'T-2', 'agent-b', { name: 'Undo', mscw: 'Should' });
+    const b = proposeTask(plan, 'T-2', 'agent-b', { name: 'Themes', mscw: 'Could' });
+    const lines = applyEdits(plan, undefined, [
+        { op: 'accept', id: a.id, mscw: 'Must' },
+        { op: 'accept', id: a.id, mscw: 'Must' },
+        { op: 'decline', id: b.id },
+        { op: 'decline', id: b.id },
+    ], 'Alex in the web UI');
+    assert.match(lines[1], /already accepted/);
+    assert.match(lines[3], /already declined/);
+    assert.equal(getTask(plan, a.id).mscw, 'Must');
+    assert.equal(getTask(plan, b.id).mscw, "Won't");
+    assert.throws(() => applyEdits(plan, undefined, [{ op: 'decline', id: a.id }], 'Alex'), /not a proposal/);
 });

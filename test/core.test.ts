@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-    checkMarkers, checkPullRequest, claimTask, getTask, decideProposal, computeDoMore, criticalPath, deferTask, findMarkers, migrateV1, nextTasks, overallLevel,
+    checkMarkers, checkPullRequest, claimTask, crowdingHint, CROWDED_SUBTASKS, getTask, decideProposal, computeDoMore, criticalPath, deferTask, findMarkers, migrateV1, nextTasks, overallLevel,
     parsePlan, proposeTask, serializePlan, updateTask, validatePlan,
 } from '../src/core/index.ts';
 import type { Plan } from '../src/core/index.ts';
@@ -120,6 +120,17 @@ test('proposals and deferrals become subtasks with fresh ids', () => {
     assert.equal(deferred.id, 'T-11');
     assert.deepEqual(deferred.deferred, { trigger: 'users ask', files: ['src/a.ts'] });
     assert.equal(overallLevel(plan), 'Must');
+});
+
+test('a parent past the crowded size gets a grouping reminder, once, and nothing is refused', () => {
+    const plan = todoApp();
+    assert.equal(crowdingHint(plan, ['T-2']), '');
+    for (let i = 0; i < CROWDED_SUBTASKS; i++) {
+        proposeTask(plan, 'T-2', 'a', { name: `Idea ${i}` });
+    }
+    const hint = crowdingHint(plan, ['T-2', 'T-2', 'T-6', 'T-99']);
+    assert.match(hint, /Basic list \(T-2\) now has 11 subtasks/);
+    assert.equal(hint.match(/now has/g)!.length, 1);
 });
 
 test('markers are found and checked against the plan', () => {

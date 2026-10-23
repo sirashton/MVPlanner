@@ -19,7 +19,9 @@ In a scoping session the human is thinking out loud and the plan is the whiteboa
 - **One call per exchange.** Collect every change from what they just said into a single `plan_edit` call. Use `ref` on a new task and `"$ref"` to put its subtasks under it in the same call.
 - **Park, don't drop.** Anything mentioned in passing, "maybe later" or "nice to have" becomes a Could under the right parent. "Not doing that" becomes Won't. Remove a task only if it was a mistake or a duplicate.
 - **Priority is relative to the parent.** Must means the parent isn't done without it. When they don't say, use Must for what they describe as the core, Should for what they clearly want but could ship without, and Could for everything else. Ask only when a guess would change what gets built first.
+- **p3g10: pi is 3, gravity is 10.** Challenge Musts as they come up. Could a basic assumption or a stripped-back version get it working? If so, add that version as the Must and park the refinement as a Should or Could under it, and say so in the read-back so they can push back.
 - **Keep names short and outcome-shaped**, such as "Sign up with email", not "Implement signup flow". Put detail in the description, and add acceptance criteria only when they state what done looks like.
+- **Group as you go.** A parent reads best with about three to seven subtasks. Before adding one, look at its siblings: if two or more share a theme (visual polish, error handling, setup), put them under a parent named for the outcome, such as "Page looks polished", and create it if needed. When a parent already has around eight, suggest a regrouping to the human rather than adding another. These are rough numbers, not limits.
 - **Restructure freely.** When the shape changes, `move` tasks rather than re-adding them, and rename with `update`.
 - **Read back briefly** after each call: one line per change, such as "Added Sharing (Should) with Share link (Must); parked Dark mode as Could." No essays.
 
@@ -35,4 +37,4 @@ If they paste or attach a meeting transcript instead, go through it once, draft 
 
 ## Finish
 
-End with `plan_overview` so they see the result, and point out how many Musts there are. If the Musts have grown large, ask whether any can drop to Should.
+End with `plan_overview` so they see the result, and point out how many Musts there are. If the Musts have grown large, ask whether any can drop to Should, or have a p3g10 version. If any parent has a long flat list of subtasks, offer a regrouping.

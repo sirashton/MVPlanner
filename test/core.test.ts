@@ -81,6 +81,18 @@ test('claims are exclusive and hide tasks from other agents', () => {
     assert.throws(() => updateTask(plan, 'T-4', 'agent-b', { status: 'Complete' }), /claimed by agent-a/);
 });
 
+test('a claim that has been quiet past the limit can be taken over, and the log says so', () => {
+    const plan = todoApp();
+    claimTask(plan, 'T-4', 'agent-a');
+    const later = Date.now() + 3 * 60 * 60 * 1000;
+    assert.deepEqual(nextTasks(plan, { agent: 'agent-b', now: later }).map(n => n.task.id), ['T-4']);
+    const task = claimTask(plan, 'T-4', 'agent-b', 'feature/y', later);
+    assert.equal(task.claimedBy!.agent, 'agent-b');
+    assert.match(task.log!.at(-1)!.text, /^Took over from agent-a, whose claim had been quiet since .+\. Claimed on feature\/y$/);
+    assert.equal(task.log!.at(-1)!.agent, 'agent-b');
+    assert.throws(() => claimTask(plan, 'T-4', 'agent-a'), /already claimed by agent-b/);
+});
+
 test('acceptance criteria gate completion', () => {
     const plan = todoApp();
     updateTask(plan, 'T-4', 'a', { addAcceptance: ['Click toggles state', 'State persists'] });

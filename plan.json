@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 64,
-  "nextId": 52,
+  "revision": 65,
+  "nextId": 53,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -876,6 +876,21 @@
             "log": [
               {
                 "at": "2026-10-23T00:32:58.259Z",
+                "agent": "claude-5f5428c4",
+                "text": "Proposed under T-50"
+              }
+            ]
+          },
+          {
+            "id": "T-52",
+            "name": "Briefings include notes from related tasks",
+            "status": "Not Started",
+            "mscw": "Must",
+            "proposed": true,
+            "description": "Claiming a task shows notes from the task itself, its parent, its siblings and the tasks it depends on, within a size budget.",
+            "log": [
+              {
+                "at": "2026-10-23T00:33:00.615Z",
                 "agent": "claude-5f5428c4",
                 "text": "Proposed under T-50"
               }

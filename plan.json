@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 122,
-  "nextId": 67,
+  "revision": 123,
+  "nextId": 68,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -1109,6 +1109,34 @@
                 "at": "2026-10-23T02:40:40.588Z",
                 "agent": "claude-9cc89b7b",
                 "text": "status In Progress -> Complete; checked \"A task with subtasks shows a compact mark of which priority levels beneath it are fully done, in the priority colours\"; checked \"Hovering the mark says it in words, e.g. 'All Musts done; Should work remains'\"; checked \"The legend explains the mark\"; Three bars (Must, Should, Could) on tasks with subtasks, filled from the do-more level (so priority is relative to parent); hover and detail panel say \"Done all we Must\" etc., per Alex's wording; legend item added. Handoff: PR with T-65 on claude/project-thread-e0welq."
+              }
+            ]
+          },
+          {
+            "id": "T-67",
+            "name": "Switch the logo to the M path, with MVP in priority colours",
+            "status": "Not Started",
+            "mscw": "Could",
+            "description": "Alex changed his mind on the logo: use concept F (the M drawn as a path through task nodes), colour the M, V and P letters of the wordmark in the Must, Should and Could colours, and show the bold-MVP, regular-lanner wordmark in the web page header.",
+            "acceptance": [
+              {
+                "text": "assets icon, favicon and wordmark use the M-path mark",
+                "done": false
+              },
+              {
+                "text": "The wordmark's M, V and P are in the Must, Should and Could colours, with lanner in a regular weight",
+                "done": false
+              },
+              {
+                "text": "The web page header shows the wordmark and the favicon is the M-path mark",
+                "done": false
+              }
+            ],
+            "log": [
+              {
+                "at": "2026-10-23T02:41:44.815Z",
+                "agent": "claude-9cc89b7b",
+                "text": "Added under T-26, approved by Alex, in the \"Web UI design review\" thread"
               }
             ]
           }

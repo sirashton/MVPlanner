@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 91,
-  "nextId": 58,
+  "revision": 92,
+  "nextId": 59,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -765,6 +765,39 @@
             ],
             "links": [
               "https://github.com/sirashton/MVPlanner/pull/14"
+            ]
+          },
+          {
+            "id": "T-58",
+            "name": "Make plan rows readable at a glance",
+            "status": "Not Started",
+            "mscw": "Should",
+            "proposed": true,
+            "description": "From the web page design review (findings 1, 3, 5, 7). On wide screens the priority label sits ~900px from the task name; the label shows priority under the parent while line weight shows project-level priority, with no hint why they differ; agent tags are opaque ids; arrow-key focus and selection disagree.",
+            "acceptance": [
+              {
+                "text": "At 1440px wide, a row's name and priority can be read without the eye crossing more than ~300px",
+                "done": false
+              },
+              {
+                "text": "When a task's own priority differs from its project-level priority, the page says so (tooltip or detail panel)",
+                "done": false
+              },
+              {
+                "text": "Agent tags show a human-readable name (thread or branch) rather than only the agent id",
+                "done": false
+              },
+              {
+                "text": "Keyboard focus and selection never highlight two different rows at once",
+                "done": false
+              }
+            ],
+            "log": [
+              {
+                "at": "2026-10-23T01:02:42.477Z",
+                "agent": "claude-9cc89b7b",
+                "text": "Proposed under T-26"
+              }
             ]
           }
         ],

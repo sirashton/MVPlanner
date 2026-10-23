@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 185,
+  "revision": 186,
   "nextId": 86,
   "root": {
     "id": "T-1",
@@ -2044,17 +2044,17 @@
           {
             "id": "T-80",
             "name": "Proposals say which part of the parent's need they serve",
-            "status": "In Progress",
+            "status": "Complete",
             "mscw": "Must",
             "description": "task_propose asks for a \"serves\" line quoting the parent's need, with a suggested MoSCoW. If no parent need explains the idea, the agent proposes changing a parent's need instead, and the human decides. Without it, ideas get attached to whichever parent looks closest.",
             "acceptance": [
               {
                 "text": "task_propose refuses a proposal with no serves line",
-                "done": false
+                "done": true
               },
               {
                 "text": "The page shows the serves line on each proposal",
-                "done": false
+                "done": true
               }
             ],
             "log": [
@@ -2071,13 +2071,16 @@
                 "at": "2026-10-23T03:48:42.947Z",
                 "agent": "claude-c4c20c01",
                 "text": "Claimed on claude/project-thread-cjyw4x"
+              },
+              {
+                "at": "2026-10-23T03:51:33.607Z",
+                "agent": "claude-c4c20c01",
+                "text": "status In Progress -> Complete; checked \"task_propose refuses a proposal with no serves line\"; checked \"The page shows the serves line on each proposal\"; linked https://github.com/sirashton/MVPlanner/pull/26; Merged PR #26. Tasks gain `serves` (types, schema, NewTask). requireServes() in ops.ts is the refusal, called from the MCP task_propose (serves is a required param) and `mvplan propose --serves`; proposeTask itself stays lenient because add/defer reuse it. The page shows \"Serves: ...\" on proposal cards (older ones say none was given) and in the detail panel. Changing a parent's need instead of fitting under it: the serves text asks agents to say so; the flag that sends it straight to the human is T-85. Beyond the criteria: the detail-panel line only."
               }
             ],
-            "claimedBy": {
-              "agent": "claude-c4c20c01",
-              "at": "2026-10-23T03:48:42.947Z",
-              "branch": "claude/project-thread-cjyw4x"
-            }
+            "links": [
+              "https://github.com/sirashton/MVPlanner/pull/26"
+            ]
           },
           {
             "id": "T-81",

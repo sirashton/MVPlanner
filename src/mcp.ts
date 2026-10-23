@@ -3,9 +3,9 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { z } from 'zod';
 import {
     MSCW, PlanError, STATUSES, addTask, applyEdits, checkMarkers, claimTask, criticalPath, deferTask, findMarkers, getTask, nextTasks,
-    crowdingHint, proposeTask, releaseTask, taskPath, updateTask,
+    crowdingHint, needHint, parentsWithoutNeed, proposeTask, releaseTask, taskPath, updateTask,
 } from './core/index.ts';
-import { renderNext, renderTask, renderTree } from './format.ts';
+import { renderNeedless, renderNext, renderTask, renderTree } from './format.ts';
 import { scanRepo } from './scan.ts';
 import { currentSession } from './session.ts';
 import { currentBranch, repoTopLevel } from './storage/git.ts';
@@ -30,6 +30,7 @@ async function guarded(fn: () => Promise<string>): Promise<ToolResult> {
 const PARENT_HINT = 'The most specific task this belongs under: a themed group such as "Page looks polished" when one fits, rather than the top-level feature';
 const agentArg = z.string().min(1).describe('Your agent id, as given in your MVPlanner briefing');
 const idArg = z.string().regex(/^T-\d+$/).describe('Task id, such as T-12');
+const needArg = z.string().describe('The need or outcome this task meets, like a user story: "People can reshape the plan quickly, so a scoping session keeps pace". Its subtasks are what that need takes');
 const mscwArg = z.enum(MSCW).describe("Priority relative to the parent task: Must, Should, Could or Won't");
 
 export function createServer(cwd: string, storePromise: Promise<PlanStore> = openStore(cwd)): McpServer {
@@ -105,7 +106,7 @@ export function createServer(cwd: string, storePromise: Promise<PlanStore> = ope
     }, ({ parent, agent, name, description, mscw, acceptance }) => guarded(async () => {
         const { plan, result } = await (await storePromise).mutate(`${agent} proposes "${name}"`, p =>
             proposeTask(p, parent, agent, { name, description, mscw, acceptance }));
-        return `Proposed as ${result.id} under ${parent}. Carry on with your claimed task; a human will accept or decline it.${crowdingHint(plan, [parent])}`;
+        return `Proposed as ${result.id} under ${parent}. Carry on with your claimed task; a human will accept or decline it.${crowdingHint(plan, [parent])}${needHint(plan, [parent])}`;
     }));
 
     server.registerTool('task_add', {
@@ -117,6 +118,7 @@ export function createServer(cwd: string, storePromise: Promise<PlanStore> = ope
             tasks: z.array(z.object({
                 name: z.string().min(1),
                 description: z.string().optional(),
+                need: needArg.optional(),
                 mscw: mscwArg.optional().describe('Defaults to Must'),
                 acceptance: z.array(z.string()).optional(),
                 dependsOn: z.array(z.string()).optional(),
@@ -125,7 +127,7 @@ export function createServer(cwd: string, storePromise: Promise<PlanStore> = ope
     }, ({ parent, agent, approved_by, tasks }) => guarded(async () => {
         const { plan, result } = await (await storePromise).mutate(`${agent} adds ${tasks.length} task(s) approved by ${approved_by}`, p =>
             tasks.map(spec => addTask(p, parent, agent, spec, approved_by)));
-        return `Added ${result.map(t => `${t.id} ${t.name}`).join(', ')} under ${parent}.${crowdingHint(plan, [parent])}`;
+        return `Added ${result.map(t => `${t.id} ${t.name}`).join(', ')} under ${parent}.${crowdingHint(plan, [parent])}${needHint(plan, [parent])}`;
     }));
 
     server.registerTool('task_defer', {
@@ -156,12 +158,12 @@ export function createServer(cwd: string, storePromise: Promise<PlanStore> = ope
             edits: z.array(z.discriminatedUnion('op', [
                 z.object({
                     op: z.literal('add'), parent: ref.describe(`${PARENT_HINT}. A task id, or "$ref" for a task added earlier in this batch`), ref: z.string().optional().describe('Name this task so later edits can use "$name"'),
-                    name: z.string().min(1), description: z.string().optional(), mscw: mscwArg.optional().describe('Defaults to Must'),
+                    name: z.string().min(1), description: z.string().optional(), need: needArg.optional(), mscw: mscwArg.optional().describe('Defaults to Must'),
                     acceptance: z.array(z.string()).optional(), dependsOn: z.array(z.string()).optional(),
                 }),
                 z.object({
                     op: z.literal('update'), id: ref, status: z.enum(STATUSES).optional(), mscw: mscwArg.optional(),
-                    name: z.string().min(1).optional(), description: z.string().optional(), note: z.string().optional(),
+                    name: z.string().min(1).optional(), description: z.string().optional(), need: needArg.optional(), note: z.string().optional(),
                 }),
                 z.object({ op: z.literal('move'), id: ref, parent: ref, position: z.number().int().min(0).optional().describe('Index among the new siblings; defaults to last') }),
                 z.object({ op: z.literal('remove'), id: ref }),
@@ -174,19 +176,20 @@ export function createServer(cwd: string, storePromise: Promise<PlanStore> = ope
             applyEdits(p, agent, edits, approved_by));
         // Parents named by "$ref" are new in this batch, so only existing parents can have grown crowded.
         const parents = edits.flatMap(edit => (edit.op === 'add' || edit.op === 'move') && !edit.parent.startsWith('$') ? [edit.parent] : []);
-        return `${result.join('\n')}\n\nPlan is now at revision ${plan.revision}.${crowdingHint(plan, parents)}`;
+        return `${result.join('\n')}\n\nPlan is now at revision ${plan.revision}.${crowdingHint(plan, parents)}${needHint(plan, parents)}`;
     }));
 
     server.registerTool('plan_check', {
-        description: 'Check MVP()/TODO() markers against the plan: in one snippet of code if given, otherwise across the whole repository.',
+        description: 'Check MVP()/TODO() markers against the plan: in one snippet of code if given, otherwise across the whole repository, along with parent tasks that don\'t state the need they meet.',
         inputSchema: { source: z.string().optional(), file: z.string().optional() },
     }, ({ source, file }) => guarded(async () => {
         const plan = await (await storePromise).read({ fresh: true });
         const markers = source !== undefined ? findMarkers(source, file) : await scanRepo((await repoTopLevel(cwd)) ?? cwd);
         const problems = checkMarkers(plan, markers);
-        return problems.length
+        const report = problems.length
             ? problems.map(p => p.message).join('\n')
             : `No problems; ${markers.filter(m => m.id).length} linked marker(s) point at open tasks.`;
+        return source !== undefined ? report : `${report}${renderNeedless(parentsWithoutNeed(plan))}`;
     }));
 
     return server;

@@ -52,6 +52,10 @@
         "description": {
           "type": "string"
         },
+        "need": {
+          "type": "string",
+          "description": "The need or outcome this task meets, like a user story; its subtasks are what that need takes"
+        },
         "status": {
           "enum": [
             "Not Started",

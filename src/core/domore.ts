@@ -111,3 +111,15 @@ export function nextTasks(plan: Plan, options: { includeClaimed?: boolean; agent
 export function overallLevel(plan: Plan): DoMore {
     return computeDoMore(plan.root).get(plan.root.id) ?? 'Must';
 }
+
+// Unfinished tasks with accepted subtasks that don't say what need they meet, so nothing can be judged against them.
+export function parentsWithoutNeed(plan: Plan): Task[] {
+    const found: Task[] = [];
+    for (const { task, parents } of walk(plan.root)) {
+        const dropped = [task, ...parents].some(t => t.mscw === "Won't" || t.proposed);
+        if (!task.need && !isLeafWork(task) && task.status !== 'Complete' && !dropped) {
+            found.push(task);
+        }
+    }
+    return found;
+}

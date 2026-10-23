@@ -80,6 +80,11 @@ header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spac
 .capture:focus-within { border-color: var(--focus); }
 .capture .under { font-size: 13px; color: var(--ink-soft); display: flex; align-items: center; gap: 6px; }
 .capture select { border: 1px solid var(--rule); background: var(--paper); border-radius: 6px; padding: 4px 6px; max-width: 220px; }
+.needline { flex: 1 1 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; font-size: 13px; color: var(--ink-soft);
+  border-top: 1px solid var(--rule); padding: 8px 8px 0; }
+/* Asked once a task is being typed, not on focus, so the layout never moves under a click. */
+.needline[hidden], .capture:has(#capture-name:placeholder-shown):has(#capture-need-text:placeholder-shown) .needline { display: none; }
+.needline input { flex: 1 1 280px; min-width: 0; border: 1px solid var(--rule); background: var(--paper); border-radius: 6px; padding: 4px 8px; font-size: 14px; }
 .keys { font-size: 13px; color: var(--ink-soft); }
 .keys summary { cursor: pointer; list-style: none; border: 1px solid var(--rule); border-radius: 999px; padding: 2px 10px; }
 .keys summary::-webkit-details-marker { display: none; }
@@ -201,6 +206,7 @@ aside.detail { position: sticky; top: 16px; background: var(--sheet); border: 1p
 aside.detail h3 { margin: 0; font-size: 19px; line-height: 1.25; font-weight: 750; }
 aside.detail .path { font-size: 12px; color: var(--ink-soft); margin: 2px 0 12px; }
 aside.detail label { display: block; font-size: 12px; color: var(--ink-soft); margin: 12px 0 4px; }
+aside.detail textarea.need { min-height: 56px; }
 aside.detail textarea { width: 100%; min-height: 80px; resize: vertical; border: 1px solid var(--rule); border-radius: 6px; padding: 8px; background: var(--paper); }
 aside.detail select { width: 100%; border: 1px solid var(--rule); border-radius: 6px; padding: 6px; background: var(--paper); }
 aside.detail ul { margin: 0; padding-left: 18px; font-size: 14px; }
@@ -274,6 +280,11 @@ aside.detail .foot { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap;
     <span class="under">under <select id="capture-parent" aria-label="Parent task"></select></span>
     <span class="prio" id="capture-prio" role="group" aria-label="Priority"></span>
     <button class="btn primary" type="submit">Add</button>
+    <div class="needline" id="capture-need" hidden>
+      <span id="capture-need-ask"></span>
+      <input type="text" id="capture-need-text" aria-labelledby="capture-need-ask" placeholder="What does it need? Who needs what, so that what">
+      <button class="btn" type="button" id="capture-need-save">Save need</button>
+    </div>
   </form>
 
   <section class="decisions" id="decisions" hidden></section>
@@ -495,6 +506,14 @@ function render() {
   if (!ui.captureParent || !byId.has(ui.captureParent)) ui.captureParent = v.tree[0].id;
   $('capture-parent').replaceChildren(...v.tree.filter(r => r.status !== 'Complete' || r.depth === 0).map(r =>
     el('option', { value: r.id, selected: r.id === ui.captureParent }, `${'  '.repeat(r.depth)}${r.name}`)));
+  // Subtasks are judged against what their parent needs, so adding under a parent that doesn't say asks for it.
+  const captureRow = byId.get(ui.captureParent);
+  $('capture-need').hidden = Boolean(captureRow.need);
+  if ($('capture-need').dataset.id !== captureRow.id) {
+    $('capture-need').dataset.id = captureRow.id;
+    $('capture-need-text').value = '';
+  }
+  $('capture-need-ask').textContent = `${captureRow.name} doesn't say what it needs yet, so there's nothing to judge its subtasks against.`;
   $('capture-prio').replaceChildren(...prioControl(ui.capturePrio, p => { ui.capturePrio = p; render(); }, 'Priority').childNodes);
 
   // Decisions.
@@ -685,6 +704,10 @@ function renderDetail(byId) {
     el('label', { for: 'd-status' }, 'Status'),
     el('select', { id: 'd-status', onchange: e => edit({ op: 'update', id: row.id, status: e.target.value }) },
       STATUSES.map(s => el('option', { value: s, selected: s === row.status }, s))),
+    el('label', { for: 'd-need' }, 'Need it meets'),
+    el('textarea', { id: 'd-need', class: 'need', placeholder: 'Who needs what, so that what. Its subtasks are what this takes.', onblur: e => {
+      if (e.target.value.trim() !== (row.need || '')) edit({ op: 'update', id: row.id, need: e.target.value.trim() });
+    } }, row.need || ''),
     el('label', { for: 'd-desc' }, 'Description'),
     el('textarea', { id: 'd-desc', placeholder: 'What this is and why it matters', onblur: e => {
       if (e.target.value !== (row.description || '')) edit({ op: 'update', id: row.id, description: e.target.value });
@@ -728,7 +751,14 @@ $('capture').addEventListener('submit', e => {
   edit({ op: 'add', parent: ui.captureParent, name, mscw: ui.capturePrio });
   $('capture-name').value = '';
 });
-$('capture-parent').addEventListener('change', e => (ui.captureParent = e.target.value));
+$('capture-parent').addEventListener('change', e => { ui.captureParent = e.target.value; render(); });
+const saveNeed = () => {
+  const need = $('capture-need-text').value.trim();
+  if (need) edit({ op: 'update', id: ui.captureParent, need });
+  $('capture-name').focus();
+};
+$('capture-need-save').addEventListener('click', saveNeed);
+$('capture-need-text').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); saveNeed(); } });
 // Hovering a task with a mouse shows its family; leaving the tree goes back to the selected task's.
 $('tree').addEventListener('pointerover', e => { if (e.pointerType === 'mouse') markFamily(e.target.closest('.row')?.dataset.id); });
 $('tree').addEventListener('pointerleave', () => markFamily(ui.selected));

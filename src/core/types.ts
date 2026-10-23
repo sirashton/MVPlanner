@@ -40,6 +40,8 @@ export interface Task {
     id: string;
     name: string;
     description?: string;
+    // The need or outcome this task meets, like a user story. Its subtasks are what that need takes.
+    need?: string;
     status: Status;
     mscw: Mscw;
     acceptance?: AcceptanceCriterion[];

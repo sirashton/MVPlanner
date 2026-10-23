@@ -29,7 +29,7 @@ export interface PlanView {
     activity: { at: string; agent?: string; id: string; name: string; text: string }[];
     tree: (TaskSummary & {
         parent?: string; depth: number; level: DoMore; isOnPath: boolean; agent?: string; hasActiveWork: boolean; badges: string[];
-        description?: string; acceptance: { text: string; done: boolean }[]; isProposed: boolean; isDeferred: boolean; dependsOn: string[];
+        description?: string; need?: string; acceptance: { text: string; done: boolean }[]; isProposed: boolean; isDeferred: boolean; dependsOn: string[];
         links: string[]; log: { at: string; agent?: string; text: string }[];
     })[];
 }
@@ -108,6 +108,7 @@ export function buildView(plan: Plan, markers: Marker[] = [], now = Date.now()):
             level: levels.get(e.task.id) ?? 'Must',
             isOnPath: onPath.has(e.task.id),
             description: e.task.description,
+            need: e.task.need,
             acceptance: e.task.acceptance ?? [],
             isProposed: Boolean(e.task.proposed),
             isDeferred: Boolean(e.task.deferred),

@@ -6,6 +6,8 @@ import {
     parsePlan, proposeTask, serializePlan, updateTask, validatePlan,
 } from '../src/core/index.ts';
 import type { Plan } from '../src/core/index.ts';
+import { renderTask } from '../src/format.ts';
+import { currentSession } from '../src/session.ts';
 
 // The worked example from the README: a Could feature with Must subtasks must not block "done all we Must".
 function todoApp(): Plan {
@@ -86,7 +88,7 @@ test('a claim that has been quiet past the limit can be taken over, and the log 
     claimTask(plan, 'T-4', 'agent-a');
     const later = Date.now() + 3 * 60 * 60 * 1000;
     assert.deepEqual(nextTasks(plan, { agent: 'agent-b', now: later }).map(n => n.task.id), ['T-4']);
-    const task = claimTask(plan, 'T-4', 'agent-b', 'feature/y', later);
+    const task = claimTask(plan, 'T-4', 'agent-b', 'feature/y', undefined, later);
     assert.equal(task.claimedBy!.agent, 'agent-b');
     assert.match(task.log!.at(-1)!.text, /^Took over from agent-a, whose claim had been quiet since .+\. Claimed on feature\/y$/);
     assert.equal(task.log!.at(-1)!.agent, 'agent-b');
@@ -203,6 +205,20 @@ test('a batch of edits applies in order, links new tasks by ref, and fails as a 
     assert.deepEqual(sharing.subtasks!.map(t => t.name), ['Share link', 'Quantum sorting']);
     assert.equal(sharing.subtasks![0].mscw, 'Must');
     assert.throws(() => applyEdits(plan, 'agent-a', [{ op: 'remove', id: '$nope' }], 'Alex'), /Edit 1 \(remove\) failed: Unknown ref/);
+});
+
+test('a claim records the session behind it', async () => {
+    const { buildView } = await import('../src/view.ts');
+    assert.equal(currentSession({ CLAUDE_CODE_REMOTE_SESSION_ID: 'cse_01AbC', CLAUDE_CODE_SESSION_ID: 'local-id' }), 'https://claude.ai/code/session_01AbC');
+    assert.equal(currentSession({ CLAUDE_CODE_SESSION_ID: 'local-id' }), 'local-id');
+    assert.equal(currentSession({}), undefined);
+
+    const plan = todoApp();
+    const task = claimTask(plan, 'T-4', 'agent-a', 'feature/x', 'https://claude.ai/code/session_01AbC');
+    assert.equal(task.claimedBy!.session, 'https://claude.ai/code/session_01AbC');
+    assert.match(renderTask(plan, task), /Session: https:\/\/claude\.ai\/code\/session_01AbC/);
+    assert.equal(buildView(plan).claims[0].session, 'https://claude.ai/code/session_01AbC');
+    assert.deepEqual(validatePlan(plan), []);
 });
 
 test('deciding a proposal twice in one batch is not an error', async () => {

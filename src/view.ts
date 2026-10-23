@@ -23,7 +23,7 @@ export interface PlanView {
     status: string;
     ladder: { label: string; done: number; total: number; isCurrent: boolean }[];
     proposals: (TaskSummary & { description?: string; by?: string })[];
-    claims: (TaskSummary & { agent: string; branch?: string; since: string; lastActivity: string; isStale: boolean })[];
+    claims: (TaskSummary & { agent: string; branch?: string; session?: string; since: string; lastActivity: string; isStale: boolean })[];
     next: (TaskSummary & { blockedBy: string[]; acceptance: string[] })[];
     deferred: (TaskSummary & { trigger?: string; markers: { file: string; line: number; kind: string }[] })[];
     activity: { at: string; agent?: string; id: string; name: string; text: string }[];
@@ -77,6 +77,7 @@ export function buildView(plan: Plan, markers: Marker[] = [], now = Date.now()):
                 ...summary(e.task, e.parents),
                 agent: e.task.claimedBy!.agent,
                 branch: e.task.claimedBy!.branch,
+                session: e.task.claimedBy!.session,
                 since: e.task.claimedBy!.at,
                 lastActivity: lastClaimActivity(e.task),
                 isStale: isClaimStale(e.task, now),

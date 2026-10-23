@@ -14,6 +14,8 @@ export interface Claim {
     agent: string;
     branch?: string;
     at: string;
+    // A claude.ai link to the session that holds the claim, or a local session id.
+    session?: string;
 }
 
 export interface AcceptanceCriterion {

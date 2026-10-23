@@ -27,7 +27,7 @@ export function isClaimStale(task: Task, at = Date.now()): boolean {
     return !!task.claimedBy && at - Date.parse(lastClaimActivity(task)) > STALE_CLAIM_MS;
 }
 
-export function claimTask(plan: Plan, id: string, agent: string, branch?: string, at = Date.now()): Task {
+export function claimTask(plan: Plan, id: string, agent: string, branch?: string, session?: string, at = Date.now()): Task {
     const task = getTask(plan, id);
     const previous = task.claimedBy && task.claimedBy.agent !== agent ? task.claimedBy : undefined;
     if (previous && !isClaimStale(task, at)) {
@@ -37,7 +37,7 @@ export function claimTask(plan: Plan, id: string, agent: string, branch?: string
         throw new PlanError(`${id} is already complete.`);
     }
     const quietSince = previous && lastClaimActivity(task);
-    task.claimedBy = { agent, at: now(), ...(branch ? { branch } : {}) };
+    task.claimedBy = { agent, at: now(), ...(branch ? { branch } : {}), ...(session ? { session } : {}) };
     if (task.status === 'Not Started') {
         task.status = 'In Progress';
     }

@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 87,
+  "revision": 88,
   "nextId": 57,
   "root": {
     "id": "T-1",
@@ -1033,7 +1033,7 @@
           {
             "id": "T-53",
             "name": "Session link on every claim",
-            "status": "In Progress",
+            "status": "Complete",
             "mscw": "Must",
             "description": "Store the session or thread link with each claim, so the transcript behind a task can be found without copying it anywhere.",
             "log": [
@@ -1050,13 +1050,16 @@
                 "at": "2026-10-23T00:57:08.815Z",
                 "agent": "claude-167688b6",
                 "text": "Claimed on claude/project-thread-a96grs-t51"
+              },
+              {
+                "at": "2026-10-23T00:58:49.496Z",
+                "agent": "claude-167688b6",
+                "text": "status In Progress -> Complete; linked https://github.com/sirashton/MVPlanner/pull/15; Claims now store a session field: claude.ai link from CLAUDE_CODE_REMOTE_SESSION_ID in cloud sessions, else the local session id (src/session.ts). Set by task_claim and mvplan claim, shown by task_get, included in view data. Gotcha: conflicts with PR #11 on claimTask's signature. Left out: drawing the link in the panel/web page."
               }
             ],
-            "claimedBy": {
-              "agent": "claude-167688b6",
-              "at": "2026-10-23T00:57:08.815Z",
-              "branch": "claude/project-thread-a96grs-t51"
-            }
+            "links": [
+              "https://github.com/sirashton/MVPlanner/pull/15"
+            ]
           },
           {
             "id": "T-54",

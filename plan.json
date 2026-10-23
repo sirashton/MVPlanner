@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 59,
+  "revision": 60,
   "nextId": 50,
   "root": {
     "id": "T-1",
@@ -287,7 +287,7 @@
               {
                 "id": "T-48",
                 "name": "Repo settings that switch the plugin on for every session",
-                "status": "Not Started",
+                "status": "In Progress",
                 "mscw": "Must",
                 "description": ".claude/settings.json names the marketplace and enables mvplanner, and CLAUDE.md tells agents to stop if they get no MVPlanner briefing. mvplan init writes both into a repo.",
                 "log": [
@@ -295,8 +295,18 @@
                     "at": "2026-10-23T00:14:39.123Z",
                     "agent": "claude-5f5428c4",
                     "text": "Added under T-47, approved by Alex, in the project thread"
+                  },
+                  {
+                    "at": "2026-10-23T00:14:55.551Z",
+                    "agent": "claude-5f5428c4",
+                    "text": "Claimed on claude/project-thread-mr24nb"
                   }
-                ]
+                ],
+                "claimedBy": {
+                  "agent": "claude-5f5428c4",
+                  "at": "2026-10-23T00:14:55.551Z",
+                  "branch": "claude/project-thread-mr24nb"
+                }
               },
               {
                 "id": "T-49",

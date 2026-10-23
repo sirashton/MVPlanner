@@ -80,7 +80,13 @@ header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spac
 .keys summary { cursor: pointer; list-style: none; border: 1px solid var(--rule); border-radius: 999px; padding: 2px 10px; }
 .keys summary::-webkit-details-marker { display: none; }
 .keys[open] summary { color: var(--ink); }
-.keys p { margin: 6px 0 0; max-width: 60ch; }
+.keys { position: relative; }
+.keys dl { position: absolute; z-index: 6; top: calc(100% + 6px); left: 0; width: max-content; max-width: min(440px, calc(100vw - 32px)); margin: 0; padding: 12px 14px;
+  display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; background: var(--sheet); border: 1px solid var(--rule); border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(15, 20, 28, .12); color: var(--ink); }
+.keys dt { white-space: nowrap; color: var(--ink-soft); }
+.keys dd { margin: 0; }
+kbd { font: inherit; font-size: 12px; border: 1px solid var(--rule); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; background: var(--paper); color: var(--ink); }
 
 .prio { display: inline-flex; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; flex: none; }
 .prio button { border: 0; background: transparent; width: 26px; height: 24px; font-size: 12px; font-weight: 700; cursor: pointer; color: var(--p); }
@@ -262,7 +268,15 @@ aside.detail .foot { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap;
       <div class="toolbar">
         <span class="levels" id="focus-levels" role="group" aria-label="Focus on"><span class="levels-label">Focus</span></span>
         <button class="toggle" id="wont-toggle" aria-pressed="false">Show Won't</button>
-        <details class="keys"><summary>Shortcuts</summary><p>Enter in the add box adds and keeps it ready for the next one. Select a row, then: arrows to move and open, A to add under it, 1 to 4 to set its priority, R to rename.</p></details>
+        <details class="keys"><summary>Keyboard shortcuts</summary><dl>
+          <dt><kbd>Enter</kbd></dt><dd>In the add box: add the task and stay ready for the next one</dd>
+          <dt>Click a task</dt><dd>Select it; then:</dd>
+          <dt><kbd>↑</kbd> <kbd>↓</kbd></dt><dd>Move to the task above or below</dd>
+          <dt><kbd>→</kbd> <kbd>←</kbd></dt><dd>Open or close its subtasks</dd>
+          <dt><kbd>A</kbd></dt><dd>Add a subtask under it</dd>
+          <dt><kbd>1</kbd>–<kbd>4</kbd></dt><dd>Set its priority: 1 Must, 2 Should, 3 Could, 4 Won't</dd>
+          <dt><kbd>R</kbd></dt><dd>Rename it</dd>
+        </dl></details>
         <span class="legend"><span title="A task with subtasks shows how far it is done: one bar each for Must, Should and Could. This one has done all we Must and all we Should."><i class="tiers"><i class="done" data-p="Must"></i><i class="done" data-p="Should"></i><i data-p="Could"></i></i>done all we Should</span><span><i class="mark working"></i>being worked on</span><span><i class="mark progress"></i>in progress</span><span><i class="mark"></i>not started</span><span><i class="mark done"></i>done</span></span>
       </div>
       <ul class="tree" id="tree" role="tree" aria-label="Tasks"></ul>

@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 104,
+  "revision": 105,
   "nextId": 64,
   "root": {
     "id": "T-1",
@@ -834,25 +834,25 @@
           {
             "id": "T-59",
             "name": "Give proposals their own look, separate from agent work",
-            "status": "In Progress",
+            "status": "Complete",
             "mscw": "Should",
             "description": "From the web page design review (findings 2, 6, 8, 9). Pink currently means agent working, proposed, and needs-your-decision. The suggested decision button is outlined in the focus colour. The how-to hint mixes proposal help with keyboard shortcuts. The proposal card's path line wraps into the title.",
             "acceptance": [
               {
                 "text": "Pink is used only for live agent work",
-                "done": false
+                "done": true
               },
               {
                 "text": "The suggested decision button is marked in its priority's colour and labelled 'suggested'",
-                "done": false
+                "done": true
               },
               {
                 "text": "Decision help sits beside the Decide buttons; keyboard shortcuts are out of the always-visible hint",
-                "done": false
+                "done": true
               },
               {
                 "text": "Proposal path and proposer sit on their own line under the title",
-                "done": false
+                "done": true
               }
             ],
             "log": [
@@ -869,13 +869,13 @@
                 "at": "2026-10-23T01:08:53.819Z",
                 "agent": "claude-9cc89b7b",
                 "text": "Claimed on claude/project-thread-e0welq"
+              },
+              {
+                "at": "2026-10-23T01:10:17.692Z",
+                "agent": "claude-9cc89b7b",
+                "text": "status In Progress -> Complete; checked \"Pink is used only for live agent work\"; checked \"The suggested decision button is marked in its priority's colour and labelled 'suggested'\"; checked \"Decision help sits beside the Decide buttons; keyboard shortcuts are out of the always-visible hint\"; checked \"Proposal path and proposer sit on their own line under the title\"; Pink kept for agent work only (decisions border now ink, saving dot indigo, proposed tag and mark dashed neutral); suggested button outlined in its priority colour with \"X suggested\" text; keyboard help behind a Shortcuts toggle. Handoff: same PR as T-58/T-60/T-61 on claude/project-thread-e0welq."
               }
-            ],
-            "claimedBy": {
-              "agent": "claude-9cc89b7b",
-              "at": "2026-10-23T01:08:53.819Z",
-              "branch": "claude/project-thread-e0welq"
-            }
+            ]
           },
           {
             "id": "T-60",

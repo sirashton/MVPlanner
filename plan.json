@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 127,
+  "revision": 128,
   "nextId": 69,
   "root": {
     "id": "T-1",
@@ -1498,13 +1498,13 @@
           {
             "id": "T-57",
             "name": "Show the claim's session link in the panel and web page",
-            "status": "In Progress",
+            "status": "Complete",
             "mscw": "Must",
             "description": "Claims now carry a session link (T-53) and the view data includes it, but the panel and web page don't draw it yet. Make the claimed-by label link to the session when it is a URL.",
             "acceptance": [
               {
                 "text": "A claimed task in the panel and web page links to its session when one is recorded",
-                "done": false
+                "done": true
               }
             ],
             "log": [
@@ -1521,13 +1521,16 @@
                 "at": "2026-10-23T02:38:05.677Z",
                 "agent": "claude-5f5428c4",
                 "text": "Claimed on catchup"
+              },
+              {
+                "at": "2026-10-23T02:44:54.694Z",
+                "agent": "claude-5f5428c4",
+                "text": "status In Progress -> Complete; checked \"A claimed task in the panel and web page links to its session when one is recorded\"; linked https://github.com/sirashton/MVPlanner/pull/18; Merged in PR #18. Handoff: the web page's claimLabel and claimTag render the agent tag as an <a> marked ↗ when claim.session is https. The panel's \"Working now\" rows add a Link. Gotcha: claims made by a plugin version from before T-53 have no session (my own T-57 claim, for example), so only new claims link. Panel tests run with `claude plugin test ./plugin`, not npm test, and find() ignores props, so assert on the found node's props."
               }
             ],
-            "claimedBy": {
-              "agent": "claude-5f5428c4",
-              "at": "2026-10-23T02:38:05.667Z",
-              "branch": "catchup"
-            }
+            "links": [
+              "https://github.com/sirashton/MVPlanner/pull/18"
+            ]
           }
         ]
       }

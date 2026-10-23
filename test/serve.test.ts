@@ -5,7 +5,7 @@ import http from 'node:http';
 import os from 'node:os';
 import path from 'node:path';
 import { claimTask, newPlan } from '../src/core/index.ts';
-import { startServer } from '../src/serve.ts';
+import { startServer, withView } from '../src/serve.ts';
 import { FileStore } from '../src/storage/stores.ts';
 
 async function setup() {
@@ -22,7 +22,11 @@ const post = (url: string, body: unknown, headers: Record<string, string> = { 'c
 test('the page and the view are served on localhost', async () => {
     const { server } = await setup();
     try {
-        assert.match(await (await fetch(server.url)).text(), /<title>Plan<\/title>/);
+        const page = await (await fetch(server.url)).text();
+        assert.match(page, /<title>Plan<\/title>/);
+        // The plan comes inside the page, so the first paint needs no second request.
+        const initial = page.match(/<script type="application\/json" id="initial-view">(.*?)<\/script>/)?.[1];
+        assert.equal((JSON.parse(initial!) as { name: string }).name, 'Scoping demo');
         const view = await (await fetch(new URL('api/view', server.url))).json() as { name: string };
         assert.equal(view.name, 'Scoping demo');
     } finally {
@@ -91,4 +95,10 @@ test('changes made by agents elsewhere reach the page as they happen', async () 
     } finally {
         await server.close();
     }
+});
+
+test('a plan inlined in the page cannot close its script tag', () => {
+    const page = withView('<body><script>run()</script></body>', JSON.stringify({ name: '</script><script>alert(1)</script>' }));
+    assert.equal(page.match(/<\/script>/g)!.length, 2);
+    assert.match(page, /\\u003c\/script>/);
 });

@@ -134,7 +134,15 @@ kbd { font: inherit; font-size: 12px; border: 1px solid var(--rule); border-bott
 .levels button[aria-pressed=true] { background: var(--p, var(--ink)); color: var(--sheet); }
 
 .tree { list-style: none; margin: 0; padding: 0; }
-.row { display: flex; align-items: center; gap: 8px; min-height: 36px; padding: 2px 6px 2px calc(var(--depth) * 22px); border-radius: 6px; position: relative; }
+.tree { --indent: 22px; }
+.row { display: flex; align-items: center; gap: 8px; min-height: 36px; padding: 2px 6px 2px calc(var(--depth) * var(--indent)); border-radius: 6px; position: relative; }
+/* Indent guides: a faint line runs down from each open parent beside its subtasks, centred under its caret.
+   The hovered or selected task's subtasks are tinted, and the guide they share with it is drawn stronger. */
+.row::before, .row.fam::after { content: ''; position: absolute; top: 0; bottom: 0; left: 0; pointer-events: none; }
+.row::before { width: calc(var(--depth) * var(--indent));
+  background: repeating-linear-gradient(to right, transparent 0 10.5px, var(--rule) 10.5px 11.5px, transparent 11.5px var(--indent)); }
+.row.fam { border-radius: 0; background: linear-gradient(to right, transparent calc(var(--fam) * var(--indent) + 10px), color-mix(in srgb, var(--focus) 6%, transparent) 0); }
+.row.fam::after { left: calc(var(--fam) * var(--indent) + 10px); width: 2px; border-radius: 1px; background: color-mix(in srgb, var(--focus) 60%, transparent); }
 .row:hover { background: color-mix(in srgb, var(--sheet) 70%, transparent); }
 .row.selected { background: var(--sheet); box-shadow: inset 3px 0 0 var(--focus); }
 .row.drop { box-shadow: inset 0 0 0 2px var(--focus); }
@@ -222,7 +230,8 @@ aside.detail .foot { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap;
   .decisions .fold { display: inline-block; }
   .row { scroll-margin-top: 12px; }
   .row .tag.agent { max-width: 34%; }
-  .row { padding-left: calc(var(--depth) * 12px); gap: 6px; }
+  .tree { --indent: 12px; }
+  .row { gap: 6px; }
   .row .acts, .row .more { display: none; }
   .chip { width: 14px; }
   .chip::after { content: attr(data-letter); }
@@ -537,6 +546,7 @@ function render() {
   visit(v.tree[0], 'Must');
   ui.prev = new Map(v.tree.map(r => [r.id, `${r.name}|${r.mscw}|${r.status}|${r.agent || ''}|${r.parent || ''}`]));
   $('tree').replaceChildren(...items);
+  markFamily(ui.selected);
   if (ui.renaming) {
     const name = document.querySelector(`.row[data-id="${ui.renaming}"] .name`);
     if (name) startRename(name, ui.renaming);
@@ -555,7 +565,7 @@ function rowFor(row, eff, childCount, open, isNext, changed, hasWork) {
     class: ['row', row.agent && 'working', row.isProposed && 'proposed', ui.selected === row.id && 'selected', changed && 'changed'].filter(Boolean).join(' '),
     role: 'treeitem', 'aria-expanded': childCount ? String(open) : undefined, 'aria-selected': String(ui.selected === row.id),
     'data-id': row.id, 'data-eff': eff, 'data-status': row.status, tabindex: ui.selected === row.id || (!ui.selected && row.depth === 0) ? '0' : '-1',
-    style: `--depth:${row.depth}`, draggable: row.depth > 0 ? 'true' : undefined,
+    style: `--depth:${row.depth}`, 'data-depth': row.depth, draggable: row.depth > 0 ? 'true' : undefined,
     onclick: () => select(row.id),
     ondragstart: e => { e.dataTransfer.setData('text/plain', row.id); e.dataTransfer.effectAllowed = 'move'; },
     ondragover: e => { e.preventDefault(); li.classList.add('drop'); },
@@ -592,6 +602,17 @@ function toggle(id, open) {
   (open ? ui.closed : ui.open).delete(id);
   remember();
   render();
+}
+// Tint the subtasks of a task (rows after it that sit deeper), so it's clear what belongs to what.
+function markFamily(id) {
+  for (const r of document.querySelectorAll('.row.fam')) r.classList.remove('fam');
+  const row = id && document.querySelector(`.row[data-id="${id}"]`);
+  if (!row) return;
+  const depth = Number(row.dataset.depth);
+  for (let r = row.nextElementSibling; r && Number(r.dataset.depth) > depth; r = r.nextElementSibling) {
+    r.classList.add('fam');
+    r.style.setProperty('--fam', depth);
+  }
 }
 function select(id) {
   ui.selected = ui.selected === id ? null : id;
@@ -701,6 +722,9 @@ $('capture').addEventListener('submit', e => {
   $('capture-name').value = '';
 });
 $('capture-parent').addEventListener('change', e => (ui.captureParent = e.target.value));
+// Hovering a task with a mouse shows its family; leaving the tree goes back to the selected task's.
+$('tree').addEventListener('pointerover', e => { if (e.pointerType === 'mouse') markFamily(e.target.closest('.row')?.dataset.id); });
+$('tree').addEventListener('pointerleave', () => markFamily(ui.selected));
 $('wont-toggle').addEventListener('click', () => { ui.showWont = !ui.showWont; remember(); render(); });
 
 document.addEventListener('keydown', e => {

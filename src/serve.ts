@@ -44,6 +44,15 @@ async function loadPage(): Promise<string> {
     throw new PlanError('The web page is missing from this install of MVPlanner.');
 }
 
+// The page arrives with the plan already in it, so its first paint is laid out and nothing jumps when the data lands.
+export function withView(page: string, json: string | undefined): string {
+    if (json === undefined) {
+        return page;
+    }
+    const data = `<script type="application/json" id="initial-view">${json.replace(/</g, '\\u003c')}</script>\n`;
+    return page.replace('<script>', () => data + '<script>');
+}
+
 function readBody(req: http.IncomingMessage): Promise<string> {
     return new Promise((resolve, reject) => {
         let data = '';
@@ -114,7 +123,7 @@ export async function startServer(options: ServeOptions): Promise<PlanServer> {
         try {
             const url = new URL(req.url ?? '/', 'http://localhost');
             if (req.method === 'GET' && url.pathname === '/') {
-                return send(200, page, 'text/html');
+                return send(200, withView(page, await current(false).catch(() => undefined)), 'text/html');
             }
             if (req.method === 'GET' && url.pathname === '/api/view') {
                 return send(200, await current(url.searchParams.has('fresh')));

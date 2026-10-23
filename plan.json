@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 188,
+  "revision": 189,
   "nextId": 86,
   "root": {
     "id": "T-1",
@@ -2126,7 +2126,7 @@
           {
             "id": "T-82",
             "name": "Planning skills break work down from the parent's need",
-            "status": "Not Started",
+            "status": "In Progress",
             "mscw": "Must",
             "description": "The plan and scope skills and the planner agent ask \"what does this parent need?\" to produce children, instead of listing features and finding them homes. Without it, scoping sessions still generate bottom-up lists, though proposals would catch the worst of it.",
             "acceptance": [
@@ -2144,8 +2144,18 @@
               {
                 "at": "2026-10-23T03:37:14.208Z",
                 "text": "Proposal accepted"
+              },
+              {
+                "at": "2026-10-23T03:53:31.486Z",
+                "agent": "claude-c4c20c01",
+                "text": "Claimed on claude/project-thread-cjyw4x"
               }
-            ]
+            ],
+            "claimedBy": {
+              "agent": "claude-c4c20c01",
+              "at": "2026-10-23T03:53:31.486Z",
+              "branch": "claude/project-thread-cjyw4x"
+            }
           },
           {
             "id": "T-83",

@@ -10,6 +10,7 @@ import type { Mscw, Plan, Status } from './core/index.ts';
 import { renderNext, renderTask, renderTree } from './format.ts';
 import { scanRepo } from './scan.ts';
 import { openInBrowser, startServer } from './serve.ts';
+import { writeRepoSetup } from './setup.ts';
 import { buildView } from './view.ts';
 import { currentBranch, repoTopLevel } from './storage/git.ts';
 import { FileStore, GitBranchStore, openStore } from './storage/stores.ts';
@@ -40,6 +41,7 @@ Changing
 
 Setting up
   mvplan init [--from FILE] [--name NAME]   Create the live plan (migrates a version 1 plan.json)
+  mvplan setup                              Switch the plugin on for every session in this repo (also done by init)
   mvplan migrate <in> [out]                 Convert a version 1 plan.json to version 2
 
 Storage: the plan branch on the remote by default. Set MVPLANNER_BACKEND=file to use one plan.json in the main
@@ -139,6 +141,17 @@ export async function main(argv: string[], cwd = process.cwd()): Promise<number>
                 await store.write(plan);
             }
             out(`Created the live plan in ${store.describe()}.`);
+            const changed = await writeRepoSetup((await repoTopLevel(cwd)) ?? cwd);
+            if (changed.length) {
+                out(`Wrote ${changed.join(' and ')} so every Claude Code session here loads MVPlanner. Commit ${changed.length > 1 ? 'them' : 'it'}.`);
+            }
+            return 0;
+        }
+        case 'setup': {
+            const changed = await writeRepoSetup((await repoTopLevel(cwd)) ?? cwd);
+            out(changed.length
+                ? `Wrote ${changed.join(' and ')} so every Claude Code session here loads MVPlanner. Commit ${changed.length > 1 ? 'them' : 'it'}.`
+                : 'This repo already switches MVPlanner on.');
             return 0;
         }
         case 'show': {

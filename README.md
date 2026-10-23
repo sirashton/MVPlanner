@@ -25,6 +25,14 @@ Then create the live plan for a repository, once, from a checkout that can push 
 mvplan init --name "My project"        # or: mvplan init --from plan.json
 ```
 
+`init` also writes `.claude/settings.json` and a short section of `CLAUDE.md`, so Claude Code offers the plugin to everyone who opens the repo, and an agent that starts without it stops and says so instead of working blind. Commit both. For an existing plan, `mvplan setup` writes them.
+
+Cloud sessions on claude.ai/code don't install plugins from a repo's settings. Add this to the cloud environment's setup script instead:
+
+```
+claude plugin marketplace add sirashton/MVPlanner && claude plugin install mvplanner@mvplanner
+```
+
 `mvplan` is on Claude's PATH while the plugin is enabled. Outside Claude Code, run `npm link` in a clone of this repo to get `mvplan` on your PATH.
 
 ## Where the plan lives

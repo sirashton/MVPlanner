@@ -70,3 +70,17 @@ test('file store is shared by worktrees through the main checkout', async () => 
         fromWorktree.mutate('add', plan => proposeTask(plan, 'T-1', 'a', { name: `Task ${i}` }))));
     assert.equal((await store.read()).root.subtasks!.length, 5);
 });
+
+test('setup switches the plugin on for a repo once, keeping what is there', async () => {
+    const { writeRepoSetup } = await import('../src/setup.ts');
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'mvplanner-setup-'));
+    await fs.mkdir(path.join(dir, '.claude'));
+    await fs.writeFile(path.join(dir, '.claude', 'settings.json'), JSON.stringify({ permissions: { allow: ['Bash(npm test)'] } }));
+    await fs.writeFile(path.join(dir, 'CLAUDE.md'), '# Project notes\n');
+    assert.deepEqual(await writeRepoSetup(dir), ['.claude/settings.json', 'CLAUDE.md']);
+    const settings = JSON.parse(await fs.readFile(path.join(dir, '.claude', 'settings.json'), 'utf-8'));
+    assert.deepEqual(settings.permissions, { allow: ['Bash(npm test)'] });
+    assert.equal(settings.enabledPlugins['mvplanner@mvplanner'], true);
+    assert.match(await fs.readFile(path.join(dir, 'CLAUDE.md'), 'utf-8'), /^# Project notes\n\n<!-- mvplanner -->/);
+    assert.deepEqual(await writeRepoSetup(dir), []);
+});

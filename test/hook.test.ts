@@ -98,3 +98,18 @@ test('stop nudges once when edits were made without recording progress', async (
     await store.mutate('update', p => updateTask(p, 'T-2', agent, { note: 'did the thing' }));
     assert.equal(await run('Stop'), undefined, 'progress recorded after the edits');
 });
+
+test('a session started inside another one gets its own agent id', async () => {
+    const { resolveAgentId } = await import('../src/hook.ts');
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'mvplanner-owner-'));
+    const input: HookInput = { session_id: 'abcdef1234' };
+    // The test runner is alive, so it stands in for the outer session; pid 2147483646 is a process that has ended.
+    assert.equal(await resolveAgentId(input, dir, process.pid), 'claude-abcdef12');
+    assert.equal(await resolveAgentId(input, dir, process.pid), 'claude-abcdef12');
+    assert.equal(await resolveAgentId(input, dir, 4242), 'claude-abcdef12-p4242');
+    assert.equal(await resolveAgentId({ ...input, agent_id: 'sub1234567' }, dir, 4242), 'claude-abcdef12-sub12345-p4242');
+    // A resumed session runs in a new process after the old one has gone, and keeps its id.
+    const resumed = await fs.mkdtemp(path.join(os.tmpdir(), 'mvplanner-owner-'));
+    assert.equal(await resolveAgentId(input, resumed, 2147483646), 'claude-abcdef12');
+    assert.equal(await resolveAgentId(input, resumed, process.pid), 'claude-abcdef12');
+});

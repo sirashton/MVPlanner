@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 168,
-  "nextId": 83,
+  "revision": 169,
+  "nextId": 84,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -2077,6 +2077,27 @@
             "log": [
               {
                 "at": "2026-10-23T03:29:38.369Z",
+                "agent": "claude-f555c004",
+                "text": "Proposed under T-78"
+              }
+            ]
+          },
+          {
+            "id": "T-83",
+            "name": "Scope review flags additions no parent need explains",
+            "status": "Not Started",
+            "mscw": "Should",
+            "proposed": true,
+            "description": "The scope reviewer lists user-visible additions in a diff (new key handlers, controls, settings) and matches each to a criterion or accepted proposal. It runs as a required step before a PR opens. Without it, drift is caught only if the building agent reports it honestly.",
+            "acceptance": [
+              {
+                "text": "Run on PR #5's diff, the reviewer flags the keyboard shortcuts",
+                "done": false
+              }
+            ],
+            "log": [
+              {
+                "at": "2026-10-23T03:29:42.859Z",
                 "agent": "claude-f555c004",
                 "text": "Proposed under T-78"
               }

@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 58,
+  "revision": 59,
   "nextId": 50,
   "root": {
     "id": "T-1",
@@ -182,7 +182,7 @@
           {
             "id": "T-19",
             "name": "Try it in real Claude Code sessions",
-            "status": "Not Started",
+            "status": "In Progress",
             "mscw": "Must",
             "acceptance": [
               {
@@ -199,8 +199,18 @@
                 "at": "2026-10-22T23:41:10.211Z",
                 "agent": "claude-panel",
                 "text": "Dry run 2026-10-22 in the cloud container: installed mvplanner@mvplanner from the GitHub marketplace; two headless sessions in separate clones of a shared remote, started at the same moment, claimed T-2 and T-3 (the second saw the first's claim and moved on). Left open for Alex to try on his own machine."
+              },
+              {
+                "at": "2026-10-23T00:14:41.615Z",
+                "agent": "claude-5f5428c4",
+                "text": "Claimed on claude/project-thread-mr24nb"
               }
-            ]
+            ],
+            "claimedBy": {
+              "agent": "claude-5f5428c4",
+              "at": "2026-10-23T00:14:41.615Z",
+              "branch": "claude/project-thread-mr24nb"
+            }
           },
           {
             "id": "T-44",

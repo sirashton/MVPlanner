@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 89,
+  "revision": 90,
   "nextId": 58,
   "root": {
     "id": "T-1",
@@ -733,17 +733,17 @@
           {
             "id": "T-56",
             "name": "Light page by default, ids beside task names",
-            "status": "In Progress",
+            "status": "Complete",
             "mscw": "Should",
             "description": "The web page follows the system's dark mode, which Alex doesn't want. It should open light, with a switch for dark. Task ids are also hidden, so Alex can't match the T-numbers that agents mention to tasks.",
             "acceptance": [
               {
                 "text": "The page opens light whatever the system setting, and a switch in the header remembers dark or light",
-                "done": false
+                "done": true
               },
               {
                 "text": "Each task row, proposal and claim shows its id in muted text beside the name",
-                "done": false
+                "done": true
               }
             ],
             "log": [
@@ -756,13 +756,16 @@
                 "at": "2026-10-23T00:57:43.065Z",
                 "agent": "claude-5f5428c4",
                 "text": "Claimed on pr11"
+              },
+              {
+                "at": "2026-10-23T00:59:31.272Z",
+                "agent": "claude-5f5428c4",
+                "text": "status In Progress -> Complete; checked \"The page opens light whatever the system setting, and a switch in the header remembers dark or light\"; checked \"Each task row, proposal and claim shows its id in muted text beside the name\"; linked https://github.com/sirashton/MVPlanner/pull/14; Merged in PR #14. Handoff: the page is light unless the header switch picks dark, stored in localStorage as 'mvplanner-theme'. The prefers-color-scheme media query was removed on purpose, because Alex wants light. Ids are a .tid span outside .name, so renaming is unaffected. Claim tags don't show ids, but the row they sit on does."
               }
             ],
-            "claimedBy": {
-              "agent": "claude-5f5428c4",
-              "at": "2026-10-23T00:57:43.065Z",
-              "branch": "pr11"
-            }
+            "links": [
+              "https://github.com/sirashton/MVPlanner/pull/14"
+            ]
           }
         ],
         "log": [

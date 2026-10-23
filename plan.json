@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 164,
-  "nextId": 79,
+  "revision": 165,
+  "nextId": 80,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -1983,6 +1983,33 @@
             "at": "2026-10-23T03:29:15.849Z",
             "agent": "claude-f555c004",
             "text": "Proposed under T-1"
+          }
+        ],
+        "subtasks": [
+          {
+            "id": "T-79",
+            "name": "Parent tasks state the need they meet",
+            "status": "Not Started",
+            "mscw": "Must",
+            "proposed": true,
+            "description": "A task with subtasks carries a need or outcome (\"People can reshape the plan quickly, so a scoping session keeps pace\"), not just a name. Without it there's nothing to judge a child against. Many parents today have no description.",
+            "acceptance": [
+              {
+                "text": "Adding subtasks under a task with no stated need prompts for one",
+                "done": false
+              },
+              {
+                "text": "plan_check lists parents with no stated need",
+                "done": false
+              }
+            ],
+            "log": [
+              {
+                "at": "2026-10-23T03:29:24.580Z",
+                "agent": "claude-f555c004",
+                "text": "Proposed under T-78"
+              }
+            ]
           }
         ]
       }

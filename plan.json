@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 147,
-  "nextId": 75,
+  "revision": 148,
+  "nextId": 76,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -1472,6 +1472,30 @@
                     "text": "Moved from T-26 to T-74"
                   }
                 ]
+              }
+            ]
+          },
+          {
+            "id": "T-75",
+            "name": "Show the name once in the page header",
+            "status": "Not Started",
+            "mscw": "Should",
+            "description": "When the plan itself is called MVPlanner, the header shows the stylised wordmark and then a plain MVPlanner heading. Show only the stylised one, at heading size.",
+            "acceptance": [
+              {
+                "text": "For a plan named MVPlanner the header shows the stylised wordmark once, at heading size, and no plain duplicate",
+                "done": false
+              },
+              {
+                "text": "Plans with other names still show their own name as the heading",
+                "done": false
+              }
+            ],
+            "log": [
+              {
+                "at": "2026-10-23T03:04:21.445Z",
+                "agent": "claude-9cc89b7b",
+                "text": "Added under T-26, approved by Alex, in the project chat (asked to drop the duplicate plain \"MVPlanner\" heading and keep the stylised one)"
               }
             ]
           }

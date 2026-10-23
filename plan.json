@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 109,
+  "revision": 110,
   "nextId": 65,
   "root": {
     "id": "T-1",
@@ -980,21 +980,21 @@
           {
             "id": "T-64",
             "name": "Focus by priority: Must, Should or Could",
-            "status": "In Progress",
+            "status": "Complete",
             "mscw": "Should",
             "description": "Alex asked for the Focus filter to have levels: focus on Must only, up to Should, or up to Could, so Could-only work can still be seen when wanted.",
             "acceptance": [
               {
                 "text": "The Focus control offers Must, Should and Could levels plus showing everything",
-                "done": false
+                "done": true
               },
               {
                 "text": "Each level hides tasks whose project-level priority is below it",
-                "done": false
+                "done": true
               },
               {
                 "text": "The chosen level is remembered in the browser",
-                "done": false
+                "done": true
               }
             ],
             "log": [
@@ -1007,13 +1007,13 @@
                 "at": "2026-10-23T01:12:05.517Z",
                 "agent": "claude-9cc89b7b",
                 "text": "Claimed on claude/project-thread-e0welq"
+              },
+              {
+                "at": "2026-10-23T01:13:00.943Z",
+                "agent": "claude-9cc89b7b",
+                "text": "status In Progress -> Complete; checked \"The Focus control offers Must, Should and Could levels plus showing everything\"; checked \"Each level hides tasks whose project-level priority is below it\"; checked \"The chosen level is remembered in the browser\"; Focus is now Must / Should / Could / All, filtering by project-level priority; default Could; remembered in localStorage (checked by reload in Playwright). Handoff: same PR as T-58..T-61."
               }
-            ],
-            "claimedBy": {
-              "agent": "claude-9cc89b7b",
-              "at": "2026-10-23T01:12:05.517Z",
-              "branch": "claude/project-thread-e0welq"
-            }
+            ]
           }
         ],
         "log": [

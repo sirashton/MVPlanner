@@ -2,6 +2,7 @@
 
 ## 0.2.0
 
+- The plan and scope skills, planner agent and `plan_edit` work top down: state each parent's need before adding its subtasks, and draw the subtasks from that need.
 - Agents build only what a task's criteria name and propose anything else a person would notice before building it, at whatever priority they suggest. Completing a task with `task_update` asks what was built beyond the criteria (`beyond_criteria`).
 - Proposals say which part of the parent's need they serve: `task_propose` and `mvplan propose` refuse one without a `serves` line, and the page shows it on each proposal.
 - Tasks state the need they meet (`need`), like a user story, so subtasks can be judged against it. Adding under a parent with no need asks for one, on the page and in tool replies, and `plan_check` / `mvplan check` list parents without one.

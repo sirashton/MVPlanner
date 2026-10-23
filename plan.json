@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 165,
-  "nextId": 80,
+  "revision": 166,
+  "nextId": 81,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -2006,6 +2006,31 @@
             "log": [
               {
                 "at": "2026-10-23T03:29:24.580Z",
+                "agent": "claude-f555c004",
+                "text": "Proposed under T-78"
+              }
+            ]
+          },
+          {
+            "id": "T-80",
+            "name": "Proposals say which part of the parent's need they serve",
+            "status": "Not Started",
+            "mscw": "Must",
+            "proposed": true,
+            "description": "task_propose asks for a \"serves\" line quoting the parent's need, with a suggested MoSCoW. If no parent need explains the idea, the agent proposes changing a parent's need instead, and the human decides. Without it, ideas get attached to whichever parent looks closest.",
+            "acceptance": [
+              {
+                "text": "task_propose refuses a proposal with no serves line",
+                "done": false
+              },
+              {
+                "text": "The page shows the serves line on each proposal",
+                "done": false
+              }
+            ],
+            "log": [
+              {
+                "at": "2026-10-23T03:29:29.276Z",
                 "agent": "claude-f555c004",
                 "text": "Proposed under T-78"
               }

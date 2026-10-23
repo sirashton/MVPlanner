@@ -1,6 +1,7 @@
 import { DO_MORE_ORDER } from './types.ts';
 import type { DoMore, Plan, Task } from './types.ts';
 import { walk } from './plan.ts';
+import { isClaimStale } from './ops.ts';
 
 // MoSCoW is relative to the parent: a Could feature with Must subtasks never blocks "done all we Must".
 // A task's do-more level is the most important level at which work remains beneath it.
@@ -73,7 +74,8 @@ function isDone(task: Task): boolean {
 }
 
 // Unfinished leaf tasks on the critical path, unclaimed ones first, with any unmet dependencies listed.
-export function nextTasks(plan: Plan, options: { includeClaimed?: boolean; agent?: string } = {}): NextTask[] {
+// A claim that has gone quiet counts as unclaimed, since another agent can take it over.
+export function nextTasks(plan: Plan, options: { includeClaimed?: boolean; agent?: string; now?: number } = {}): NextTask[] {
     const doMore = computeDoMore(plan.root);
     const onPath = criticalPath(plan, doMore);
     const byId = new Map<string, Task>();
@@ -85,7 +87,7 @@ export function nextTasks(plan: Plan, options: { includeClaimed?: boolean; agent
         if (!onPath.has(task.id) || isDone(task) || !isLeafWork(task)) {
             continue;
         }
-        const claimedByOther = task.claimedBy && task.claimedBy.agent !== options.agent;
+        const claimedByOther = task.claimedBy && task.claimedBy.agent !== options.agent && !isClaimStale(task, options.now);
         if (claimedByOther && !options.includeClaimed) {
             continue;
         }

@@ -4,7 +4,7 @@ One prioritised plan that you and every agent work from.
 
 Agents are good at doing the next thing and bad at remembering what was agreed. Give a swarm a big feature and you get drift: work nobody asked for, quiet gaps where a Must should be, and agents treading on each other. MVPlanner keeps the plan in one place every agent can reach, and a Claude Code plugin makes agents use it:
 
-- **Claim before editing.** Each agent claims a task before it changes code, so two agents never take the same work.
+- **Claim before editing.** Each agent claims a task before it changes code, so two agents never take the same work. A claim with no activity for 2 hours can be taken over by another agent, and the task log records the takeover.
 - **Propose, don't drift.** New ideas become proposed tasks for a human to accept, rather than code.
 - **Defer on purpose.** Keeping something minimal is fine, as long as it's recorded: `task_defer` creates a task and the code gets an `MVP(T-42)` or `TODO(T-43)` marker.
 - **Know when you're done.** Priorities are MoSCoW, relative to each parent, and roll up into "done all we Must / Should / Could".

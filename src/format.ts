@@ -1,5 +1,6 @@
 import { computeDoMore, criticalPath, nextTasks, overallLevel } from './core/domore.ts';
 import type { NextTask } from './core/domore.ts';
+import { isClaimStale } from './core/ops.ts';
 import type { Plan, Task } from './core/types.ts';
 
 const STATUS_MARK: Record<string, string> = { 'Not Started': ' ', 'In Progress': '~', Complete: 'x', Blocked: '!' };
@@ -105,7 +106,7 @@ export function renderNext(items: NextTask[], limit = 5): string {
     }
     return items.slice(0, limit).map(n => {
         const notes = [
-            n.task.claimedBy ? `claimed by ${n.task.claimedBy.agent}` : 'unclaimed',
+            n.task.claimedBy ? `claimed by ${n.task.claimedBy.agent}${isClaimStale(n.task) ? ' but quiet, so you can take it over' : ''}` : 'unclaimed',
             n.task.status,
             ...(n.blockedBy.length ? [`waiting on ${n.blockedBy.join(', ')}`] : []),
         ];

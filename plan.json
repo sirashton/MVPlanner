@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 187,
+  "revision": 188,
   "nextId": 86,
   "root": {
     "id": "T-1",
@@ -2085,17 +2085,17 @@
           {
             "id": "T-81",
             "name": "Agents propose anything the criteria don't name before building it",
-            "status": "In Progress",
+            "status": "Complete",
             "mscw": "Must",
             "description": "Briefing rules and the next skill: build only what the task's criteria name. Anything else a person would notice (a shortcut, setting, button, mode) is proposed first at whatever priority the agent suggests, Must included; no fixed Could rule (Alex). Completing a task asks what was built beyond the criteria. Without it, the keyboard shortcuts case repeats. Add alongside briefing rule 4's \"say what happens without it\" test, not replacing it.",
             "acceptance": [
               {
                 "text": "The briefing and next skill say to propose unnamed extras before building them",
-                "done": false
+                "done": true
               },
               {
                 "text": "Completing a task asks for anything built beyond the criteria",
-                "done": false
+                "done": true
               }
             ],
             "log": [
@@ -2112,13 +2112,16 @@
                 "at": "2026-10-23T03:51:40.531Z",
                 "agent": "claude-c4c20c01",
                 "text": "Claimed on claude/project-thread-cjyw4x"
+              },
+              {
+                "at": "2026-10-23T03:53:26.361Z",
+                "agent": "claude-c4c20c01",
+                "text": "status In Progress -> Complete; checked \"The briefing and next skill say to propose unnamed extras before building them\"; checked \"Completing a task asks for anything built beyond the criteria\"; linked https://github.com/sirashton/MVPlanner/pull/27; Merged PR #27. Briefing rules 3-5 (src/format.ts briefing()) and plugin/skills/next say build only what the criteria name; anything else a person would notice is proposed first with a serves line and any suggested priority, Must included. MCP task_update refuses Complete without beyond_criteria and logs it as \"Beyond the criteria: ...\". The CLI's `mvplan update` doesn't ask (humans use it). Beyond the criteria: nothing."
               }
             ],
-            "claimedBy": {
-              "agent": "claude-c4c20c01",
-              "at": "2026-10-23T03:51:40.531Z",
-              "branch": "claude/project-thread-cjyw4x"
-            }
+            "links": [
+              "https://github.com/sirashton/MVPlanner/pull/27"
+            ]
           },
           {
             "id": "T-82",

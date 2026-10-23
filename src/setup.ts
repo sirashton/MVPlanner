@@ -20,6 +20,27 @@ Every session should start with an "MVPlanner:" briefing that gives you an agent
 3. Never read, edit or commit a \`plan.json\` in the checkout.
 `;
 
+// Catches pull requests from agents working without the plugin: each must name a claimed or complete task.
+export const PR_WORKFLOW = `name: MVPlanner
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  task:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: The PR names a claimed or complete MVPlanner task
+        run: |
+          git clone --depth 1 https://github.com/sirashton/MVPlanner "$RUNNER_TEMP/mvplanner"
+          node "$RUNNER_TEMP/mvplanner/plugin/dist/cli.js" check-pr
+`;
+
 export async function writeRepoSetup(root: string): Promise<string[]> {
     const changed: string[] = [];
 
@@ -42,6 +63,12 @@ export async function writeRepoSetup(root: string): Promise<string[]> {
     if (!existing.includes(CLAUDE_MD_MARKER)) {
         await fs.writeFile(claudeMd, existing ? `${existing.trimEnd()}\n\n${CLAUDE_MD_SECTION}` : CLAUDE_MD_SECTION);
         changed.push('CLAUDE.md');
+    }
+    const workflow = path.join(root, '.github', 'workflows', 'mvplanner.yml');
+    if (!(await fs.stat(workflow).catch(() => undefined))) {
+        await fs.mkdir(path.dirname(workflow), { recursive: true });
+        await fs.writeFile(workflow, PR_WORKFLOW);
+        changed.push('.github/workflows/mvplanner.yml');
     }
     return changed;
 }

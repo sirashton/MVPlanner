@@ -3,7 +3,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { parseArgs } from 'node:util';
 import {
-    PlanError, checkMarkers, claimTask, decideProposal, deferTask, getTask, migrateV1, nextTasks, newPlan,
+    PlanError, checkMarkers, checkPullRequest, claimTask, decideProposal, deferTask, getTask, migrateV1, nextTasks, newPlan,
     applyEdits, moveTask, parsePlan, proposeTask, releaseTask, removeTask, serializePlan, taskPath, updateTask, validatePlan, MSCW, STATUSES,
 } from './core/index.ts';
 import type { Mscw, Plan, Status } from './core/index.ts';
@@ -23,6 +23,9 @@ Reading
   mvplan next [--agent A]           Next tasks on the critical path
   mvplan get <id>                   One task in full
   mvplan check                      Validate the plan and the MVP()/TODO() markers in this repo
+  mvplan check-pr [--title T] [--branch B] [--body D]
+                                    Fail unless the pull request names a claimed or complete task
+                                    (reads the GitHub Actions event when the options are left out)
   mvplan view [--no-markers]        The review view as JSON, for the panel and the web UI
   mvplan serve [--port N] [--no-open]   The interactive plan page on localhost
 
@@ -89,6 +92,9 @@ export async function main(argv: string[], cwd = process.cwd()): Promise<number>
             criterion: { type: 'string', multiple: true },
             link: { type: 'string', multiple: true },
             name: { type: 'string' },
+            title: { type: 'string' },
+            branch: { type: 'string' },
+            body: { type: 'string' },
             description: { type: 'string' },
             trigger: { type: 'string' },
             file: { type: 'string', multiple: true },
@@ -203,6 +209,22 @@ export async function main(argv: string[], cwd = process.cwd()): Promise<number>
             }
             out(`Plan is valid; ${linked} linked marker(s) all point at open tasks.`);
             return 0;
+        }
+        case 'check-pr': {
+            let pr = { title: values.title, branch: values.branch, body: values.body };
+            if (!pr.title && !pr.branch && !pr.body && process.env.GITHUB_EVENT_PATH) {
+                const event = JSON.parse(await fs.readFile(process.env.GITHUB_EVENT_PATH, 'utf-8')) as {
+                    pull_request?: { title?: string; body?: string | null; head?: { ref?: string } };
+                };
+                if (!event.pull_request) {
+                    out('Not a pull request; nothing to check.');
+                    return 0;
+                }
+                pr = { title: event.pull_request.title, branch: event.pull_request.head?.ref, body: event.pull_request.body ?? undefined };
+            }
+            const { ok, message } = checkPullRequest(await store.read({ fresh: true }), pr);
+            out(message);
+            return ok ? 0 : 1;
         }
         case 'claim': {
             const id = args[0] ?? fail('Usage: mvplan claim <id> --agent A');

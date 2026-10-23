@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 146,
+  "revision": 147,
   "nextId": 75,
   "root": {
     "id": "T-1",
@@ -490,12 +490,20 @@
                 "at": "2026-10-23T03:03:34.836Z",
                 "agent": "claude-59d579af",
                 "text": "renamed from \"Nudge agents to group related subtasks\"; description updated; Alex added the p3g10 principle to this change."
+              },
+              {
+                "at": "2026-10-23T03:04:08.941Z",
+                "agent": "claude-59d579af",
+                "text": "linked https://github.com/sirashton/MVPlanner/pull/21; PR #21 open; waiting for CI, then merge."
               }
             ],
             "claimedBy": {
               "agent": "claude-59d579af",
               "at": "2026-10-23T03:01:49.282Z"
-            }
+            },
+            "links": [
+              "https://github.com/sirashton/MVPlanner/pull/21"
+            ]
           }
         ]
       },

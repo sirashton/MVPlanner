@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 79,
-  "nextId": 55,
+  "revision": 80,
+  "nextId": 56,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -309,7 +309,28 @@
               "agent": "claude-167688b6",
               "at": "2026-10-23T00:53:54.170Z",
               "branch": "claude/project-thread-a96grs"
-            }
+            },
+            "subtasks": [
+              {
+                "id": "T-55",
+                "name": "Let a human set how long a claim can sit quiet before it can be taken over",
+                "status": "Not Started",
+                "mscw": "Could",
+                "log": [
+                  {
+                    "at": "2026-10-23T00:54:17.453Z",
+                    "agent": "claude-167688b6",
+                    "text": "Deferred from T-46"
+                  }
+                ],
+                "deferred": {
+                  "trigger": "Teams find 2 hours too short or too long for their tasks",
+                  "files": [
+                    "src/core/ops.ts"
+                  ]
+                }
+              }
+            ]
           },
           {
             "id": "T-47",

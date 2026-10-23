@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 94,
-  "nextId": 61,
+  "revision": 95,
+  "nextId": 62,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -853,6 +853,27 @@
             "log": [
               {
                 "at": "2026-10-23T01:02:52.169Z",
+                "agent": "claude-9cc89b7b",
+                "text": "Proposed under T-26"
+              }
+            ]
+          },
+          {
+            "id": "T-61",
+            "name": "Readable contrast for Could and Won't labels",
+            "status": "Not Started",
+            "mscw": "Should",
+            "proposed": true,
+            "description": "From the web page design review (finding 10). In the light theme Could (#a36a12) is 4.0:1 and Won't (#8a94a3) is 2.7:1 against the page background at 12px; WCAG AA needs 4.5:1.",
+            "acceptance": [
+              {
+                "text": "All priority label colours reach 4.5:1 against their background in both themes",
+                "done": false
+              }
+            ],
+            "log": [
+              {
+                "at": "2026-10-23T01:02:56.948Z",
                 "agent": "claude-9cc89b7b",
                 "text": "Proposed under T-26"
               }

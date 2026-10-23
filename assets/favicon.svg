@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-  <!-- The M-path mark on a 16px grid, with fewer, larger nodes so it holds up in a browser tab. -->
-  <rect width="16" height="16" rx="3.5" fill="#1d2a3a"/>
-  <path d="M8 9.5L12 4.5V12" stroke="#6b7a8c" stroke-width="1.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
-  <path d="M4 12V4.5L8 9.5" stroke="#9da2ff" stroke-width="1.8" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
-  <circle cx="4" cy="4.5" r="1.5" fill="#9da2ff"/><circle cx="8" cy="9.5" r="1.5" fill="#9da2ff"/>
-  <circle cx="12" cy="4.5" r="1.4" fill="#5cc4bb"/><circle cx="12" cy="12" r="1.4" fill="#e0a54a"/>
+  <!-- The grid-path mark on a 16px grid, without the faint links, so it holds up in a browser tab. -->
+  <rect x="0.375" y="0.375" width="15.25" height="15.25" rx="3.5" fill="#ffffff" stroke="#d9dfe7" stroke-width="0.75"/>
+  <path d="M4 4H8V8H12V12" stroke="#3b3fb6" stroke-width="1.8" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+  <circle cx="4" cy="8" r="1.25" fill="#1d7570"/><circle cx="12" cy="4" r="1.25" fill="#1d7570"/>
+  <circle cx="4" cy="12" r="1.25" fill="#c9861c"/><circle cx="8" cy="12" r="1.25" fill="#c9861c"/>
+  <circle cx="4" cy="4" r="1.45" fill="#3b3fb6"/><circle cx="8" cy="4" r="1.45" fill="#3b3fb6"/><circle cx="8" cy="8" r="1.45" fill="#3b3fb6"/><circle cx="12" cy="8" r="1.45" fill="#3b3fb6"/><circle cx="12" cy="12" r="1.45" fill="#3b3fb6"/>
 </svg>

@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 139,
+  "revision": 140,
   "nextId": 73,
   "root": {
     "id": "T-1",
@@ -1285,7 +1285,7 @@
           {
             "id": "T-72",
             "name": "Keyboard shortcuts keep working after clicks and changes",
-            "status": "Not Started",
+            "status": "In Progress",
             "mscw": "Should",
             "description": "Shortcuts only fire while a tree row has keyboard focus. Expanding, collapsing, deselecting, Focus levels and other redraws replace the rows and drop focus to the page, so the next key does nothing.",
             "acceptance": [
@@ -1307,8 +1307,17 @@
                 "at": "2026-10-23T02:59:22.203Z",
                 "agent": "claude-f555c004",
                 "text": "Added under T-26, approved by Alex, in the \"Keyboard shortcuts introspection\" thread (said shortcuts work only sometimes)"
+              },
+              {
+                "at": "2026-10-23T02:59:29.863Z",
+                "agent": "claude-f555c004",
+                "text": "Claimed"
               }
-            ]
+            ],
+            "claimedBy": {
+              "agent": "claude-f555c004",
+              "at": "2026-10-23T02:59:29.863Z"
+            }
           }
         ],
         "log": [

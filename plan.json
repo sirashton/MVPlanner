@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 67,
+  "revision": 68,
   "nextId": 55,
   "root": {
     "id": "T-1",
@@ -865,7 +865,6 @@
             "name": "Handoff note required to complete a task",
             "status": "Not Started",
             "mscw": "Must",
-            "proposed": true,
             "description": "When completing a task, the agent writes a short note: what changed, decisions and why, gotchas, what it left out (with T-ids) and where to look. Kept per task on the plan branch.",
             "acceptance": [
               {
@@ -878,6 +877,10 @@
                 "at": "2026-10-23T00:32:58.259Z",
                 "agent": "claude-5f5428c4",
                 "text": "Proposed under T-50"
+              },
+              {
+                "at": "2026-10-23T00:42:56.780Z",
+                "text": "Proposal accepted"
               }
             ]
           },

@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 92,
-  "nextId": 59,
+  "revision": 93,
+  "nextId": 60,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -795,6 +795,39 @@
             "log": [
               {
                 "at": "2026-10-23T01:02:42.477Z",
+                "agent": "claude-9cc89b7b",
+                "text": "Proposed under T-26"
+              }
+            ]
+          },
+          {
+            "id": "T-59",
+            "name": "Give proposals their own look, separate from agent work",
+            "status": "Not Started",
+            "mscw": "Should",
+            "proposed": true,
+            "description": "From the web page design review (findings 2, 6, 8, 9). Pink currently means agent working, proposed, and needs-your-decision. The suggested decision button is outlined in the focus colour. The how-to hint mixes proposal help with keyboard shortcuts. The proposal card's path line wraps into the title.",
+            "acceptance": [
+              {
+                "text": "Pink is used only for live agent work",
+                "done": false
+              },
+              {
+                "text": "The suggested decision button is marked in its priority's colour and labelled 'suggested'",
+                "done": false
+              },
+              {
+                "text": "Decision help sits beside the Decide buttons; keyboard shortcuts are out of the always-visible hint",
+                "done": false
+              },
+              {
+                "text": "Proposal path and proposer sit on their own line under the title",
+                "done": false
+              }
+            ],
+            "log": [
+              {
+                "at": "2026-10-23T01:02:47.615Z",
                 "agent": "claude-9cc89b7b",
                 "text": "Proposed under T-26"
               }

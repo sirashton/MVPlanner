@@ -116,6 +116,10 @@ header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spac
 .toolbar .legend { font-size: 12px; color: var(--ink-soft); margin-left: auto; display: flex; gap: 12px; flex-wrap: wrap; }
 .toggle { border: 1px solid var(--rule); background: transparent; border-radius: 999px; padding: 2px 10px; font-size: 13px; cursor: pointer; }
 .toggle[aria-pressed=true] { background: var(--ink); color: var(--sheet); border-color: var(--ink); }
+.levels { display: inline-flex; align-items: center; border: 1px solid var(--rule); border-radius: 999px; overflow: hidden; font-size: 13px; }
+.levels-label { padding: 2px 8px 2px 10px; color: var(--ink-soft); }
+.levels button { border: 0; border-left: 1px solid var(--rule); background: transparent; padding: 2px 10px; cursor: pointer; color: var(--ink-soft); }
+.levels button[aria-pressed=true] { background: var(--ink); color: var(--sheet); }
 
 .tree { list-style: none; margin: 0; padding: 0; }
 .row { display: flex; align-items: center; gap: 8px; min-height: 36px; padding: 2px 6px 2px calc(var(--depth) * 22px); border-radius: 6px; position: relative; }
@@ -221,7 +225,7 @@ aside.detail .foot { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap;
   <div class="board nodetail" id="board">
     <section aria-label="Plan">
       <div class="toolbar">
-        <button class="toggle" id="focus-toggle" aria-pressed="true" title="Show only what matters now">Focus</button>
+        <span class="levels" id="focus-levels" role="group" aria-label="Focus on"><span class="levels-label">Focus</span></span>
         <button class="toggle" id="wont-toggle" aria-pressed="false">Show Won't</button>
         <details class="keys"><summary>Shortcuts</summary><p>Enter in the add box adds and keeps it ready for the next one. Select a row, then: arrows to move and open, A to add under it, 1 to 4 to set its priority, R to rename.</p></details>
         <span class="legend"><span><i class="mark working"></i>being worked on</span><span><i class="mark progress"></i>in progress</span><span><i class="mark"></i>not started</span><span><i class="mark done"></i>done</span></span>
@@ -251,6 +255,7 @@ document.getElementById('theme-toggle').addEventListener('click', () => {
 
 const P = ['Must', 'Should', 'Could', "Won't"];
 const RANK = Object.fromEntries(P.map((p, i) => [p, i]));
+const LEVELS = ['Must', 'Should', 'Could', 'All'];
 const LETTER = { Must: 'M', Should: 'S', Could: 'C', "Won't": 'W' };
 const STATUSES = ['Not Started', 'In Progress', 'Blocked', 'Complete'];
 const $ = id => document.getElementById(id);
@@ -269,8 +274,9 @@ const el = (tag, attrs = {}, ...kids) => {
 const saved = (() => { try { return JSON.parse(localStorage.getItem('mvplanner-ui') || '{}'); } catch { return {}; } })();
 const ui = {
   view: null,
-  focus: saved.focus ?? true,
   showWont: saved.showWont ?? false,
+  // Focus level: Must, Should or Could show work at or above that project-level priority, with finished work tucked away; All shows everything.
+  level: LEVELS.includes(saved.level) ? saved.level : saved.focus === false ? 'All' : 'Could',
   open: new Set(saved.open ?? []),
   closed: new Set(saved.closed ?? []),
   selected: null,
@@ -281,7 +287,7 @@ const ui = {
   deciding: new Set(),
   prev: new Map(),
 };
-const remember = () => { try { localStorage.setItem('mvplanner-ui', JSON.stringify({ focus: ui.focus, showWont: ui.showWont, open: [...ui.open], closed: [...ui.closed] })); } catch {} };
+const remember = () => { try { localStorage.setItem('mvplanner-ui', JSON.stringify({ level: ui.level, showWont: ui.showWont, open: [...ui.open], closed: [...ui.closed] })); } catch {} };
 
 // Edits queue up while one save is in flight and go together in the next save, so a burst of typing is one round trip.
 let queue = [];
@@ -369,7 +375,7 @@ function markFor(row) {
 function isOpen(row, byId, kids) {
   if (ui.open.has(row.id)) return true;
   if (ui.closed.has(row.id)) return false;
-  if (!ui.focus || row.depth === 0) return true;
+  if (ui.level === 'All' || row.depth === 0) return true;
   // In focus, open branches where something is happening: claimed work, the critical path, or proposals to decide.
   return row.hasActiveWork || (row.isOnPath && row.status !== 'Complete') || (kids.get(row.id) || []).some(k => k.isProposed);
 }
@@ -428,10 +434,10 @@ function render() {
   // Tree.
   const items = [];
   const visit = (row, eff) => {
-    const all = (kids.get(row.id) || []).filter(k => ui.showWont || k.mscw !== "Won't");
+    const all = (kids.get(row.id) || []).filter(k => ui.level === 'All' ? ui.showWont || k.mscw !== "Won't" : RANK[effective(k, byId)] <= RANK[ui.level]);
     const open = isOpen(row, byId, kids);
     // In focus, finished work inside an open branch is counted rather than listed, unless it was opened by hand.
-    const children = ui.focus && !ui.open.has(row.id) ? all.filter(k => k.status !== 'Complete' || k.hasActiveWork) : all;
+    const children = ui.level !== 'All' && !ui.open.has(row.id) ? all.filter(k => k.status !== 'Complete' || k.hasActiveWork) : all;
     const hiddenDone = all.length - children.length;
     const before = ui.prev.get(row.id);
     const sig = `${row.name}|${row.mscw}|${row.status}|${row.agent || ''}|${row.parent || ''}`;
@@ -454,7 +460,10 @@ function render() {
   }
 
   renderDetail(byId);
-  $('focus-toggle').setAttribute('aria-pressed', String(ui.focus));
+  $('focus-levels').replaceChildren($('focus-levels').firstElementChild, ...LEVELS.map(l => el('button', { type: 'button', 'aria-pressed': String(l === ui.level),
+    title: { Must: 'Only Must work', Should: 'Must and Should work', Could: 'Must, Should and Could work', All: "Every task, finished ones too" }[l],
+    onclick: () => { ui.level = l; ui.open.clear(); ui.closed.clear(); remember(); render(); } }, l)));
+  $('wont-toggle').hidden = ui.level !== 'All';
   $('wont-toggle').setAttribute('aria-pressed', String(ui.showWont));
 }
 
@@ -600,7 +609,6 @@ $('capture').addEventListener('submit', e => {
   $('capture-name').value = '';
 });
 $('capture-parent').addEventListener('change', e => (ui.captureParent = e.target.value));
-$('focus-toggle').addEventListener('click', () => { ui.focus = !ui.focus; ui.open.clear(); ui.closed.clear(); remember(); render(); });
 $('wont-toggle').addEventListener('click', () => { ui.showWont = !ui.showWont; remember(); render(); });
 
 document.addEventListener('keydown', e => {

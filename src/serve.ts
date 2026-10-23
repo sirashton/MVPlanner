@@ -146,6 +146,7 @@ export async function startServer(options: ServeOptions): Promise<PlanServer> {
             }
             return send(404, JSON.stringify({ error: 'Not found' }));
         } catch (error) {
+            console.error(`${new Date().toISOString()} ${req.method} ${req.url}: ${(error as Error).message}`);
             const message = error instanceof PlanError || error instanceof SyntaxError ? error.message : `Unexpected error: ${(error as Error).message}`;
             return send(error instanceof PlanError || error instanceof SyntaxError ? 400 : 500, JSON.stringify({ error: message }));
         }

@@ -80,7 +80,20 @@ header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spac
 .decisions { margin: 20px 0 0; border-left: 3px solid var(--live); padding: 4px 0 4px 14px; }
 .decisions h2, .board h2 { font-size: 17px; font-weight: 750; margin: 0 0 8px; display: flex; align-items: center; gap: 10px; }
 .decisions ul { list-style: none; margin: 0; padding: 0; }
-.decisions li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; padding: 5px 0; }
+.decisions > ul > li { padding: 10px 0; border-bottom: 1px solid var(--rule); }
+.decisions > ul > li:last-child { border-bottom: 0; }
+.proposal { display: grid; gap: 4px; max-width: 72ch; }
+.proposal .chip { display: inline-block; width: auto; text-align: left; margin-left: 6px; }
+.proposal .why { margin: 2px 0; }
+.prio.decide button { width: 34px; height: 30px; font-size: 13px; }
+.prio.decide button[data-suggested=true] { box-shadow: inset 0 0 0 2px var(--focus); color: var(--ink); }
+.prio.decide button:hover[data-p=Must] { background: var(--must); color: var(--sheet); }
+.prio.decide button:hover[data-p=Should] { background: var(--should); color: var(--sheet); }
+.prio.decide button:hover[data-p=Could] { background: var(--could); color: var(--sheet); }
+.prio.decide button:hover[data-p="Won't"] { background: var(--wont); color: var(--sheet); }
+.proposal .muted { color: var(--ink-soft); font-style: italic; }
+.proposal .criteria { margin: 0; padding-left: 18px; font-size: 14px; color: var(--ink-soft); }
+.acts-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
 .decisions .where { color: var(--ink-soft); font-size: 13px; }
 .btn { border: 1px solid var(--rule); background: var(--sheet); border-radius: 6px; padding: 3px 10px; font-size: 13px; cursor: pointer; }
 .btn:hover { border-color: var(--ink-soft); }
@@ -155,7 +168,7 @@ aside.detail .foot { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap;
 
 .toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--ink); color: var(--sheet); padding: 8px 14px;
   border-radius: 8px; font-size: 14px; max-width: calc(100% - 32px); }
-.toast.error { background: var(--danger); }
+.toast.error { background: var(--danger); cursor: pointer; }
 .empty { color: var(--ink-soft); padding: 24px 0; }
 
 @media (max-width: 860px) {
@@ -189,7 +202,7 @@ aside.detail .foot { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap;
     <span class="prio" id="capture-prio" role="group" aria-label="Priority"></span>
     <button class="btn primary" type="submit">Add</button>
   </form>
-  <p class="hint">Enter adds and keeps the box ready for the next one. Select a row and press A to add under it, 1 to 4 to set its priority, R to rename.</p>
+  <p class="hint">Proposals: pick M, S or C to accept at that priority, or W to decline. Enter adds and keeps the box ready for the next one. Select a row and press A to add under it, 1 to 4 to set its priority, R to rename.</p>
 
   <section class="decisions" id="decisions" hidden></section>
 
@@ -205,7 +218,7 @@ aside.detail .foot { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap;
     <aside class="detail" id="detail" hidden></aside>
   </div>
 </div>
-<div class="toast" id="toast" role="status" hidden></div>
+<div class="toast" id="toast" role="status" title="Click to dismiss" hidden></div>
 <script>
 const P = ['Must', 'Should', 'Could', "Won't"];
 const RANK = Object.fromEntries(P.map((p, i) => [p, i]));
@@ -235,6 +248,8 @@ const ui = {
   captureParent: null,
   capturePrio: 'Must',
   renaming: null,
+  // Proposals decided on this page but not yet saved, hidden so they can't be decided twice.
+  deciding: new Set(),
   prev: new Map(),
 };
 const remember = () => { try { localStorage.setItem('mvplanner-ui', JSON.stringify({ focus: ui.focus, showWont: ui.showWont, open: [...ui.open], closed: [...ui.closed] })); } catch {} };
@@ -259,7 +274,9 @@ async function flush() {
     show(body.view);
     toast(body.results.length === 1 ? body.results[0] : `${body.results.length} changes saved`);
   } catch (error) {
-    toast(`Not saved: ${error.message}`, true);
+    for (const e of batch) if (e.op === 'accept' || e.op === 'decline') ui.deciding.delete(e.id);
+    render();
+    toast(`Not saved: ${error.message} Nothing in that batch was changed; try again.`, true);
   } finally {
     inFlight = false;
     setConn(source && source.readyState === 1 ? 'live' : 'off');
@@ -274,12 +291,21 @@ function toast(text, isError = false) {
   t.className = isError ? 'toast error' : 'toast';
   t.hidden = false;
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => (t.hidden = true), isError ? 6000 : 2200);
+  // Errors stay until dismissed, so they can be read.
+  if (!isError) toastTimer = setTimeout(() => (t.hidden = true), 2200);
 }
 function setConn(state) {
   const c = $('conn');
   c.className = `conn ${state}`;
   c.lastElementChild.textContent = state === 'live' ? 'Live' : state === 'saving' ? 'Saving' : 'Reconnecting';
+}
+
+// M, S or C accepts the proposal at that priority; W declines it. The suggested priority is outlined.
+function decisionControl(p) {
+  return el('span', { class: 'prio decide', role: 'group', 'aria-label': `Decide ${p.name}` },
+    P.map(m => el('button', { type: 'button', 'data-p': m, 'data-suggested': String(m === p.mscw),
+      title: m === "Won't" ? "Won't: decline it" : `Accept as ${m}${m === p.mscw ? ' (suggested)' : ''}`,
+      onclick: e => { e.stopPropagation(); ui.decide([p.id], m); } }, LETTER[m])));
 }
 
 function prioControl(value, onPick, label) {
@@ -332,16 +358,34 @@ function render() {
   $('capture-prio').replaceChildren(...prioControl(ui.capturePrio, p => { ui.capturePrio = p; render(); }, 'Priority').childNodes);
 
   // Decisions.
+  // Deciding is choosing a priority: Must, Should or Could accepts at that priority, Won't declines.
+  const decide = (ids, mscw) => {
+    ids.forEach(id => ui.deciding.add(id));
+    edit(...ids.map(id => mscw === "Won't" ? { op: 'decline', id } : { op: 'accept', id, ...(mscw ? { mscw } : {}) }));
+    render();
+  };
+  ui.decide = decide;
+  const proposals = v.proposals.filter(p => !ui.deciding.has(p.id));
   const dec = $('decisions');
-  dec.hidden = v.proposals.length === 0;
+  dec.hidden = proposals.length === 0;
   dec.replaceChildren(
-    el('h2', {}, `Needs your decision (${v.proposals.length})`,
-      v.proposals.length > 1 ? el('button', { class: 'btn', onclick: () => edit(...v.proposals.map(p => ({ op: 'accept', id: p.id }))) }, 'Accept all') : null),
-    el('ul', {}, v.proposals.map(p => el('li', {},
-      el('span', {}, el('b', {}, p.name), ` (${p.mscw})`),
-      el('span', { class: 'where' }, `under ${p.path}${p.by ? `, from ${p.by}` : ''}`),
-      el('button', { class: 'btn primary', onclick: () => edit({ op: 'accept', id: p.id }) }, 'Accept'),
-      el('button', { class: 'btn', onclick: () => edit({ op: 'decline', id: p.id }) }, 'Decline')))));
+    el('h2', {}, `Needs your decision (${proposals.length})`,
+      proposals.length > 1 ? el('button', { class: 'btn', onclick: () => decide(proposals.map(p => p.id)) }, 'Accept all as suggested') : null),
+    el('ul', {}, proposals.map(p => {
+      const row = byId.get(p.id);
+      const kidsOf = (kids.get(p.id) || []).filter(k => k.isProposed);
+      return el('li', {},
+        el('div', { class: 'proposal' },
+          el('div', {}, el('b', {}, p.name), ` `, el('span', { class: 'chip', 'data-p': p.mscw, 'data-letter': LETTER[p.mscw] }),
+            el('span', { class: 'where' }, ` under ${p.path}${p.by ? `, proposed by ${p.by}` : ''}`)),
+          p.description ? el('p', { class: 'why' }, p.description) : el('p', { class: 'why muted' }, 'No description was given.'),
+          row && row.acceptance.length ? el('ul', { class: 'criteria' }, row.acceptance.map(c => el('li', {}, `Done when: ${c.text}`))) : null,
+          kidsOf.length ? el('p', { class: 'where' }, `Includes ${kidsOf.length} proposed subtask${kidsOf.length > 1 ? 's' : ''}: ${kidsOf.map(k => k.name).join('; ')}`) : null,
+          el('div', { class: 'acts-row' },
+            el('span', { class: 'where' }, 'Decide:'),
+            decisionControl(p),
+            el('button', { class: 'btn', onclick: () => { ui.open.add(p.id); select(p.id); } }, 'Show in plan'))));
+    })));
 
   // Tree.
   const items = [];
@@ -464,8 +508,7 @@ function renderDetail(byId) {
     el('h3', {}, row.name),
     el('div', { class: 'path' }, `${row.id}${row.path ? ` in ${row.path}` : ''}`),
     row.agent ? el('p', {}, el('span', { class: 'tag agent' }, row.agent), ' is working on this') : null,
-    row.isProposed ? el('p', {}, el('button', { class: 'btn primary', onclick: () => edit({ op: 'accept', id: row.id }) }, 'Accept'), ' ',
-      el('button', { class: 'btn', onclick: () => edit({ op: 'decline', id: row.id }) }, 'Decline')) : null,
+    row.isProposed && !ui.deciding.has(row.id) ? [el('label', {}, 'Decide: M, S or C accepts at that priority, W declines'), decisionControl(row)] : null,
     row.depth > 0 ? [el('label', {}, 'Priority under its parent'), prioControl(row.mscw, p => edit({ op: 'update', id: row.id, mscw: p }), 'Priority')] : null,
     el('label', { for: 'd-status' }, 'Status'),
     el('select', { id: 'd-status', onchange: e => edit({ op: 'update', id: row.id, status: e.target.value }) },
@@ -497,6 +540,7 @@ function ago(at) {
 
 function show(view) {
   ui.view = view;
+  for (const id of ui.deciding) if (!view.proposals.some(p => p.id === id)) ui.deciding.delete(id);
   if (ui.selected && !view.tree.some(r => r.id === ui.selected)) ui.selected = null;
   const active = document.activeElement;
   const keep = active && active.closest('.row') ? active.closest('.row').dataset.id : null;
@@ -504,6 +548,7 @@ function show(view) {
   if (keep && !ui.renaming) document.querySelector(`.row[data-id="${keep}"]`)?.focus();
 }
 
+$('toast').addEventListener('click', () => ($('toast').hidden = true));
 $('capture').addEventListener('submit', e => {
   e.preventDefault();
   const name = $('capture-name').value.trim();

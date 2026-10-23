@@ -1,0 +1,17 @@
+name: MVPlanner
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  task:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # This repo checks with its own build; other repos get the workflow from `mvplan setup`.
+      - name: The PR names a claimed or complete MVPlanner task
+        run: node plugin/dist/cli.js check-pr

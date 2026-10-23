@@ -1,6 +1,6 @@
 import { addTask, decideProposal, moveTask, removeTask, updateTask } from './ops.ts';
 import type { NewTask, TaskUpdate } from './ops.ts';
-import { PlanError } from './plan.ts';
+import { PlanError, getTask } from './plan.ts';
 import type { Plan } from './types.ts';
 
 // A batch of plan changes applied in one save, so a burst of ideas in a scoping session lands in one round trip.
@@ -51,6 +51,11 @@ export function applyEdits(plan: Plan, agent: string | undefined, edits: Edit[],
                 }
                 case 'accept':
                 case 'decline': {
+                    // A second click, or the same decision from another screen, is not an error.
+                    const current = getTask(plan, resolve(edit.id));
+                    if (!current.proposed && (current.mscw === "Won't") === (edit.op === 'decline')) {
+                        return `${current.id} ${current.name} was already ${edit.op === 'accept' ? 'accepted' : 'declined'}`;
+                    }
                     const task = decideProposal(plan, resolve(edit.id), edit.op === 'accept', edit.op === 'accept' ? edit.mscw : undefined);
                     return `${edit.op === 'accept' ? 'Accepted' : 'Declined'} ${task.id} ${task.name}`;
                 }

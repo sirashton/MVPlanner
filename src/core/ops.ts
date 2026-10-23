@@ -150,6 +150,7 @@ export interface NewTask {
     description?: string;
     need?: string;
     serves?: string;
+    raiseParent?: string;
     mscw?: Mscw;
     acceptance?: string[];
     dependsOn?: string[];
@@ -173,6 +174,9 @@ export function proposeTask(plan: Plan, parentId: string, agent: string | undefi
     }
     if (spec.serves?.trim()) {
         task.serves = spec.serves.trim();
+    }
+    if (spec.raiseParent?.trim()) {
+        task.raiseParent = spec.raiseParent.trim();
     }
     if (spec.acceptance?.length) {
         task.acceptance = spec.acceptance.map(text => ({ text, done: false }));

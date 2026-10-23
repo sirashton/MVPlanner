@@ -133,6 +133,12 @@ kbd { font: inherit; font-size: 12px; border: 1px solid var(--rule); border-bott
 .proposal .criteria { margin: 0; padding-left: 0; font-size: 14px; color: var(--ink-soft); }
 .acts-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 6px; }
 .decisions .where { color: var(--ink-soft); font-size: 13px; }
+.proposal .raise { margin: 2px 0; padding: 4px 8px; border-radius: 6px; background: color-mix(in srgb, var(--must) 10%, transparent); }
+.later { margin-top: 14px; padding-top: 10px; border-top: 1px dashed var(--rule); }
+.later h3 { font-size: 15px; font-weight: 700; margin: 0 0 4px; display: flex; align-items: center; gap: 10px; }
+.later .levels { margin: 6px 0 4px; }
+.later > ul > li { padding: 10px 0; border-bottom: 1px solid var(--rule); }
+.later > ul > li:last-child { border-bottom: 0; }
 .btn { border: 1px solid var(--rule); background: var(--sheet); border-radius: 6px; padding: 3px 10px; font-size: 13px; cursor: pointer; }
 .btn:hover { border-color: var(--ink-soft); }
 .btn.primary { background: var(--ink); color: var(--sheet); border-color: var(--ink); }
@@ -246,7 +252,7 @@ aside.detail .foot { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap;
   .capture:focus-within input[type=text] { flex-basis: 100%; }
   .capture .under, .capture .prio { display: none; }
   .capture:focus-within .under, .capture:focus-within .prio { display: flex; }
-  .decisions:not(.open) > ul { display: none; }
+  .decisions:not(.open) > ul, .decisions:not(.open) > .later, .decisions:not(.open) > p { display: none; }
   .decisions:not(.open) h2 { margin: 0; }
   .decisions .fold { display: inline-block; }
   .row { scroll-margin-top: 12px; }
@@ -343,6 +349,7 @@ document.getElementById('theme-toggle').addEventListener('click', () => {
 const P = ['Must', 'Should', 'Could', "Won't"];
 const RANK = Object.fromEntries(P.map((p, i) => [p, i]));
 const LEVELS = ['Must', 'Should', 'Could', 'All'];
+const PATH_WORD = { Must: 'Must', Should: 'Should', Could: 'Could' };
 const LETTER = { Must: 'M', Should: 'S', Could: 'C', "Won't": 'W' };
 const STATUSES = ['Not Started', 'In Progress', 'Blocked', 'Complete'];
 const $ = id => document.getElementById(id);
@@ -373,6 +380,9 @@ const ui = {
   // The task the keyboard last acted on, so shortcuts still have a target after focus leaves the tree.
   cursor: null,
   decisionsOpen: false,
+  laterOpen: false,
+  // Which path level the later pile shows: Must, Should, Could, Won't or All.
+  laterFilter: 'All',
   // Proposals decided on this page but not yet saved, hidden so they can't be decided twice.
   deciding: new Set(),
   prev: new Map(),
@@ -549,32 +559,51 @@ function render() {
     render();
   };
   ui.decide = decide;
-  const proposals = v.proposals.filter(p => !ui.deciding.has(p.id));
+  const waiting = v.proposals.filter(p => !ui.deciding.has(p.id));
+  // Only proposals on the current level's path are reviewed now; the rest wait in a later pile until the plan gets there.
+  const proposals = waiting.filter(p => p.isNow);
+  const later = waiting.filter(p => !p.isNow);
+  const pathCounts = P.map(l => [l, later.filter(p => p.pathLevel === l).length]).filter(([, n]) => n);
+  if (ui.laterFilter !== 'All' && !pathCounts.some(([l]) => l === ui.laterFilter)) ui.laterFilter = 'All';
+  const shownLater = later.filter(p => ui.laterFilter === 'All' || p.pathLevel === ui.laterFilter);
+  const card = p => {
+    const row = byId.get(p.id);
+    const kidsOf = (kids.get(p.id) || []).filter(k => k.isProposed);
+    return el('li', {},
+      el('div', { class: 'proposal' },
+        el('div', { class: 'title' }, el('span', { class: 'tid' }, p.id), ` `, el('b', {}, p.name)),
+        p.raiseParent ? el('p', { class: 'raise' }, el('b', {}, 'Asks to raise a parent: '), p.raiseParent) : null,
+        el('div', { class: 'where' }, `Proposed${p.by ? ` by ${p.by}` : ''}. How it fits, from the top task down, with each step's priority and need:`),
+        routeFor(p, byId),
+        p.serves ? el('p', { class: 'serves' }, el('b', {}, 'Serves: '), p.serves)
+          : el('p', { class: 'serves muted' }, "Doesn't say which part of its parent's need it serves."),
+        p.description ? el('p', { class: 'why' }, p.description) : el('p', { class: 'why muted' }, 'No description was given.'),
+        row && row.acceptance.length ? el('ul', { class: 'criteria' }, row.acceptance.map(c => el('li', {}, `Done when: ${c.text}`))) : null,
+        kidsOf.length ? el('p', { class: 'where' }, `Includes ${kidsOf.length} proposed subtask${kidsOf.length > 1 ? 's' : ''}: ${kidsOf.map(k => k.name).join('; ')}`) : null,
+        el('div', { class: 'acts-row' },
+          decisionControl(p),
+          el('span', { class: 'suggested' }, `${p.mscw} suggested. M, S or C accepts at that priority; W declines.`),
+          el('button', { class: 'btn', onclick: () => { ui.open.add(p.id); select(p.id); } }, 'Show in plan'))));
+  };
   const dec = $('decisions');
   dec.classList.toggle('open', ui.decisionsOpen);
-  dec.hidden = proposals.length === 0;
-  dec.replaceChildren(
+  dec.hidden = waiting.length === 0;
+  dec.replaceChildren(...[
     el('h2', {}, `Needs your decision (${proposals.length})`,
       el('button', { class: 'btn fold', 'aria-expanded': String(ui.decisionsOpen), onclick: () => { ui.decisionsOpen = !ui.decisionsOpen; render(); } }, ui.decisionsOpen ? 'Hide' : 'Review'),
       proposals.length > 1 ? el('button', { class: 'btn', onclick: () => decide(proposals.map(p => p.id)) }, 'Accept all as suggested') : null),
-    el('ul', {}, proposals.map(p => {
-      const row = byId.get(p.id);
-      const kidsOf = (kids.get(p.id) || []).filter(k => k.isProposed);
-      return el('li', {},
-        el('div', { class: 'proposal' },
-          el('div', { class: 'title' }, el('span', { class: 'tid' }, p.id), ` `, el('b', {}, p.name)),
-          el('div', { class: 'where' }, `Proposed${p.by ? ` by ${p.by}` : ''}. How it fits, from the top task down, with each step's priority and need:`),
-          routeFor(p, byId),
-          p.serves ? el('p', { class: 'serves' }, el('b', {}, 'Serves: '), p.serves)
-            : el('p', { class: 'serves muted' }, "Doesn't say which part of its parent's need it serves."),
-          p.description ? el('p', { class: 'why' }, p.description) : el('p', { class: 'why muted' }, 'No description was given.'),
-          row && row.acceptance.length ? el('ul', { class: 'criteria' }, row.acceptance.map(c => el('li', {}, `Done when: ${c.text}`))) : null,
-          kidsOf.length ? el('p', { class: 'where' }, `Includes ${kidsOf.length} proposed subtask${kidsOf.length > 1 ? 's' : ''}: ${kidsOf.map(k => k.name).join('; ')}`) : null,
-          el('div', { class: 'acts-row' },
-            decisionControl(p),
-            el('span', { class: 'suggested' }, `${p.mscw} suggested. M, S or C accepts at that priority; W declines.`),
-            el('button', { class: 'btn', onclick: () => { ui.open.add(p.id); select(p.id); } }, 'Show in plan'))));
-    })));
+    proposals.length ? null : el('p', { class: 'where' }, `Nothing on the ${PATH_WORD[v.level] || 'current'} path waits for you.`),
+    el('ul', {}, proposals.map(card)),
+    later.length ? el('div', { class: 'later' },
+      el('h3', {}, `Later (${later.length})`,
+        el('button', { class: 'btn', 'aria-expanded': String(ui.laterOpen), onclick: () => { ui.laterOpen = !ui.laterOpen; render(); } }, ui.laterOpen ? 'Hide' : 'Show')),
+      el('p', { class: 'where' }, `Off the ${PATH_WORD[v.level] || 'current'} path, so they can wait until the plan reaches their level. Each is on the path of the least important task above it.`),
+      ui.laterOpen ? [
+        el('span', { class: 'levels', role: 'group', 'aria-label': 'Show proposals on' },
+          [['All', later.length], ...pathCounts].map(([l, n]) => el('button', { type: 'button', 'aria-pressed': String(ui.laterFilter === l), 'data-p': l === 'All' ? undefined : l,
+            onclick: () => { ui.laterFilter = l; render(); } }, l === 'All' ? `All ${n}` : `${l} path ${n}`))),
+        el('ul', {}, shownLater.map(card))] : null) : null,
+  ].filter(Boolean));
 
   // Tree.
   const items = [];

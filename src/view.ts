@@ -1,4 +1,4 @@
-import { computeDoMore, criticalPath, isLeafWork, nextTasks, overallLevel } from './core/domore.ts';
+import { computeDoMore, criticalPath, isLeafWork, isReviewableNow, nextTasks, overallLevel, pathLevel } from './core/domore.ts';
 import { walk } from './core/plan.ts';
 import { isClaimStale, lastClaimActivity } from './core/ops.ts';
 import type { Marker } from './core/markers.ts';
@@ -22,7 +22,8 @@ export interface PlanView {
     level: DoMore;
     status: string;
     ladder: { label: string; done: number; total: number; isCurrent: boolean }[];
-    proposals: (TaskSummary & { description?: string; serves?: string; by?: string })[];
+    // isNow: on the current level's path or asking to raise a parent, so it is reviewed now; the rest wait in a later pile.
+    proposals: (TaskSummary & { description?: string; serves?: string; raiseParent?: string; by?: string; pathLevel: Mscw; isNow: boolean })[];
     claims: (TaskSummary & { agent: string; branch?: string; session?: string; since: string; lastActivity: string; isStale: boolean })[];
     next: (TaskSummary & { blockedBy: string[]; acceptance: string[] })[];
     deferred: (TaskSummary & { trigger?: string; markers: { file: string; line: number; kind: string }[] })[];
@@ -70,7 +71,8 @@ export function buildView(plan: Plan, markers: Marker[] = [], now = Date.now()):
         status: describeLevel(level),
         ladder,
         proposals: entries.filter(e => e.task.proposed).map(e => ({
-            ...summary(e.task, e.parents), description: e.task.description, serves: e.task.serves, by: e.task.log?.[0]?.agent,
+            ...summary(e.task, e.parents), description: e.task.description, serves: e.task.serves, raiseParent: e.task.raiseParent, by: e.task.log?.[0]?.agent,
+            pathLevel: pathLevel(e.parents), isNow: isReviewableNow(e.task, e.parents, level),
         })),
         claims: entries.filter(e => e.task.claimedBy).map(e => {
             return {

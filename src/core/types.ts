@@ -53,6 +53,8 @@ export interface Task {
     proposed?: boolean;
     // On a proposal: the part of the parent's need it serves, so the human can judge whether the parent needs it.
     serves?: string;
+    // On a proposal: why a parent should be raised (to Must, say) or its need changed. It reaches the human straight away.
+    raiseParent?: string;
     links?: string[];
     log?: LogEntry[];
     subtasks?: Task[];

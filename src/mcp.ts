@@ -105,15 +105,16 @@ export function createServer(cwd: string, storePromise: Promise<PlanStore> = ope
             parent: idArg.describe(PARENT_HINT),
             agent: agentArg,
             name: z.string().min(1),
+            raise_parent: z.string().optional().describe('Only when this idea means a parent should be raised (to Must, say) or its need changed: which parent and why. The proposal then reaches the human straight away, wherever it sits; otherwise proposals off the current path wait until the plan gets there'),
             serves: z.string().describe('The part of the parent\'s need this serves, quoted or paraphrased from it. If no parent\'s need explains the idea, say which parent\'s need would have to change and how; the human decides'),
             description: z.string().optional(),
             mscw: mscwArg.optional().describe('Your suggested priority relative to the parent: how much the parent\'s need depends on this. The human decides'),
             acceptance: z.array(z.string()).optional().describe('How we will know it is done'),
         },
-    }, ({ parent, agent, name, serves, description, mscw, acceptance }) => guarded(async () => {
+    }, ({ parent, agent, name, serves, raise_parent, description, mscw, acceptance }) => guarded(async () => {
         const line = requireServes(serves, parent);
         const { plan, result } = await (await storePromise).mutate(`${agent} proposes "${name}"`, p =>
-            proposeTask(p, parent, agent, { name, serves: line, description, mscw, acceptance }));
+            proposeTask(p, parent, agent, { name, serves: line, raiseParent: raise_parent, description, mscw, acceptance }));
         return `Proposed as ${result.id} under ${parent}. Carry on with your claimed task; a human will accept or decline it.${crowdingHint(plan, [parent])}${needHint(plan, [parent])}`;
     }));
 

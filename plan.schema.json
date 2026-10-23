@@ -149,6 +149,10 @@
           "type": "string",
           "description": "On a proposal: the part of the parent's need it serves"
         },
+        "raiseParent": {
+          "type": "string",
+          "description": "On a proposal: why a parent should be raised or its need changed; it is reviewed straight away"
+        },
         "links": {
           "type": "array",
           "items": {

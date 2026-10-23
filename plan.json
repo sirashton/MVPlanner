@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 152,
+  "revision": 153,
   "nextId": 76,
   "root": {
     "id": "T-1",
@@ -904,6 +904,11 @@
                 "at": "2026-10-23T03:03:21.483Z",
                 "agent": "claude-f555c004",
                 "text": "checked \"After expanding or collapsing a row (by key or click) the next shortcut still works\"; checked \"After clicking a blank part of the page, shortcuts act on the selected (or last used) task\"; checked \"Typing in the add box, description or a rename never triggers a shortcut\"; linked https://github.com/sirashton/MVPlanner/pull/20; render() restores row focus after every redraw; keys outside the tree act on the selected or last used task; verified in Chromium. PR #20 open, not merged yet."
+              },
+              {
+                "at": "2026-10-23T03:05:15.827Z",
+                "agent": "claude-f555c004",
+                "text": "PR #20 merged (cf61118); left In Progress until Alex OKs marking it Complete."
               }
             ],
             "claimedBy": {

@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 78,
+  "revision": 79,
   "nextId": 55,
   "root": {
     "id": "T-1",
@@ -360,7 +360,7 @@
               {
                 "id": "T-49",
                 "name": "CI fails PRs that are not tied to a claimed task",
-                "status": "Not Started",
+                "status": "In Progress",
                 "mscw": "Must",
                 "description": "A PR must name a task (T-n) in its title, branch or body that is claimed or complete, so work done without the plugin is caught before merge.",
                 "log": [
@@ -368,8 +368,18 @@
                     "at": "2026-10-23T00:14:39.123Z",
                     "agent": "claude-5f5428c4",
                     "text": "Added under T-47, approved by Alex, in the project thread"
+                  },
+                  {
+                    "at": "2026-10-23T00:54:08.562Z",
+                    "agent": "claude-5f5428c4",
+                    "text": "Claimed on claude/project-thread-mr24nb"
                   }
-                ]
+                ],
+                "claimedBy": {
+                  "agent": "claude-5f5428c4",
+                  "at": "2026-10-23T00:54:08.562Z",
+                  "branch": "claude/project-thread-mr24nb"
+                }
               }
             ]
           }

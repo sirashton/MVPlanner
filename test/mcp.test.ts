@@ -38,3 +38,29 @@ test('task_update to Complete fails without a handoff note', async () => {
     assert.match(task.log!.at(-1)!.text, /Left out retries \(T-9\)/);
     await client.close();
 });
+
+test('task_propose refuses a proposal that does not say which part of the parent\'s need it serves', async () => {
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'mvplanner-mcp-'));
+    const store = new FileStore(path.join(dir, 'plan.json'));
+    const plan = newPlan('Tools');
+    plan.root.need = 'People can plan work with agents';
+    await store.write(plan);
+
+    const [clientSide, serverSide] = InMemoryTransport.createLinkedPair();
+    await createServer(dir, Promise.resolve(store)).connect(serverSide);
+    const client = new Client({ name: 'test', version: '0' });
+    await client.connect(clientSide);
+    const propose = (serves?: string) => client.callTool({ name: 'task_propose', arguments: { parent: 'T-1', agent: 'agent-a', name: 'Undo', ...(serves === undefined ? {} : { serves }) } }) as Promise<{ isError?: boolean; content: { text: string }[] }>;
+
+    for (const serves of [undefined, '  ']) {
+        const refused = await propose(serves);
+        assert.equal(refused.isError, true);
+        assert.equal((await store.read()).root.subtasks, undefined);
+    }
+    assert.match((await propose('  ')).content[0].text, /needs a serves line/);
+
+    const done = await propose('"plan work": a slip in a live session is cheap to take back');
+    assert.equal(done.isError, undefined);
+    assert.equal((await store.read()).root.subtasks![0].serves, '"plan work": a slip in a live session is cheap to take back');
+    await client.close();
+});

@@ -22,14 +22,14 @@ export interface PlanView {
     level: DoMore;
     status: string;
     ladder: { label: string; done: number; total: number; isCurrent: boolean }[];
-    proposals: (TaskSummary & { description?: string; by?: string })[];
+    proposals: (TaskSummary & { description?: string; serves?: string; by?: string })[];
     claims: (TaskSummary & { agent: string; branch?: string; session?: string; since: string; lastActivity: string; isStale: boolean })[];
     next: (TaskSummary & { blockedBy: string[]; acceptance: string[] })[];
     deferred: (TaskSummary & { trigger?: string; markers: { file: string; line: number; kind: string }[] })[];
     activity: { at: string; agent?: string; id: string; name: string; text: string }[];
     tree: (TaskSummary & {
         parent?: string; depth: number; level: DoMore; isOnPath: boolean; agent?: string; hasActiveWork: boolean; badges: string[];
-        description?: string; need?: string; acceptance: { text: string; done: boolean }[]; isProposed: boolean; isDeferred: boolean; dependsOn: string[];
+        description?: string; need?: string; serves?: string; acceptance: { text: string; done: boolean }[]; isProposed: boolean; isDeferred: boolean; dependsOn: string[];
         links: string[]; log: { at: string; agent?: string; text: string }[];
     })[];
 }
@@ -70,7 +70,7 @@ export function buildView(plan: Plan, markers: Marker[] = [], now = Date.now()):
         status: describeLevel(level),
         ladder,
         proposals: entries.filter(e => e.task.proposed).map(e => ({
-            ...summary(e.task, e.parents), description: e.task.description, by: e.task.log?.[0]?.agent,
+            ...summary(e.task, e.parents), description: e.task.description, serves: e.task.serves, by: e.task.log?.[0]?.agent,
         })),
         claims: entries.filter(e => e.task.claimedBy).map(e => {
             return {
@@ -109,6 +109,7 @@ export function buildView(plan: Plan, markers: Marker[] = [], now = Date.now()):
             isOnPath: onPath.has(e.task.id),
             description: e.task.description,
             need: e.task.need,
+            serves: e.task.serves,
             acceptance: e.task.acceptance ?? [],
             isProposed: Boolean(e.task.proposed),
             isDeferred: Boolean(e.task.deferred),

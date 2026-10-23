@@ -51,6 +51,8 @@ export interface Task {
     dependsOn?: string[];
     deferred?: Deferral;
     proposed?: boolean;
+    // On a proposal: the part of the parent's need it serves, so the human can judge whether the parent needs it.
+    serves?: string;
     links?: string[];
     log?: LogEntry[];
     subtasks?: Task[];

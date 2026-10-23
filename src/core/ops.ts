@@ -149,6 +149,7 @@ export interface NewTask {
     name: string;
     description?: string;
     need?: string;
+    serves?: string;
     mscw?: Mscw;
     acceptance?: string[];
     dependsOn?: string[];
@@ -170,6 +171,9 @@ export function proposeTask(plan: Plan, parentId: string, agent: string | undefi
     if (spec.need?.trim()) {
         task.need = spec.need.trim();
     }
+    if (spec.serves?.trim()) {
+        task.serves = spec.serves.trim();
+    }
     if (spec.acceptance?.length) {
         task.acceptance = spec.acceptance.map(text => ({ text, done: false }));
     }
@@ -179,6 +183,14 @@ export function proposeTask(plan: Plan, parentId: string, agent: string | undefi
     addLog(task, `Proposed under ${parentId}`, agent);
     parent.subtasks = [...(parent.subtasks ?? []), task];
     return task;
+}
+
+// Tasks come out of their parent's need, so an agent's proposal has to say which part of that need it serves.
+export function requireServes(serves: string | undefined, parentId: string): string {
+    if (!serves?.trim()) {
+        throw new PlanError(`A proposal needs a serves line: quote the part of ${parentId}'s need it serves. If no parent's need explains it, say which parent's need would have to change, and how, so the human can decide.`);
+    }
+    return serves.trim();
 }
 
 // Past this many subtasks a parent gets hard to follow, so tool replies suggest grouping. A nudge, never a limit.

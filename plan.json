@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 171,
+  "revision": 172,
   "nextId": 86,
   "root": {
     "id": "T-1",
@@ -962,6 +962,11 @@
                 "at": "2026-10-23T03:24:10.951Z",
                 "agent": "claude-f555c004",
                 "text": "Memory updated with Alex's review-flow ideas; no code change. Still waiting on Alex's OK to mark Complete."
+              },
+              {
+                "at": "2026-10-23T03:29:59.784Z",
+                "agent": "claude-f555c004",
+                "text": "Proposed Alex's top-down ideas as T-78 to T-85 (separate work). This fix is still waiting on Alex's OK to mark Complete."
               }
             ],
             "claimedBy": {

@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 158,
+  "revision": 159,
   "nextId": 78,
   "root": {
     "id": "T-1",
@@ -1561,7 +1561,7 @@
           {
             "id": "T-77",
             "name": "Page doesn't jump while it loads",
-            "status": "Not Started",
+            "status": "In Progress",
             "mscw": "Should",
             "description": "The header, progress ladder and add box move as the plan arrives and the font loads (measured cumulative layout shift 0.145). Send the plan with the page so the first paint is already laid out, and stop the font swap from moving text.",
             "acceptance": [
@@ -1579,8 +1579,18 @@
                 "at": "2026-10-23T03:11:31.384Z",
                 "agent": "claude-9cc89b7b",
                 "text": "Added under T-26, approved by Alex, in the project chat (asked that things stop moving around as the page loads)"
+              },
+              {
+                "at": "2026-10-23T03:11:37.371Z",
+                "agent": "claude-9cc89b7b",
+                "text": "Claimed on claude/project-thread-e0welq"
               }
-            ]
+            ],
+            "claimedBy": {
+              "agent": "claude-9cc89b7b",
+              "at": "2026-10-23T03:11:37.371Z",
+              "branch": "claude/project-thread-e0welq"
+            }
           }
         ],
         "log": [

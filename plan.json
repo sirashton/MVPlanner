@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 96,
-  "nextId": 63,
+  "revision": 97,
+  "nextId": 64,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -407,6 +407,27 @@
                 "links": [
                   "https://github.com/sirashton/MVPlanner/pull/12"
                 ]
+              }
+            ]
+          },
+          {
+            "id": "T-63",
+            "name": "Hooks ignore edits outside the repository",
+            "status": "Not Started",
+            "mscw": "Should",
+            "proposed": true,
+            "description": "The PreToolUse and Stop hooks asked for a claimed task when a review-only thread wrote a project memory file in /tmp/claude/memory, outside the checkout. Edits outside the repository (memory, scratchpad, project files) shouldn't need a task.",
+            "acceptance": [
+              {
+                "text": "Writing a file outside the repository's top level triggers no claim warning or Stop block",
+                "done": false
+              }
+            ],
+            "log": [
+              {
+                "at": "2026-10-23T01:03:44.505Z",
+                "agent": "claude-9cc89b7b",
+                "text": "Proposed under T-14"
               }
             ]
           }

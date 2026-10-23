@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 157,
-  "nextId": 77,
+  "revision": 158,
+  "nextId": 78,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -1555,6 +1555,30 @@
                 "at": "2026-10-23T03:05:01.685Z",
                 "agent": "claude-9cc89b7b",
                 "text": "status In Progress -> Complete; checked \"For a plan named MVPlanner the header shows the stylised wordmark once, at heading size, and no plain duplicate\"; checked \"Plans with other names still show their own name as the heading\"; When the plan is named MVPlanner the wordmark is shown at heading size (32px, 36px icon) and the plain h1 is kept for screen readers only; other plan names keep their own heading. Checked at 1440 light/dark and 390."
+              }
+            ]
+          },
+          {
+            "id": "T-77",
+            "name": "Page doesn't jump while it loads",
+            "status": "Not Started",
+            "mscw": "Should",
+            "description": "The header, progress ladder and add box move as the plan arrives and the font loads (measured cumulative layout shift 0.145). Send the plan with the page so the first paint is already laid out, and stop the font swap from moving text.",
+            "acceptance": [
+              {
+                "text": "Measured cumulative layout shift on load is below 0.01 at desktop and phone widths",
+                "done": false
+              },
+              {
+                "text": "The page still works live, updating from the event stream",
+                "done": false
+              }
+            ],
+            "log": [
+              {
+                "at": "2026-10-23T03:11:31.384Z",
+                "agent": "claude-9cc89b7b",
+                "text": "Added under T-26, approved by Alex, in the project chat (asked that things stop moving around as the page loads)"
               }
             ]
           }

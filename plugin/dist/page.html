@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Plan</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Cstyle%3E.m %7B fill: %233b3fb6 %7D %40media %28prefers-color-scheme: dark%29 %7B .m %7B fill: %239da2ff %7D %7D%3C/style%3E%3Crect class=%22m%22 x=%224%22 y=%220%22 width=%228%22 height=%223%22 rx=%221%22/%3E%3Crect class=%22m%22 x=%227%22 y=%223%22 width=%222%22 height=%223%22/%3E%3Crect x=%220%22 y=%226%22 width=%224%22 height=%223%22 rx=%221%22 fill=%22%231d7570%22/%3E%3Crect class=%22m%22 x=%225%22 y=%226%22 width=%226%22 height=%224%22 rx=%221%22/%3E%3Crect x=%2212%22 y=%226%22 width=%224%22 height=%223%22 rx=%221%22 fill=%22%238a5a0f%22/%3E%3Crect class=%22m%22 x=%227%22 y=%2210%22 width=%222%22 height=%223%22/%3E%3Crect class=%22m%22 x=%227%22 y=%2212%22 width=%227%22 height=%224%22 rx=%221%22/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400..900&display=swap" rel="stylesheet">
@@ -39,6 +40,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .wrap { max-width: 1180px; margin: 0 auto; padding: 24px 16px 80px; }
 
 header.top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; }
+.brand { flex: none; width: 28px; height: 28px; align-self: center; margin-right: -6px; }
+.brand .m { fill: var(--must); }
+.brand .s { fill: var(--should); }
+.brand .c { fill: var(--could); }
 header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spacing: -0.02em; margin: 0; }
 .status-line { color: var(--ink-soft); font-size: 15px; }
 .conn { margin-left: auto; font-size: 13px; color: var(--ink-soft); display: flex; align-items: center; gap: 6px; }
@@ -224,6 +229,11 @@ aside.detail .foot { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap;
 <body>
 <div class="wrap">
   <header class="top">
+    <svg class="brand" viewBox="0 0 16 16" role="img" aria-label="MVPlanner"><title>MVPlanner</title>
+      <rect class="m" x="4" y="0" width="8" height="3" rx="1"/><rect class="m" x="7" y="3" width="2" height="3"/>
+      <rect class="s" x="0" y="6" width="4" height="3" rx="1"/><rect class="m" x="5" y="6" width="6" height="4" rx="1"/>
+      <rect class="c" x="12" y="6" width="4" height="3" rx="1"/><rect class="m" x="7" y="10" width="2" height="3"/>
+      <rect class="m" x="7" y="12" width="7" height="4" rx="1"/></svg>
     <h1 id="name">Plan</h1>
     <span class="status-line" id="status"></span>
     <span class="conn" id="conn"><i></i><span>Connecting</span></span>

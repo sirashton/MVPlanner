@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 18 18" role="img" aria-label="MVPlanner">
+  <title>MVPlanner</title>
+  <!-- A plan tree: the top task, its subtasks in priority colours, and the critical path in Must indigo. -->
+  <path d="M2 6V4.5H14V6M4.5 13.5H7" stroke="#c4ccd6" stroke-width="0.9" fill="none" stroke-linejoin="round"/>
+  <rect x="4" y="0" width="8" height="3" rx="1" fill="#3b3fb6"/>
+  <rect x="7" y="3" width="2" height="3" fill="#3b3fb6"/>
+  <rect x="0" y="6" width="4" height="3" rx="1" fill="#1d7570"/>
+  <rect x="5" y="6" width="6" height="4" rx="1" fill="#3b3fb6"/>
+  <rect x="12" y="6" width="4" height="3" rx="1" fill="#8a5a0f"/>
+  <rect x="7" y="10" width="2" height="3" fill="#3b3fb6"/>
+  <rect x="1" y="12.5" width="4" height="2.5" rx="0.9" fill="#8a96a6"/>
+  <rect x="7" y="12" width="7" height="4" rx="1" fill="#3b3fb6"/>
+</svg>

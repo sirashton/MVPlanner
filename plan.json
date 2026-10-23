@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 62,
-  "nextId": 50,
+  "revision": 63,
+  "nextId": 51,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -843,6 +843,21 @@
         ],
         "links": [
           "https://github.com/sirashton/MVPlanner/pull/5"
+        ]
+      },
+      {
+        "id": "T-50",
+        "name": "Shared context: notes and questions on tasks",
+        "status": "Not Started",
+        "mscw": "Must",
+        "proposed": true,
+        "description": "The plan becomes a context store: what each agent learned is kept on its task, and agents are briefed with the notes that matter to their task.",
+        "log": [
+          {
+            "at": "2026-10-23T00:32:55.511Z",
+            "agent": "claude-5f5428c4",
+            "text": "Proposed under T-1"
+          }
         ]
       }
     ]

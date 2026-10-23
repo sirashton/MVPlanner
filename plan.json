@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 148,
+  "revision": 149,
   "nextId": 76,
   "root": {
     "id": "T-1",
@@ -1478,7 +1478,7 @@
           {
             "id": "T-75",
             "name": "Show the name once in the page header",
-            "status": "Not Started",
+            "status": "In Progress",
             "mscw": "Should",
             "description": "When the plan itself is called MVPlanner, the header shows the stylised wordmark and then a plain MVPlanner heading. Show only the stylised one, at heading size.",
             "acceptance": [
@@ -1496,8 +1496,18 @@
                 "at": "2026-10-23T03:04:21.445Z",
                 "agent": "claude-9cc89b7b",
                 "text": "Added under T-26, approved by Alex, in the project chat (asked to drop the duplicate plain \"MVPlanner\" heading and keep the stylised one)"
+              },
+              {
+                "at": "2026-10-23T03:04:27.681Z",
+                "agent": "claude-9cc89b7b",
+                "text": "Claimed on claude/project-thread-e0welq"
               }
-            ]
+            ],
+            "claimedBy": {
+              "agent": "claude-9cc89b7b",
+              "at": "2026-10-23T03:04:27.681Z",
+              "branch": "claude/project-thread-e0welq"
+            }
           }
         ],
         "log": [

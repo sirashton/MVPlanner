@@ -57,7 +57,7 @@ Rules agents are given at the start of every session and subagent:
 | Part | What it does |
 | :- | :- |
 | MCP server | `plan_overview`, `plan_next`, `task_get`, `task_claim`, `task_release`, `task_update`, `task_propose`, `task_add`, `task_defer`, `plan_edit` (batch add, move, rename, remove and decide, for human-directed sessions), `plan_check` |
-| Hooks | **SessionStart** and **SubagentStart** brief the agent: its id, the rules, its task or the next ones. **PreToolUse** denies direct edits to `plan.json`, and warns about (or blocks) edits with no claimed task. **PostToolUse** sends back markers that name no task. **Stop** and **SubagentStop** nudge once when files changed but no progress was recorded |
+| Hooks | **SessionStart** and **SubagentStart** brief the agent: its id, the rules, its task or the next ones. **PreToolUse** denies direct edits to `plan.json`, and blocks (or, in `warn` mode, warns about) edits with no claimed task. **PostToolUse** sends back markers that name no task. **Stop** and **SubagentStop** nudge once when files changed but no progress was recorded |
 | Skills | `/mvplanner:scope` to shape a product with you as you talk, `/mvplanner:plan` to break work down with you, `/mvplanner:next` to pick up and finish a task, `/mvplanner:defer` for markers |
 | Agents | `planner` maintains the plan; `scope-reviewer` checks a change against its task |
 | Plan panel | A panel beside the chat for the human: progress by priority, the plan as a tree marking what's being worked on, proposals to accept or decline, next up, deferred work and recent activity. Opens by itself in repos with a plan; `/plan-panel` reopens it |
@@ -66,7 +66,7 @@ Rules agents are given at the start of every session and subagent:
 
 Settings (asked for when you enable the plugin, and in `/config`):
 
-- **Strictness:** `warn` (the default) nudges agents, `enforce` blocks edits without a claimed task, `off` disables the hooks.
+- **Strictness:** `enforce` (the default) blocks edits without a claimed task, `warn` only nudges agents, `off` disables the hooks.
 - **Backend:** `git` (the default) or `file`.
 - **Plan branch:** `mvplanner/plan` by default.
 

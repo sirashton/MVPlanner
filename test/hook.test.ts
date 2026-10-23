@@ -59,6 +59,14 @@ test('editing without a claim warns, or denies in enforce mode', async () => {
     assert.equal(await enforce.run('PreToolUse', edit(path.join(enforce.dir, 'a.ts'), 'x')), undefined);
 });
 
+test('a new plan blocks edits without a claim when no strictness is set', async () => {
+    const { dir, agent } = await setup();
+    const env = { MVPLANNER_BACKEND: 'file', CLAUDE_PLUGIN_DATA: path.join(dir, 'data') };
+    const denied = await runHook('PreToolUse', { session_id: 'abcdef1234', cwd: dir, ...edit(path.join(dir, 'a.ts'), 'x') }, env) as { hookSpecificOutput: Record<string, string> };
+    assert.equal(denied.hookSpecificOutput.permissionDecision, 'deny');
+    assert.match(denied.hookSpecificOutput.permissionDecisionReason, new RegExp(`agent id is "${agent}"`));
+});
+
 test('off disables every hook', async () => {
     const { run, dir } = await setup('off');
     assert.equal(await run('PreToolUse', edit(path.join(dir, 'plan.json'), '{}')), undefined);

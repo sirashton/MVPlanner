@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 138,
-  "nextId": 72,
+  "revision": 139,
+  "nextId": 73,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -1279,6 +1279,34 @@
                 "at": "2026-10-23T02:56:34.154Z",
                 "agent": "claude-9cc89b7b",
                 "text": "status In Progress -> Complete; checked \"Each open parent has a faint vertical guide line beside its subtasks\"; checked \"Hovering or selecting a task darkens its guide line and tints its subtasks\"; checked \"Works in light and dark mode and on a phone\"; Faint guide lines under each open parent's caret; hovering (mouse) or selecting a task tints its subtasks from its guide rightwards and draws that guide in indigo. Checked at 1440 light/dark and 390 phone."
+              }
+            ]
+          },
+          {
+            "id": "T-72",
+            "name": "Keyboard shortcuts keep working after clicks and changes",
+            "status": "Not Started",
+            "mscw": "Should",
+            "description": "Shortcuts only fire while a tree row has keyboard focus. Expanding, collapsing, deselecting, Focus levels and other redraws replace the rows and drop focus to the page, so the next key does nothing.",
+            "acceptance": [
+              {
+                "text": "After expanding or collapsing a row (by key or click) the next shortcut still works",
+                "done": false
+              },
+              {
+                "text": "After clicking a blank part of the page, shortcuts act on the selected (or last used) task",
+                "done": false
+              },
+              {
+                "text": "Typing in the add box, description or a rename never triggers a shortcut",
+                "done": false
+              }
+            ],
+            "log": [
+              {
+                "at": "2026-10-23T02:59:22.203Z",
+                "agent": "claude-f555c004",
+                "text": "Added under T-26, approved by Alex, in the \"Keyboard shortcuts introspection\" thread (said shortcuts work only sometimes)"
               }
             ]
           }

@@ -81,6 +81,8 @@ header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spac
 .decisions { margin: 20px 0 0; border-left: 3px solid var(--ink); padding: 4px 0 4px 14px; }
 .decisions h2, .board h2 { font-size: 17px; font-weight: 750; margin: 0 0 8px; display: flex; align-items: center; gap: 10px; }
 .decisions ul { list-style: none; margin: 0; padding: 0; }
+.decisions .fold { display: none; }
+.backdrop { display: none; }
 .decisions > ul > li { padding: 10px 0; border-bottom: 1px solid var(--rule); }
 .decisions > ul > li:last-child { border-bottom: 0; }
 .proposal { display: grid; gap: 4px; max-width: 72ch; }
@@ -147,6 +149,7 @@ header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spac
 .row.proposed .name { font-style: italic; }
 .tag { font-size: 12px; border-radius: 999px; padding: 1px 8px; flex: none; white-space: nowrap; }
 .tag.agent { color: var(--live); border: 1px solid color-mix(in srgb, var(--live) 50%, transparent); }
+.row .tag.agent { flex: 0 1 auto; min-width: 0; max-width: 260px; overflow: hidden; text-overflow: ellipsis; }
 .tag.next { color: var(--could); border: 1px solid color-mix(in srgb, var(--could) 50%, transparent); }
 .tag.proposed { color: var(--ink-soft); border: 1px dashed var(--ink-soft); }
 .tag.muted { color: var(--ink-soft); }
@@ -189,9 +192,24 @@ aside.detail .foot { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap;
 
 @media (max-width: 860px) {
   .board { grid-template-columns: minmax(0, 1fr); }
-  aside.detail { position: fixed; left: 0; right: 0; bottom: 0; top: auto; max-height: 70vh; overflow: auto; border-radius: 14px 14px 0 0; z-index: 5;
-    box-shadow: 0 -8px 30px rgba(0, 0, 0, .18); }
-  .ladder { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* On a phone the plan comes first: the ladder shrinks to the current rung, the add box opens when tapped,
+     proposals fold into one line, and the detail sheet leaves the tapped row in view above it. */
+  aside.detail { position: fixed; left: 0; right: 0; bottom: 0; top: auto; max-height: 58vh; overflow: auto; border-radius: 14px 14px 0 0; z-index: 5;
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, .18); padding-top: 22px; }
+  aside.detail::before { content: ""; position: absolute; top: 8px; left: 50%; width: 36px; height: 4px; margin-left: -18px; border-radius: 2px; background: var(--rule); }
+  .backdrop:not([hidden]) { display: block; }
+  .backdrop { position: fixed; inset: 0; background: rgba(15, 20, 28, .28); z-index: 4; }
+  .ladder { grid-template-columns: minmax(0, 1fr); margin: 12px 0 14px; }
+  .rung:not(.current) { display: none; }
+  .capture input[type=text] { flex-basis: 0; }
+  .capture:focus-within input[type=text] { flex-basis: 100%; }
+  .capture .under, .capture .prio { display: none; }
+  .capture:focus-within .under, .capture:focus-within .prio { display: flex; }
+  .decisions:not(.open) > ul { display: none; }
+  .decisions:not(.open) h2 { margin: 0; }
+  .decisions .fold { display: inline-block; }
+  .row { scroll-margin-top: 12px; }
+  .row .tag.agent { max-width: 34%; }
   .row { padding-left: calc(var(--depth) * 12px); gap: 6px; }
   .row .acts, .row .more { display: none; }
   .chip { width: 14px; }
@@ -233,6 +251,7 @@ aside.detail .foot { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap;
       <ul class="tree" id="tree" role="tree" aria-label="Tasks"></ul>
     </section>
     <aside class="detail" id="detail" hidden></aside>
+    <div class="backdrop" id="backdrop" hidden></div>
   </div>
 </div>
 <div class="toast" id="toast" role="status" title="Click to dismiss" hidden></div>
@@ -283,6 +302,7 @@ const ui = {
   captureParent: null,
   capturePrio: 'Must',
   renaming: null,
+  decisionsOpen: false,
   // Proposals decided on this page but not yet saved, hidden so they can't be decided twice.
   deciding: new Set(),
   prev: new Map(),
@@ -411,9 +431,11 @@ function render() {
   ui.decide = decide;
   const proposals = v.proposals.filter(p => !ui.deciding.has(p.id));
   const dec = $('decisions');
+  dec.classList.toggle('open', ui.decisionsOpen);
   dec.hidden = proposals.length === 0;
   dec.replaceChildren(
     el('h2', {}, `Needs your decision (${proposals.length})`,
+      el('button', { class: 'btn fold', 'aria-expanded': String(ui.decisionsOpen), onclick: () => { ui.decisionsOpen = !ui.decisionsOpen; render(); } }, ui.decisionsOpen ? 'Hide' : 'Review'),
       proposals.length > 1 ? el('button', { class: 'btn', onclick: () => decide(proposals.map(p => p.id)) }, 'Accept all as suggested') : null),
     el('ul', {}, proposals.map(p => {
       const row = byId.get(p.id);
@@ -511,7 +533,11 @@ function toggle(id, open) {
 function select(id) {
   ui.selected = ui.selected === id ? null : id;
   render();
-  if (ui.selected) document.querySelector(`.row[data-id="${id}"]`)?.focus();
+  const row = ui.selected && document.querySelector(`.row[data-id="${id}"]`);
+  if (!row) return;
+  row.focus();
+  // On a phone the detail sheet covers the lower part of the screen, so bring the row to the top.
+  if (matchMedia('(max-width: 860px)').matches) row.scrollIntoView({ block: 'start' });
 }
 function addUnder(id) {
   ui.captureParent = id;
@@ -547,6 +573,7 @@ function renderDetail(byId) {
   const row = ui.selected && byId.get(ui.selected);
   $('board').classList.toggle('nodetail', !row);
   aside.hidden = !row;
+  $('backdrop').hidden = !row;
   if (!row) return;
   if (aside.contains(document.activeElement) && aside.dataset.id === row.id && document.activeElement.tagName === 'TEXTAREA') return;
   aside.dataset.id = row.id;
@@ -598,6 +625,7 @@ function show(view) {
   if (keep && !ui.renaming) document.querySelector(`.row[data-id="${keep}"]`)?.focus();
 }
 
+$('backdrop').addEventListener('click', () => { ui.selected = null; render(); });
 $('toast').addEventListener('click', () => ($('toast').hidden = true));
 $('capture').addEventListener('submit', e => {
   e.preventDefault();

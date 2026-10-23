@@ -5,7 +5,7 @@ description: Record deliberately minimal or postponed work as an MVPlanner task 
 
 # Defer work with a marker
 
-Shipping the simplest thing that meets the acceptance criteria is the goal. Deferring makes that visible instead of silent.
+Shipping the simplest thing that meets the acceptance criteria is the goal. Deferring makes that visible instead of silent. Think p3g10: pi is 3, gravity is 10. Use the basic assumption now, and defer the precise version.
 
 1. Call `task_defer` with:
    - `parent`: usually the task you have claimed,

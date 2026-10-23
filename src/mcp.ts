@@ -3,7 +3,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { z } from 'zod';
 import {
     MSCW, PlanError, STATUSES, addTask, applyEdits, checkMarkers, claimTask, criticalPath, deferTask, findMarkers, getTask, nextTasks,
-    proposeTask, releaseTask, taskPath, updateTask,
+    crowdingHint, proposeTask, releaseTask, taskPath, updateTask,
 } from './core/index.ts';
 import { renderNext, renderTask, renderTree } from './format.ts';
 import { scanRepo } from './scan.ts';
@@ -27,6 +27,7 @@ async function guarded(fn: () => Promise<string>): Promise<ToolResult> {
     }
 }
 
+const PARENT_HINT = 'The most specific task this belongs under: a themed group such as "Page looks polished" when one fits, rather than the top-level feature';
 const agentArg = z.string().min(1).describe('Your agent id, as given in your MVPlanner briefing');
 const idArg = z.string().regex(/^T-\d+$/).describe('Task id, such as T-12');
 const mscwArg = z.enum(MSCW).describe("Priority relative to the parent task: Must, Should, Could or Won't");
@@ -94,7 +95,7 @@ export function createServer(cwd: string, storePromise: Promise<PlanStore> = ope
     server.registerTool('task_propose', {
         description: 'Propose new work as a subtask instead of building it. Proposals do not count towards the plan until a human accepts them.',
         inputSchema: {
-            parent: idArg.describe('The task this work belongs under'),
+            parent: idArg.describe(PARENT_HINT),
             agent: agentArg,
             name: z.string().min(1),
             description: z.string().optional(),
@@ -102,15 +103,15 @@ export function createServer(cwd: string, storePromise: Promise<PlanStore> = ope
             acceptance: z.array(z.string()).optional().describe('How we will know it is done'),
         },
     }, ({ parent, agent, name, description, mscw, acceptance }) => guarded(async () => {
-        const { result } = await (await storePromise).mutate(`${agent} proposes "${name}"`, p =>
+        const { plan, result } = await (await storePromise).mutate(`${agent} proposes "${name}"`, p =>
             proposeTask(p, parent, agent, { name, description, mscw, acceptance }));
-        return `Proposed as ${result.id} under ${parent}. Carry on with your claimed task; a human will accept or decline it.`;
+        return `Proposed as ${result.id} under ${parent}. Carry on with your claimed task; a human will accept or decline it.${crowdingHint(plan, [parent])}`;
     }));
 
     server.registerTool('task_add', {
         description: 'Add agreed tasks to the plan directly. Only use this when a human has approved this exact breakdown in the current conversation; otherwise use task_propose.',
         inputSchema: {
-            parent: idArg.describe('The task these belong under'),
+            parent: idArg.describe(PARENT_HINT),
             agent: agentArg,
             approved_by: z.string().min(1).describe('Who approved this breakdown, and where, such as "Alex, in this conversation"'),
             tasks: z.array(z.object({
@@ -122,15 +123,15 @@ export function createServer(cwd: string, storePromise: Promise<PlanStore> = ope
             })).min(1),
         },
     }, ({ parent, agent, approved_by, tasks }) => guarded(async () => {
-        const { result } = await (await storePromise).mutate(`${agent} adds ${tasks.length} task(s) approved by ${approved_by}`, p =>
+        const { plan, result } = await (await storePromise).mutate(`${agent} adds ${tasks.length} task(s) approved by ${approved_by}`, p =>
             tasks.map(spec => addTask(p, parent, agent, spec, approved_by)));
-        return `Added ${result.map(t => `${t.id} ${t.name}`).join(', ')} under ${parent}.`;
+        return `Added ${result.map(t => `${t.id} ${t.name}`).join(', ')} under ${parent}.${crowdingHint(plan, [parent])}`;
     }));
 
     server.registerTool('task_defer', {
         description: 'Record work you are deliberately leaving minimal or postponing. Returns an id; leave MVP(<id>) on a deliberately simple implementation or TODO(<id>) on postponed work, in a code comment.',
         inputSchema: {
-            parent: idArg.describe('Usually your claimed task'),
+            parent: idArg.describe('Usually your claimed task, or the themed group under it that this fits'),
             agent: agentArg,
             name: z.string().min(1).describe('What the fuller version would do'),
             trigger: z.string().optional().describe('What would justify doing more, such as "users ask for filtering"'),
@@ -138,22 +139,23 @@ export function createServer(cwd: string, storePromise: Promise<PlanStore> = ope
             mscw: mscwArg.optional().describe('Defaults to Could'),
         },
     }, ({ parent, agent, name, trigger, files, mscw }) => guarded(async () => {
-        const { result } = await (await storePromise).mutate(`${agent} defers "${name}"`, p =>
+        const { plan, result } = await (await storePromise).mutate(`${agent} defers "${name}"`, p =>
             deferTask(p, parent, agent, { name, trigger, files, mscw }));
-        return `Deferred as ${result.id} (${result.mscw}). Write MVP(${result.id}) or TODO(${result.id}) in the comment at the spot in the code.`;
+        return `Deferred as ${result.id} (${result.mscw}). Write MVP(${result.id}) or TODO(${result.id}) in the comment at the spot in the code.${crowdingHint(plan, [parent])}`;
     }));
 
     const ref = z.string().min(1).describe('A task id such as T-12, or "$ref" for a task added earlier in this batch');
     server.registerTool('plan_edit', {
         description: 'Change the shape of the plan in one quick save: add, update, move or remove tasks, and accept or decline proposals. '
             + 'Only use this while a human is directing the plan in this conversation, such as a scoping session; otherwise use task_propose. '
-            + 'Batch every change from one exchange into a single call. Prefer setting a task to Won\'t over removing it, so the decision is kept.',
+            + 'Batch every change from one exchange into a single call. Prefer setting a task to Won\'t over removing it, so the decision is kept. '
+            + 'Keep parents to a handful of subtasks: put related work under a themed parent named for the outcome, adding it with a ref in the same call.',
         inputSchema: {
             agent: agentArg,
             approved_by: z.string().min(1).describe('Who is directing these changes, and where, such as "Alex, in this conversation"'),
             edits: z.array(z.discriminatedUnion('op', [
                 z.object({
-                    op: z.literal('add'), parent: ref, ref: z.string().optional().describe('Name this task so later edits can use "$name"'),
+                    op: z.literal('add'), parent: ref.describe(`${PARENT_HINT}. A task id, or "$ref" for a task added earlier in this batch`), ref: z.string().optional().describe('Name this task so later edits can use "$name"'),
                     name: z.string().min(1), description: z.string().optional(), mscw: mscwArg.optional().describe('Defaults to Must'),
                     acceptance: z.array(z.string()).optional(), dependsOn: z.array(z.string()).optional(),
                 }),
@@ -170,7 +172,9 @@ export function createServer(cwd: string, storePromise: Promise<PlanStore> = ope
     }, ({ agent, approved_by, edits }) => guarded(async () => {
         const { plan, result } = await (await storePromise).mutate(`${agent} applies ${edits.length} edit(s) directed by ${approved_by}`, p =>
             applyEdits(p, agent, edits, approved_by));
-        return `${result.join('\n')}\n\nPlan is now at revision ${plan.revision}.`;
+        // Parents named by "$ref" are new in this batch, so only existing parents can have grown crowded.
+        const parents = edits.flatMap(edit => (edit.op === 'add' || edit.op === 'move') && !edit.parent.startsWith('$') ? [edit.parent] : []);
+        return `${result.join('\n')}\n\nPlan is now at revision ${plan.revision}.${crowdingHint(plan, parents)}`;
     }));
 
     server.registerTool('plan_check', {

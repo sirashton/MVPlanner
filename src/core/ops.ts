@@ -168,6 +168,18 @@ export function proposeTask(plan: Plan, parentId: string, agent: string | undefi
     return task;
 }
 
+// Past this many subtasks a parent gets hard to follow, so tool replies suggest grouping. A nudge, never a limit.
+export const CROWDED_SUBTASKS = 8;
+
+// One reminder line per parent, among those just added to, that has grown past CROWDED_SUBTASKS.
+export function crowdingHint(plan: Plan, parentIds: string[]): string {
+    return [...new Set(parentIds)]
+        .map(id => findTask(plan, id)?.task)
+        .filter((task): task is Task => (task?.subtasks?.length ?? 0) > CROWDED_SUBTASKS)
+        .map(task => `\n\n${task.name} (${task.id}) now has ${task.subtasks!.length} subtasks. If some share a theme, suggest to the human grouping them under a parent named for the outcome, such as "Page looks polished".`)
+        .join('');
+}
+
 // Adds agreed work directly. Only for a breakdown a human has approved; agents otherwise propose.
 export function addTask(plan: Plan, parentId: string, agent: string | undefined, spec: NewTask, approvedBy: string): Task {
     const task = proposeTask(plan, parentId, agent, spec);

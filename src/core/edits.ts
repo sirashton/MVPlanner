@@ -7,7 +7,7 @@ import type { Plan } from './types.ts';
 // An added task can be given a ref, and later edits in the same batch can name it as "$ref".
 export type Edit =
     | ({ op: 'add'; parent: string; ref?: string } & NewTask)
-    | ({ op: 'update'; id: string } & Pick<TaskUpdate, 'status' | 'mscw' | 'name' | 'description' | 'note'>)
+    | ({ op: 'update'; id: string } & Pick<TaskUpdate, 'status' | 'mscw' | 'name' | 'description' | 'need' | 'note'>)
     | { op: 'move'; id: string; parent: string; position?: number }
     | { op: 'remove'; id: string }
     | { op: 'accept'; id: string; mscw?: NewTask['mscw'] }

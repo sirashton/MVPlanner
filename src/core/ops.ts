@@ -64,6 +64,7 @@ export interface TaskUpdate {
     links?: string[];
     name?: string;
     description?: string;
+    need?: string;
 }
 
 export function updateTask(plan: Plan, id: string, agent: string | undefined, update: TaskUpdate): Task {
@@ -127,6 +128,14 @@ export function updateTask(plan: Plan, id: string, agent: string | undefined, up
         task.description = update.description;
         changes.push('description updated');
     }
+    if (update.need !== undefined && update.need !== (task.need ?? '')) {
+        if (update.need.trim()) {
+            task.need = update.need.trim();
+        } else {
+            delete task.need;
+        }
+        changes.push('need updated');
+    }
     if (update.note) {
         changes.push(update.note);
     }
@@ -139,6 +148,7 @@ export function updateTask(plan: Plan, id: string, agent: string | undefined, up
 export interface NewTask {
     name: string;
     description?: string;
+    need?: string;
     mscw?: Mscw;
     acceptance?: string[];
     dependsOn?: string[];
@@ -156,6 +166,9 @@ export function proposeTask(plan: Plan, parentId: string, agent: string | undefi
     };
     if (spec.description) {
         task.description = spec.description;
+    }
+    if (spec.need?.trim()) {
+        task.need = spec.need.trim();
     }
     if (spec.acceptance?.length) {
         task.acceptance = spec.acceptance.map(text => ({ text, done: false }));
@@ -177,6 +190,15 @@ export function crowdingHint(plan: Plan, parentIds: string[]): string {
         .map(id => findTask(plan, id)?.task)
         .filter((task): task is Task => (task?.subtasks?.length ?? 0) > CROWDED_SUBTASKS)
         .map(task => `\n\n${task.name} (${task.id}) now has ${task.subtasks!.length} subtasks. If some share a theme, suggest to the human grouping them under a parent named for the outcome, such as "Page looks polished".`)
+        .join('');
+}
+
+// Subtasks are judged against what their parent needs, so adding under a parent that doesn't say asks for it.
+export function needHint(plan: Plan, parentIds: string[]): string {
+    return [...new Set(parentIds)]
+        .map(id => findTask(plan, id)?.task)
+        .filter((task): task is Task => !!task && !task.need)
+        .map(task => `\n\n${task.name} (${task.id}) doesn't state the need it meets, so there's nothing to judge its subtasks against. Ask the human what it needs (an outcome, like a user story) and set it with plan_edit (update, need).`)
         .join('');
 }
 

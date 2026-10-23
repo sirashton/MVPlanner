@@ -2,6 +2,7 @@
 
 ## 0.2.0
 
+- Tasks state the need they meet (`need`), like a user story, so subtasks can be judged against it. Adding under a parent with no need asks for one, on the page and in tool replies, and `plan_check` / `mvplan check` list parents without one.
 - Soft nudges in the skills, planner agent and tool hints: group related subtasks under a themed parent, and challenge Musts with p3g10 (pi is 3, gravity is 10) by saying what would happen without each one. Tool replies mention when a parent passes eight subtasks.
 - Rebuilt as a Claude Code plugin: MCP server, hooks, skills and agents, installable from this repo's marketplace.
 - Plan format version 2: stable task ids, acceptance criteria, claims, dependencies, deferrals, proposals and a log. `mvplan migrate` converts version 1.

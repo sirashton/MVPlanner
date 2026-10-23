@@ -63,6 +63,9 @@ export function renderTask(plan: Plan, task: Task, path?: string): string {
         lines.push(`Path: ${path}`);
     }
     lines.push(`Status: ${task.status}. Priority: ${task.mscw} (relative to its parent). Do more: ${doMore.get(task.id)}.`);
+    if (task.need) {
+        lines.push(`Need it meets: ${task.need}`);
+    }
     if (task.description) {
         lines.push(`Description: ${task.description}`);
     }
@@ -112,6 +115,15 @@ export function renderNext(items: NextTask[], limit = 5): string {
         ];
         return `${n.task.id} ${n.task.name} (${notes.join(', ')})\n    ${n.path}`;
     }).join('\n');
+}
+
+// Parents that don't say what they need, for plan_check and mvplan check. A prompt to ask the human, not a failure.
+export function renderNeedless(tasks: Task[]): string {
+    if (tasks.length === 0) {
+        return '';
+    }
+    return `\n\n${tasks.length} parent task(s) don't state the need they meet, so their subtasks can't be judged against it. `
+        + `Ask the human what each needs and set it with plan_edit (update, need):\n${tasks.map(t => `  ${t.id} ${t.name}`).join('\n')}`;
 }
 
 export function claimedBy(plan: Plan, agent: string): Task[] {

@@ -3,11 +3,11 @@ import os from 'node:os';
 import path from 'node:path';
 import { parseArgs } from 'node:util';
 import {
-    PlanError, checkMarkers, checkPullRequest, claimTask, decideProposal, deferTask, getTask, migrateV1, nextTasks, newPlan,
+    PlanError, checkMarkers, checkPullRequest, claimTask, decideProposal, deferTask, getTask, migrateV1, nextTasks, newPlan, parentsWithoutNeed,
     applyEdits, moveTask, parsePlan, proposeTask, releaseTask, removeTask, serializePlan, taskPath, updateTask, validatePlan, MSCW, STATUSES,
 } from './core/index.ts';
 import type { Mscw, Plan, Status } from './core/index.ts';
-import { renderNext, renderTask, renderTree } from './format.ts';
+import { renderNeedless, renderNext, renderTask, renderTree } from './format.ts';
 import { scanRepo } from './scan.ts';
 import { openInBrowser, startServer } from './serve.ts';
 import { writeRepoSetup } from './setup.ts';
@@ -203,12 +203,14 @@ export async function main(argv: string[], cwd = process.cwd()): Promise<number>
             const markerProblems = checkMarkers(plan, markers);
             problems.push(...markerProblems.map(p => p.message));
             const linked = markers.filter(m => m.id).length;
+            // Missing needs are reported but don't fail the check, so CI stays green while the human fills them in.
+            const needless = renderNeedless(parentsWithoutNeed(plan));
             if (problems.length) {
                 out(problems.join('\n'));
-                out(`\n${problems.length} problem(s); ${linked} linked marker(s) checked.`);
+                out(`\n${problems.length} problem(s); ${linked} linked marker(s) checked.${needless}`);
                 return 1;
             }
-            out(`Plan is valid; ${linked} linked marker(s) all point at open tasks.`);
+            out(`Plan is valid; ${linked} linked marker(s) all point at open tasks.${needless}`);
             return 0;
         }
         case 'check-pr': {

@@ -3,10 +3,10 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
     checkMarkers, checkPullRequest, claimTask, crowdingHint, CROWDED_SUBTASKS, getTask, decideProposal, computeDoMore, criticalPath, deferTask, findMarkers, migrateV1, nextTasks, overallLevel,
-    parsePlan, proposeTask, serializePlan, updateTask, validatePlan,
+    applyEdits, needHint, parentsWithoutNeed, parsePlan, proposeTask, serializePlan, updateTask, validatePlan,
 } from '../src/core/index.ts';
 import type { Plan } from '../src/core/index.ts';
-import { renderTask } from '../src/format.ts';
+import { renderNeedless, renderTask } from '../src/format.ts';
 import { currentSession } from '../src/session.ts';
 
 // The worked example from the README: a Could feature with Must subtasks must not block "done all we Must".
@@ -131,6 +131,26 @@ test('a parent past the crowded size gets a grouping reminder, once, and nothing
     const hint = crowdingHint(plan, ['T-2', 'T-2', 'T-6', 'T-99']);
     assert.match(hint, /Basic list \(T-2\) now has 11 subtasks/);
     assert.equal(hint.match(/now has/g)!.length, 1);
+});
+
+test('parents that state no need are listed, and adding under one asks for it', () => {
+    const plan = todoApp();
+    // Quantum sorting is a Could whose subtasks still count; Basic list and Auth too; leaves never do.
+    assert.deepEqual(parentsWithoutNeed(plan).map(t => t.id), ['T-1', 'T-2', 'T-6', 'T-8']);
+    assert.match(needHint(plan, ['T-2']), /Basic list \(T-2\) doesn't state the need it meets/);
+    applyEdits(plan, undefined, [{ op: 'update', id: 'T-2', need: 'People can keep a list of what to do' }], 'Alex');
+    assert.equal(needHint(plan, ['T-2']), '');
+    assert.match(renderTask(plan, getTask(plan, 'T-2')), /Need it meets: People can keep a list of what to do/);
+    // Finished, Won't and proposed branches don't need one.
+    updateTask(plan, 'T-8', undefined, { mscw: "Won't" });
+    proposeTask(plan, 'T-3', 'a', { name: 'Sub-idea' });
+    const added = applyEdits(plan, undefined, [{ op: 'add', parent: 'T-1', name: 'Sharing', need: 'Friends see my list', ref: 's' }, { op: 'add', parent: '$s', name: 'Links' }], 'Alex');
+    assert.equal(added.length, 2);
+    assert.deepEqual(parentsWithoutNeed(plan).map(t => t.id), ['T-1', 'T-6']);
+    assert.match(renderNeedless(parentsWithoutNeed(plan)), /2 parent task\(s\) don't state the need[^]*T-6 Auth/);
+    // Clearing a need removes it.
+    updateTask(plan, 'T-2', undefined, { need: ' ' });
+    assert.equal(getTask(plan, 'T-2').need, undefined);
 });
 
 test('markers are found and checked against the plan', () => {

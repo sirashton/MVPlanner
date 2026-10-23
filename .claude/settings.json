@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "mvplanner": {
+      "source": {
+        "source": "github",
+        "repo": "sirashton/MVPlanner"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "mvplanner@mvplanner": true
+  }
+}

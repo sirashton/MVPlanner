@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 121,
+  "revision": 122,
   "nextId": 67,
   "root": {
     "id": "T-1",
@@ -1077,21 +1077,21 @@
           {
             "id": "T-66",
             "name": "Show how far each task is done, by priority",
-            "status": "In Progress",
+            "status": "Complete",
             "mscw": "Should",
             "description": "Alex: a task's mark should show to what extent it is done based on its children: done all we Must, done all we Should, done all we Could, without needing words.",
             "acceptance": [
               {
                 "text": "A task with subtasks shows a compact mark of which priority levels beneath it are fully done, in the priority colours",
-                "done": false
+                "done": true
               },
               {
                 "text": "Hovering the mark says it in words, e.g. 'All Musts done; Should work remains'",
-                "done": false
+                "done": true
               },
               {
                 "text": "The legend explains the mark",
-                "done": false
+                "done": true
               }
             ],
             "log": [
@@ -1104,13 +1104,13 @@
                 "at": "2026-10-23T02:38:38.900Z",
                 "agent": "claude-9cc89b7b",
                 "text": "Claimed on claude/project-thread-e0welq"
+              },
+              {
+                "at": "2026-10-23T02:40:40.588Z",
+                "agent": "claude-9cc89b7b",
+                "text": "status In Progress -> Complete; checked \"A task with subtasks shows a compact mark of which priority levels beneath it are fully done, in the priority colours\"; checked \"Hovering the mark says it in words, e.g. 'All Musts done; Should work remains'\"; checked \"The legend explains the mark\"; Three bars (Must, Should, Could) on tasks with subtasks, filled from the do-more level (so priority is relative to parent); hover and detail panel say \"Done all we Must\" etc., per Alex's wording; legend item added. Handoff: PR with T-65 on claude/project-thread-e0welq."
               }
-            ],
-            "claimedBy": {
-              "agent": "claude-9cc89b7b",
-              "at": "2026-10-23T02:38:38.900Z",
-              "branch": "claude/project-thread-e0welq"
-            }
+            ]
           }
         ],
         "log": [

@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Plan</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22%3E%3Cstyle%3E.m %7B fill: %233b3fb6 %7D %40media %28prefers-color-scheme: dark%29 %7B .m %7B fill: %239da2ff %7D %7D%3C/style%3E%3Crect class=%22m%22 x=%224%22 y=%220%22 width=%228%22 height=%223%22 rx=%221%22/%3E%3Crect class=%22m%22 x=%227%22 y=%223%22 width=%222%22 height=%223%22/%3E%3Crect x=%220%22 y=%226%22 width=%224%22 height=%223%22 rx=%221%22 fill=%22%231d7570%22/%3E%3Crect class=%22m%22 x=%225%22 y=%226%22 width=%226%22 height=%224%22 rx=%221%22/%3E%3Crect x=%2212%22 y=%226%22 width=%224%22 height=%223%22 rx=%221%22 fill=%22%238a5a0f%22/%3E%3Crect class=%22m%22 x=%227%22 y=%2210%22 width=%222%22 height=%223%22/%3E%3Crect class=%22m%22 x=%227%22 y=%2212%22 width=%227%22 height=%224%22 rx=%221%22/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400..900&display=swap" rel="stylesheet">
@@ -16,9 +17,9 @@
   --ink-soft: #5d6b7c;
   --rule: #d5dce4;
   --must: #3b3fb6;
-  --should: #1f7a74;
-  --could: #a36a12;
-  --wont: #8a94a3;
+  --should: #1d7570;
+  --could: #8a5a0f;
+  --wont: #616c7b;
   --live: #c2307a;
   --done: #2f8a4c;
   --danger: #b3261e;
@@ -28,7 +29,7 @@
 /* Light unless the viewer picks dark with the switch in the header. */
 :root[data-theme="dark"] {
   --paper: #141a22; --sheet: #1b232d; --ink: #e3e9f0; --ink-soft: #9aa7b6; --rule: #2d3844;
-  --must: #9da2ff; --should: #5cc4bb; --could: #e0a54a; --wont: #6f7b8a; --live: #ff6fb0; --done: #6fcf8d;
+  --must: #9da2ff; --should: #5cc4bb; --could: #e0a54a; --wont: #8a96a6; --live: #ff6fb0; --done: #6fcf8d;
   --danger: #ff8a80; --focus: #9da2ff; color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -39,12 +40,16 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .wrap { max-width: 1180px; margin: 0 auto; padding: 24px 16px 80px; }
 
 header.top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; }
+.brand { flex: none; width: 28px; height: 28px; align-self: center; margin-right: -6px; }
+.brand .m { fill: var(--must); }
+.brand .s { fill: var(--should); }
+.brand .c { fill: var(--could); }
 header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spacing: -0.02em; margin: 0; }
 .status-line { color: var(--ink-soft); font-size: 15px; }
 .conn { margin-left: auto; font-size: 13px; color: var(--ink-soft); display: flex; align-items: center; gap: 6px; }
 .conn i { width: 8px; height: 8px; border-radius: 50%; background: var(--wont); display: inline-block; }
 .conn.live i { background: var(--done); }
-.conn.saving i { background: var(--live); }
+.conn.saving i { background: var(--must); }
 .theme { font-size: 13px; color: var(--ink-soft); background: none; border: 1px solid var(--rule); border-radius: 999px; padding: 2px 10px; cursor: pointer; }
 .theme:hover { color: var(--ink); }
 .tid { flex: none; font-size: 12px; color: var(--ink-soft); font-variant-numeric: tabular-nums; font-weight: 400; font-style: normal; }
@@ -64,7 +69,11 @@ header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spac
 .capture:focus-within { border-color: var(--focus); }
 .capture .under { font-size: 13px; color: var(--ink-soft); display: flex; align-items: center; gap: 6px; }
 .capture select { border: 1px solid var(--rule); background: var(--paper); border-radius: 6px; padding: 4px 6px; max-width: 220px; }
-.hint { font-size: 12px; color: var(--ink-soft); margin: 6px 2px 0; }
+.keys { font-size: 13px; color: var(--ink-soft); }
+.keys summary { cursor: pointer; list-style: none; border: 1px solid var(--rule); border-radius: 999px; padding: 2px 10px; }
+.keys summary::-webkit-details-marker { display: none; }
+.keys[open] summary { color: var(--ink); }
+.keys p { margin: 6px 0 0; max-width: 60ch; }
 
 .prio { display: inline-flex; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; flex: none; }
 .prio button { border: 0; background: transparent; width: 26px; height: 24px; font-size: 12px; font-weight: 700; cursor: pointer; color: var(--ink-soft); }
@@ -74,23 +83,31 @@ header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spac
 .prio button[aria-pressed=true][data-p=Could] { background: var(--could); color: var(--sheet); }
 .prio button[aria-pressed=true][data-p="Won't"] { background: var(--wont); color: var(--sheet); }
 
-.decisions { margin: 20px 0 0; border-left: 3px solid var(--live); padding: 4px 0 4px 14px; }
+.decisions { margin: 20px 0 0; border-left: 3px solid var(--ink); padding: 4px 0 4px 14px; }
 .decisions h2, .board h2 { font-size: 17px; font-weight: 750; margin: 0 0 8px; display: flex; align-items: center; gap: 10px; }
 .decisions ul { list-style: none; margin: 0; padding: 0; }
+.decisions .fold { display: none; }
+.backdrop { display: none; }
 .decisions > ul > li { padding: 10px 0; border-bottom: 1px solid var(--rule); }
 .decisions > ul > li:last-child { border-bottom: 0; }
 .proposal { display: grid; gap: 4px; max-width: 72ch; }
 .proposal .chip { display: inline-block; width: auto; text-align: left; margin-left: 6px; }
+.proposal .title { font-size: 16px; }
 .proposal .why { margin: 2px 0; }
 .prio.decide button { width: 34px; height: 30px; font-size: 13px; }
-.prio.decide button[data-suggested=true] { box-shadow: inset 0 0 0 2px var(--focus); color: var(--ink); }
+.prio.decide button[data-suggested=true] { box-shadow: inset 0 0 0 2px var(--p); color: var(--p); }
+.prio.decide button[data-p=Must] { --p: var(--must); }
+.prio.decide button[data-p=Should] { --p: var(--should); }
+.prio.decide button[data-p=Could] { --p: var(--could); }
+.prio.decide button[data-p="Won't"] { --p: var(--wont); }
+.suggested { font-size: 13px; color: var(--ink-soft); }
 .prio.decide button:hover[data-p=Must] { background: var(--must); color: var(--sheet); }
 .prio.decide button:hover[data-p=Should] { background: var(--should); color: var(--sheet); }
 .prio.decide button:hover[data-p=Could] { background: var(--could); color: var(--sheet); }
 .prio.decide button:hover[data-p="Won't"] { background: var(--wont); color: var(--sheet); }
 .proposal .muted { color: var(--ink-soft); font-style: italic; }
-.proposal .criteria { margin: 0; padding-left: 18px; font-size: 14px; color: var(--ink-soft); }
-.acts-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+.proposal .criteria { margin: 0; padding-left: 0; font-size: 14px; color: var(--ink-soft); }
+.acts-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 6px; }
 .decisions .where { color: var(--ink-soft); font-size: 13px; }
 .btn { border: 1px solid var(--rule); background: var(--sheet); border-radius: 6px; padding: 3px 10px; font-size: 13px; cursor: pointer; }
 .btn:hover { border-color: var(--ink-soft); }
@@ -99,11 +116,17 @@ header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spac
 .btn:disabled { opacity: .5; cursor: default; }
 
 .board { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 24px; margin-top: 24px; align-items: start; }
-.board.nodetail { grid-template-columns: minmax(0, 1fr); }
+/* Keep a row's name and its priority close together on wide screens. */
+.board.nodetail { grid-template-columns: minmax(0, 880px); }
+.board > section { max-width: 880px; }
 .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }
 .toolbar .legend { font-size: 12px; color: var(--ink-soft); margin-left: auto; display: flex; gap: 12px; flex-wrap: wrap; }
 .toggle { border: 1px solid var(--rule); background: transparent; border-radius: 999px; padding: 2px 10px; font-size: 13px; cursor: pointer; }
 .toggle[aria-pressed=true] { background: var(--ink); color: var(--sheet); border-color: var(--ink); }
+.levels { display: inline-flex; align-items: center; border: 1px solid var(--rule); border-radius: 999px; overflow: hidden; font-size: 13px; }
+.levels-label { padding: 2px 8px 2px 10px; color: var(--ink-soft); }
+.levels button { border: 0; border-left: 1px solid var(--rule); background: transparent; padding: 2px 10px; cursor: pointer; color: var(--ink-soft); }
+.levels button[aria-pressed=true] { background: var(--ink); color: var(--sheet); }
 
 .tree { list-style: none; margin: 0; padding: 0; }
 .row { display: flex; align-items: center; gap: 8px; min-height: 36px; padding: 2px 6px 2px calc(var(--depth) * 22px); border-radius: 6px; position: relative; }
@@ -116,6 +139,7 @@ header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spac
 .mark.progress { background: linear-gradient(90deg, var(--ink-soft) 50%, transparent 50%); }
 .mark.blocked { border-color: var(--danger); background: var(--danger); }
 .mark.working { border-color: var(--live); background: var(--live); box-shadow: 0 0 0 3px color-mix(in srgb, var(--live) 22%, transparent); }
+.mark.proposed { border-style: dashed; }
 .mark.done { border: 0; border-radius: 0; }
 .mark.done::after { content: ""; position: absolute; left: 3px; top: 0; width: 5px; height: 9px; border: solid var(--done); border-width: 0 2px 2px 0; transform: rotate(45deg); }
 .legend .mark { display: inline-block; vertical-align: -1px; margin-right: 4px; }
@@ -130,14 +154,17 @@ header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spac
 .row.proposed .name { font-style: italic; }
 .tag { font-size: 12px; border-radius: 999px; padding: 1px 8px; flex: none; white-space: nowrap; }
 .tag.agent { color: var(--live); border: 1px solid color-mix(in srgb, var(--live) 50%, transparent); }
+.row .tag.agent { flex: 0 1 auto; min-width: 0; max-width: 260px; overflow: hidden; text-overflow: ellipsis; }
 .tag.next { color: var(--could); border: 1px solid color-mix(in srgb, var(--could) 50%, transparent); }
-.tag.proposed { color: var(--live); border: 1px dashed var(--live); }
+.tag.proposed { color: var(--ink-soft); border: 1px dashed var(--ink-soft); }
 .tag.muted { color: var(--ink-soft); }
 .row .prio { display: none; }
 .row:hover .prio, .row.selected .prio, .row:focus-within .prio { display: inline-flex; }
 .row:hover .chip, .row.selected .chip, .row:focus-within .chip { display: none; }
 .chip { flex: none; width: 54px; text-align: right; font-size: 12px; font-weight: 600; }
 .chip::after { content: attr(data-p); }
+.chip[data-differs] { text-decoration: underline dotted; text-underline-offset: 3px; cursor: help; }
+aside.detail .counts { font-size: 13px; color: var(--ink-soft); margin: 6px 0 0; }
 .chip[data-p=Must] { color: var(--must); }
 .chip[data-p=Should] { color: var(--should); }
 .chip[data-p=Could] { color: var(--could); }
@@ -170,9 +197,24 @@ aside.detail .foot { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap;
 
 @media (max-width: 860px) {
   .board { grid-template-columns: minmax(0, 1fr); }
-  aside.detail { position: fixed; left: 0; right: 0; bottom: 0; top: auto; max-height: 70vh; overflow: auto; border-radius: 14px 14px 0 0; z-index: 5;
-    box-shadow: 0 -8px 30px rgba(0, 0, 0, .18); }
-  .ladder { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* On a phone the plan comes first: the ladder shrinks to the current rung, the add box opens when tapped,
+     proposals fold into one line, and the detail sheet leaves the tapped row in view above it. */
+  aside.detail { position: fixed; left: 0; right: 0; bottom: 0; top: auto; max-height: 58vh; overflow: auto; border-radius: 14px 14px 0 0; z-index: 5;
+    box-shadow: 0 -8px 30px rgba(0, 0, 0, .18); padding-top: 22px; }
+  aside.detail::before { content: ""; position: absolute; top: 8px; left: 50%; width: 36px; height: 4px; margin-left: -18px; border-radius: 2px; background: var(--rule); }
+  .backdrop:not([hidden]) { display: block; }
+  .backdrop { position: fixed; inset: 0; background: rgba(15, 20, 28, .28); z-index: 4; }
+  .ladder { grid-template-columns: minmax(0, 1fr); margin: 12px 0 14px; }
+  .rung:not(.current) { display: none; }
+  .capture input[type=text] { flex-basis: 0; }
+  .capture:focus-within input[type=text] { flex-basis: 100%; }
+  .capture .under, .capture .prio { display: none; }
+  .capture:focus-within .under, .capture:focus-within .prio { display: flex; }
+  .decisions:not(.open) > ul { display: none; }
+  .decisions:not(.open) h2 { margin: 0; }
+  .decisions .fold { display: inline-block; }
+  .row { scroll-margin-top: 12px; }
+  .row .tag.agent { max-width: 34%; }
   .row { padding-left: calc(var(--depth) * 12px); gap: 6px; }
   .row .acts, .row .more { display: none; }
   .chip { width: 14px; }
@@ -187,6 +229,11 @@ aside.detail .foot { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap;
 <body>
 <div class="wrap">
   <header class="top">
+    <svg class="brand" viewBox="0 0 16 16" role="img" aria-label="MVPlanner"><title>MVPlanner</title>
+      <rect class="m" x="4" y="0" width="8" height="3" rx="1"/><rect class="m" x="7" y="3" width="2" height="3"/>
+      <rect class="s" x="0" y="6" width="4" height="3" rx="1"/><rect class="m" x="5" y="6" width="6" height="4" rx="1"/>
+      <rect class="c" x="12" y="6" width="4" height="3" rx="1"/><rect class="m" x="7" y="10" width="2" height="3"/>
+      <rect class="m" x="7" y="12" width="7" height="4" rx="1"/></svg>
     <h1 id="name">Plan</h1>
     <span class="status-line" id="status"></span>
     <span class="conn" id="conn"><i></i><span>Connecting</span></span>
@@ -200,20 +247,21 @@ aside.detail .foot { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap;
     <span class="prio" id="capture-prio" role="group" aria-label="Priority"></span>
     <button class="btn primary" type="submit">Add</button>
   </form>
-  <p class="hint">Proposals: pick M, S or C to accept at that priority, or W to decline. Enter adds and keeps the box ready for the next one. Select a row and press A to add under it, 1 to 4 to set its priority, R to rename.</p>
 
   <section class="decisions" id="decisions" hidden></section>
 
   <div class="board nodetail" id="board">
     <section aria-label="Plan">
       <div class="toolbar">
-        <button class="toggle" id="focus-toggle" aria-pressed="true" title="Show only what matters now">Focus</button>
+        <span class="levels" id="focus-levels" role="group" aria-label="Focus on"><span class="levels-label">Focus</span></span>
         <button class="toggle" id="wont-toggle" aria-pressed="false">Show Won't</button>
+        <details class="keys"><summary>Shortcuts</summary><p>Enter in the add box adds and keeps it ready for the next one. Select a row, then: arrows to move and open, A to add under it, 1 to 4 to set its priority, R to rename.</p></details>
         <span class="legend"><span><i class="mark working"></i>being worked on</span><span><i class="mark progress"></i>in progress</span><span><i class="mark"></i>not started</span><span><i class="mark done"></i>done</span></span>
       </div>
       <ul class="tree" id="tree" role="tree" aria-label="Tasks"></ul>
     </section>
     <aside class="detail" id="detail" hidden></aside>
+    <div class="backdrop" id="backdrop" hidden></div>
   </div>
 </div>
 <div class="toast" id="toast" role="status" title="Click to dismiss" hidden></div>
@@ -236,6 +284,7 @@ document.getElementById('theme-toggle').addEventListener('click', () => {
 
 const P = ['Must', 'Should', 'Could', "Won't"];
 const RANK = Object.fromEntries(P.map((p, i) => [p, i]));
+const LEVELS = ['Must', 'Should', 'Could', 'All'];
 const LETTER = { Must: 'M', Should: 'S', Could: 'C', "Won't": 'W' };
 const STATUSES = ['Not Started', 'In Progress', 'Blocked', 'Complete'];
 const $ = id => document.getElementById(id);
@@ -254,19 +303,21 @@ const el = (tag, attrs = {}, ...kids) => {
 const saved = (() => { try { return JSON.parse(localStorage.getItem('mvplanner-ui') || '{}'); } catch { return {}; } })();
 const ui = {
   view: null,
-  focus: saved.focus ?? true,
   showWont: saved.showWont ?? false,
+  // Focus level: Must, Should or Could show work at or above that project-level priority, with finished work tucked away; All shows everything.
+  level: LEVELS.includes(saved.level) ? saved.level : saved.focus === false ? 'All' : 'Could',
   open: new Set(saved.open ?? []),
   closed: new Set(saved.closed ?? []),
   selected: null,
   captureParent: null,
   capturePrio: 'Must',
   renaming: null,
+  decisionsOpen: false,
   // Proposals decided on this page but not yet saved, hidden so they can't be decided twice.
   deciding: new Set(),
   prev: new Map(),
 };
-const remember = () => { try { localStorage.setItem('mvplanner-ui', JSON.stringify({ focus: ui.focus, showWont: ui.showWont, open: [...ui.open], closed: [...ui.closed] })); } catch {} };
+const remember = () => { try { localStorage.setItem('mvplanner-ui', JSON.stringify({ level: ui.level, showWont: ui.showWont, open: [...ui.open], closed: [...ui.closed] })); } catch {} };
 
 // Edits queue up while one save is in flight and go together in the next save, so a burst of typing is one round trip.
 let queue = [];
@@ -334,6 +385,15 @@ function effective(row, byId) {
   return P[rank];
 }
 
+// Who holds a claim, in words a person can place: the branch the agent works on, with the agent id on hover.
+function claimLabel(row) {
+  const claim = ui.view.claims.find(c => c.id === row.id);
+  const branch = claim && claim.branch ? claim.branch.replace(/^claude\//, '') : '';
+  const who = /^claude-/.test(row.agent) ? 'Claude' : row.agent;
+  const since = claim ? `, claimed ${ago(claim.since)}` : '';
+  return { text: branch ? `${who} on ${branch}` : who, title: `${row.agent}${branch ? ` on branch ${claim.branch}` : ''}${since}` };
+}
+
 function markFor(row) {
   if (row.agent) return 'working';
   if (row.status === 'Complete') return 'done';
@@ -345,7 +405,7 @@ function markFor(row) {
 function isOpen(row, byId, kids) {
   if (ui.open.has(row.id)) return true;
   if (ui.closed.has(row.id)) return false;
-  if (!ui.focus || row.depth === 0) return true;
+  if (ui.level === 'All' || row.depth === 0) return true;
   // In focus, open branches where something is happening: claimed work, the critical path, or proposals to decide.
   return row.hasActiveWork || (row.isOnPath && row.status !== 'Complete') || (kids.get(row.id) || []).some(k => k.isProposed);
 }
@@ -381,33 +441,35 @@ function render() {
   ui.decide = decide;
   const proposals = v.proposals.filter(p => !ui.deciding.has(p.id));
   const dec = $('decisions');
+  dec.classList.toggle('open', ui.decisionsOpen);
   dec.hidden = proposals.length === 0;
   dec.replaceChildren(
     el('h2', {}, `Needs your decision (${proposals.length})`,
+      el('button', { class: 'btn fold', 'aria-expanded': String(ui.decisionsOpen), onclick: () => { ui.decisionsOpen = !ui.decisionsOpen; render(); } }, ui.decisionsOpen ? 'Hide' : 'Review'),
       proposals.length > 1 ? el('button', { class: 'btn', onclick: () => decide(proposals.map(p => p.id)) }, 'Accept all as suggested') : null),
     el('ul', {}, proposals.map(p => {
       const row = byId.get(p.id);
       const kidsOf = (kids.get(p.id) || []).filter(k => k.isProposed);
       return el('li', {},
         el('div', { class: 'proposal' },
-          el('div', {}, el('span', { class: 'tid' }, p.id), ` `, el('b', {}, p.name), ` `, el('span', { class: 'chip', 'data-p': p.mscw, 'data-letter': LETTER[p.mscw] }),
-            el('span', { class: 'where' }, ` under ${p.path}${p.by ? `, proposed by ${p.by}` : ''}`)),
+          el('div', { class: 'title' }, el('span', { class: 'tid' }, p.id), ` `, el('b', {}, p.name)),
+          el('div', { class: 'where' }, `Under ${p.path}${p.by ? `, proposed by ${p.by}` : ''}`),
           p.description ? el('p', { class: 'why' }, p.description) : el('p', { class: 'why muted' }, 'No description was given.'),
           row && row.acceptance.length ? el('ul', { class: 'criteria' }, row.acceptance.map(c => el('li', {}, `Done when: ${c.text}`))) : null,
           kidsOf.length ? el('p', { class: 'where' }, `Includes ${kidsOf.length} proposed subtask${kidsOf.length > 1 ? 's' : ''}: ${kidsOf.map(k => k.name).join('; ')}`) : null,
           el('div', { class: 'acts-row' },
-            el('span', { class: 'where' }, 'Decide:'),
             decisionControl(p),
+            el('span', { class: 'suggested' }, `${p.mscw} suggested. M, S or C accepts at that priority; W declines.`),
             el('button', { class: 'btn', onclick: () => { ui.open.add(p.id); select(p.id); } }, 'Show in plan'))));
     })));
 
   // Tree.
   const items = [];
   const visit = (row, eff) => {
-    const all = (kids.get(row.id) || []).filter(k => ui.showWont || k.mscw !== "Won't");
+    const all = (kids.get(row.id) || []).filter(k => ui.level === 'All' ? ui.showWont || k.mscw !== "Won't" : RANK[effective(k, byId)] <= RANK[ui.level]);
     const open = isOpen(row, byId, kids);
     // In focus, finished work inside an open branch is counted rather than listed, unless it was opened by hand.
-    const children = ui.focus && !ui.open.has(row.id) ? all.filter(k => k.status !== 'Complete' || k.hasActiveWork) : all;
+    const children = ui.level !== 'All' && !ui.open.has(row.id) ? all.filter(k => k.status !== 'Complete' || k.hasActiveWork) : all;
     const hiddenDone = all.length - children.length;
     const before = ui.prev.get(row.id);
     const sig = `${row.name}|${row.mscw}|${row.status}|${row.agent || ''}|${row.parent || ''}`;
@@ -430,7 +492,10 @@ function render() {
   }
 
   renderDetail(byId);
-  $('focus-toggle').setAttribute('aria-pressed', String(ui.focus));
+  $('focus-levels').replaceChildren($('focus-levels').firstElementChild, ...LEVELS.map(l => el('button', { type: 'button', 'aria-pressed': String(l === ui.level),
+    title: { Must: 'Only Must work', Should: 'Must and Should work', Could: 'Must, Should and Could work', All: "Every task, finished ones too" }[l],
+    onclick: () => { ui.level = l; ui.open.clear(); ui.closed.clear(); remember(); render(); } }, l)));
+  $('wont-toggle').hidden = ui.level !== 'All';
   $('wont-toggle').setAttribute('aria-pressed', String(ui.showWont));
 }
 
@@ -453,15 +518,16 @@ function rowFor(row, eff, childCount, open, isNext, changed) {
   },
     el('button', { class: 'caret', disabled: !childCount, 'aria-label': open ? 'Collapse' : 'Expand', tabindex: '-1',
       onclick: e => { e.stopPropagation(); toggle(row.id, !open); } }, childCount ? (open ? '▼' : '▶') : ''),
-    el('span', { class: `mark ${markFor(row)}`, role: 'img', 'aria-label': row.agent ? `being worked on by ${row.agent}` : row.status }),
+    el('span', { class: `mark ${markFor(row)}${row.isProposed && !row.agent ? ' proposed' : ''}`, role: 'img', 'aria-label': row.agent ? `being worked on by ${row.agent}` : row.status }),
     el('span', { class: 'tid' }, row.id),
     el('span', { class: 'name', ondblclick: e => { e.stopPropagation(); startRename(e.currentTarget, row.id); } }, row.name),
     el('button', { class: 'more', tabindex: '-1', onclick: e => { e.stopPropagation(); toggle(row.id, true); } }),
-    row.agent ? el('span', { class: 'tag agent' }, row.agent) : null,
+    row.agent ? el('span', { class: 'tag agent', title: claimLabel(row).title }, claimLabel(row).text) : null,
     isNext ? el('span', { class: 'tag next' }, 'next') : null,
     row.isProposed ? el('span', { class: 'tag proposed' }, 'proposed') : null,
     row.isDeferred ? el('span', { class: 'tag muted' }, 'deferred') : null,
-    row.depth > 0 ? el('span', { class: 'chip', 'data-p': row.mscw, 'data-letter': LETTER[row.mscw], title: row.mscw }) : null,
+    row.depth > 0 ? el('span', { class: 'chip', 'data-p': row.mscw, 'data-letter': LETTER[row.mscw], 'data-differs': eff !== row.mscw,
+      title: eff !== row.mscw ? `${row.mscw} under its parent, so ${eff} for the project` : row.mscw }) : null,
     row.depth > 0 ? prioControl(row.mscw, p => edit({ op: 'update', id: row.id, mscw: p }), `Priority of ${row.name}`) : null,
     el('span', { class: 'acts' },
       el('button', { class: 'icon', title: 'Add a task under this one', 'aria-label': `Add under ${row.name}`, onclick: e => { e.stopPropagation(); addUnder(row.id); } }, '+')));
@@ -477,7 +543,11 @@ function toggle(id, open) {
 function select(id) {
   ui.selected = ui.selected === id ? null : id;
   render();
-  if (ui.selected) document.querySelector(`.row[data-id="${id}"]`)?.focus();
+  const row = ui.selected && document.querySelector(`.row[data-id="${id}"]`);
+  if (!row) return;
+  row.focus();
+  // On a phone the detail sheet covers the lower part of the screen, so bring the row to the top.
+  if (matchMedia('(max-width: 860px)').matches) row.scrollIntoView({ block: 'start' });
 }
 function addUnder(id) {
   ui.captureParent = id;
@@ -513,6 +583,7 @@ function renderDetail(byId) {
   const row = ui.selected && byId.get(ui.selected);
   $('board').classList.toggle('nodetail', !row);
   aside.hidden = !row;
+  $('backdrop').hidden = !row;
   if (!row) return;
   if (aside.contains(document.activeElement) && aside.dataset.id === row.id && document.activeElement.tagName === 'TEXTAREA') return;
   aside.dataset.id = row.id;
@@ -522,9 +593,10 @@ function renderDetail(byId) {
     el('button', { class: 'icon close', 'aria-label': 'Close', onclick: () => select(row.id) }, '×'),
     el('h3', {}, row.name),
     el('div', { class: 'path' }, `${row.id}${row.path ? ` in ${row.path}` : ''}`),
-    row.agent ? el('p', {}, el('span', { class: 'tag agent' }, row.agent), ' is working on this') : null,
-    row.isProposed && !ui.deciding.has(row.id) ? [el('label', {}, 'Decide: M, S or C accepts at that priority, W declines'), decisionControl(row)] : null,
-    row.depth > 0 ? [el('label', {}, 'Priority under its parent'), prioControl(row.mscw, p => edit({ op: 'update', id: row.id, mscw: p }), 'Priority')] : null,
+    row.agent ? el('p', {}, el('span', { class: 'tag agent' }, claimLabel(row).text), ' is working on this', el('br'), el('span', { class: 'counts' }, claimLabel(row).title)) : null,
+    row.isProposed && !ui.deciding.has(row.id) ? [el('label', {}, `Decide: ${row.mscw} suggested. M, S or C accepts at that priority; W declines`), decisionControl(row)] : null,
+    row.depth > 0 ? [el('label', {}, 'Priority under its parent'), prioControl(row.mscw, p => edit({ op: 'update', id: row.id, mscw: p }), 'Priority'),
+      effective(row, byId) !== row.mscw ? el('p', { class: 'counts' }, `Counts as ${effective(row, byId)} for the project, because a task above it is ${effective(row, byId)}.`) : null] : null,
     el('label', { for: 'd-status' }, 'Status'),
     el('select', { id: 'd-status', onchange: e => edit({ op: 'update', id: row.id, status: e.target.value }) },
       STATUSES.map(s => el('option', { value: s, selected: s === row.status }, s))),
@@ -563,6 +635,7 @@ function show(view) {
   if (keep && !ui.renaming) document.querySelector(`.row[data-id="${keep}"]`)?.focus();
 }
 
+$('backdrop').addEventListener('click', () => { ui.selected = null; render(); });
 $('toast').addEventListener('click', () => ($('toast').hidden = true));
 $('capture').addEventListener('submit', e => {
   e.preventDefault();
@@ -574,7 +647,6 @@ $('capture').addEventListener('submit', e => {
   $('capture-name').value = '';
 });
 $('capture-parent').addEventListener('change', e => (ui.captureParent = e.target.value));
-$('focus-toggle').addEventListener('click', () => { ui.focus = !ui.focus; ui.open.clear(); ui.closed.clear(); remember(); render(); });
 $('wont-toggle').addEventListener('click', () => { ui.showWont = !ui.showWont; remember(); render(); });
 
 document.addEventListener('keydown', e => {
@@ -584,7 +656,12 @@ document.addEventListener('keydown', e => {
   const rows = [...document.querySelectorAll('.row')];
   const i = rows.indexOf(row);
   const data = ui.view.tree.find(r => r.id === id);
-  const go = r => { if (r) { r.focus(); } };
+  // While a task is open in the detail panel, moving moves the selection too, so focus and selection never part.
+  const go = r => {
+    if (!r) return;
+    if (ui.selected) { ui.selected = r.dataset.id; render(); document.querySelector(`.row[data-id="${r.dataset.id}"]`)?.focus(); }
+    else r.focus();
+  };
   if (e.key === 'ArrowDown') { e.preventDefault(); go(rows[i + 1]); }
   else if (e.key === 'ArrowUp') { e.preventDefault(); go(rows[i - 1]); }
   else if (e.key === 'ArrowRight') { e.preventDefault(); toggle(id, true); }

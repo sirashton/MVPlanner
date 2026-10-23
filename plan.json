@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 86,
+  "revision": 87,
   "nextId": 57,
   "root": {
     "id": "T-1",
@@ -733,7 +733,7 @@
           {
             "id": "T-56",
             "name": "Light page by default, ids beside task names",
-            "status": "Not Started",
+            "status": "In Progress",
             "mscw": "Should",
             "description": "The web page follows the system's dark mode, which Alex doesn't want. It should open light, with a switch for dark. Task ids are also hidden, so Alex can't match the T-numbers that agents mention to tasks.",
             "acceptance": [
@@ -751,8 +751,18 @@
                 "at": "2026-10-23T00:57:37.542Z",
                 "agent": "claude-5f5428c4",
                 "text": "Added under T-26, approved by Alex, in the project thread"
+              },
+              {
+                "at": "2026-10-23T00:57:43.065Z",
+                "agent": "claude-5f5428c4",
+                "text": "Claimed on pr11"
               }
-            ]
+            ],
+            "claimedBy": {
+              "agent": "claude-5f5428c4",
+              "at": "2026-10-23T00:57:43.065Z",
+              "branch": "pr11"
+            }
           }
         ],
         "log": [

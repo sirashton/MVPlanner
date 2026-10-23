@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 182,
+  "revision": 183,
   "nextId": 86,
   "root": {
     "id": "T-1",
@@ -2003,7 +2003,7 @@
           {
             "id": "T-79",
             "name": "Parent tasks state the need they meet",
-            "status": "Not Started",
+            "status": "In Progress",
             "mscw": "Must",
             "description": "A task with subtasks carries a need or outcome (\"People can reshape the plan quickly, so a scoping session keeps pace\"), not just a name. Without it there's nothing to judge a child against. Many parents today have no description.",
             "acceptance": [
@@ -2025,8 +2025,18 @@
               {
                 "at": "2026-10-23T03:36:50.071Z",
                 "text": "Proposal accepted"
+              },
+              {
+                "at": "2026-10-23T03:42:41.159Z",
+                "agent": "claude-c4c20c01",
+                "text": "Claimed on claude/project-thread-cjyw4x"
               }
-            ]
+            ],
+            "claimedBy": {
+              "agent": "claude-c4c20c01",
+              "at": "2026-10-23T03:42:41.155Z",
+              "branch": "claude/project-thread-cjyw4x"
+            }
           },
           {
             "id": "T-80",

@@ -2,6 +2,7 @@
 
 ## 0.2.0
 
+- Each proposal on the page shows its route from the top task down, with every step's priority and need, ending in the suggested priority.
 - The plan and scope skills, planner agent and `plan_edit` work top down: state each parent's need before adding its subtasks, and draw the subtasks from that need.
 - Agents build only what a task's criteria name and propose anything else a person would notice before building it, at whatever priority they suggest. Completing a task with `task_update` asks what was built beyond the criteria (`beyond_criteria`).
 - Proposals say which part of the parent's need they serve: `task_propose` and `mvplan propose` refuse one without a `serves` line, and the page shows it on each proposal.

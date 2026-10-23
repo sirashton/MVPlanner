@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 106,
-  "nextId": 64,
+  "revision": 107,
+  "nextId": 65,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -974,6 +974,34 @@
               {
                 "at": "2026-10-23T01:06:18.862Z",
                 "text": "Proposal accepted"
+              }
+            ]
+          },
+          {
+            "id": "T-64",
+            "name": "Focus by priority: Must, Should or Could",
+            "status": "Not Started",
+            "mscw": "Should",
+            "description": "Alex asked for the Focus filter to have levels: focus on Must only, up to Should, or up to Could, so Could-only work can still be seen when wanted.",
+            "acceptance": [
+              {
+                "text": "The Focus control offers Must, Should and Could levels plus showing everything",
+                "done": false
+              },
+              {
+                "text": "Each level hides tasks whose project-level priority is below it",
+                "done": false
+              },
+              {
+                "text": "The chosen level is remembered in the browser",
+                "done": false
+              }
+            ],
+            "log": [
+              {
+                "at": "2026-10-23T01:11:39.978Z",
+                "agent": "claude-9cc89b7b",
+                "text": "Added under T-26, approved by Alex, in the \"Web UI design review\" thread"
               }
             ]
           }

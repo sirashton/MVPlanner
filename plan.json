@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 125,
-  "nextId": 68,
+  "revision": 126,
+  "nextId": 69,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -1147,6 +1147,26 @@
                 "at": "2026-10-23T02:43:22.361Z",
                 "agent": "claude-9cc89b7b",
                 "text": "status In Progress -> Complete; checked \"assets icon, favicon and wordmark use the M-path mark\"; checked \"The wordmark's M, V and P are in the Must, Should and Could colours, with lanner in a regular weight\"; checked \"The web page header shows the wordmark and the favicon is the M-path mark\"; assets/icon.svg, favicon.svg (16px grid) and wordmark.svg redrawn as the M path; wordmark M/V/P in Must/Should/Could colours, lanner regular; header brand bar shows it with Live/theme on the right. Handoff: in PR #17."
+              }
+            ]
+          },
+          {
+            "id": "T-68",
+            "name": "Clear keyboard shortcuts list",
+            "status": "Not Started",
+            "mscw": "Should",
+            "description": "Alex couldn't understand the Shortcuts text. Show it as a list of keys and what each does.",
+            "acceptance": [
+              {
+                "text": "The Shortcuts panel lists each key next to what it does, in plain words",
+                "done": false
+              }
+            ],
+            "log": [
+              {
+                "at": "2026-10-23T02:43:27.743Z",
+                "agent": "claude-9cc89b7b",
+                "text": "Added under T-26, approved by Alex, in the \"Web UI design review\" thread (said the shortcuts text was not understandable)"
               }
             ]
           }

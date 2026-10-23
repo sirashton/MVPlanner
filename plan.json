@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 192,
+  "revision": 193,
   "nextId": 86,
   "root": {
     "id": "T-1",
@@ -2228,7 +2228,7 @@
           {
             "id": "T-85",
             "name": "Review only what's on the current path; the rest waits in a later pile",
-            "status": "Not Started",
+            "status": "In Progress",
             "mscw": "Must",
             "description": "Until the project has done all it Must, the decision inbox shows only proposals whose every ancestor is a Must; once at Should, Should-path ones join, and so on. The rest sits in a later pile, filterable by path level: on the Must path, on the Should path, on the Could path (Alex). An agent can still flag \"this suggests raising a parent to Must\" for review straight away. Without it, the human spends review time on work that can't matter yet.",
             "acceptance": [
@@ -2254,8 +2254,18 @@
               {
                 "at": "2026-10-23T03:37:29.276Z",
                 "text": "Proposal accepted"
+              },
+              {
+                "at": "2026-10-23T04:00:12.426Z",
+                "agent": "claude-c4c20c01",
+                "text": "Claimed on claude/project-thread-cjyw4x"
               }
-            ]
+            ],
+            "claimedBy": {
+              "agent": "claude-c4c20c01",
+              "at": "2026-10-23T04:00:12.426Z",
+              "branch": "claude/project-thread-cjyw4x"
+            }
           }
         ]
       }

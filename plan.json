@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 143,
+  "revision": 144,
   "nextId": 75,
   "root": {
     "id": "T-1",
@@ -51,15 +51,16 @@
             "status": "In Progress",
             "mscw": "Should",
             "description": "Today a parent's status is ignored unless all its subtasks are deferrals or proposals.",
-            "claimedBy": {
-              "agent": "claude-80c03394",
-              "at": "2026-10-23T03:01:05.294Z"
-            },
             "log": [
               {
                 "at": "2026-10-23T03:01:05.297Z",
                 "agent": "claude-80c03394",
                 "text": "Claimed"
+              },
+              {
+                "at": "2026-10-23T03:02:43.879Z",
+                "agent": "claude-80c03394",
+                "text": "Released: Claimed only to test what context an agent receives. No code changed. Task needs acceptance criteria and a decided rule from Alex before an agent can do it."
               }
             ]
           }

@@ -8,6 +8,7 @@ import {
 import type { Plan } from '../src/core/index.ts';
 import { renderNeedless, renderTask } from '../src/format.ts';
 import { currentSession } from '../src/session.ts';
+import { buildView } from '../src/view.ts';
 
 // The worked example from the README: a Could feature with Must subtasks must not block "done all we Must".
 function todoApp(): Plan {
@@ -283,4 +284,26 @@ test('a pull request must name a claimed or complete task', () => {
     assert.equal(unclaimed.ok, false);
     assert.match(unclaimed.message, /T-5 .* is not claimed/);
     assert.match(unclaimed.message, /T-999 is not in the plan/);
+});
+
+test('only proposals on the current level\'s path are reviewed now, unless they ask to raise a parent', () => {
+    const plan = todoApp();
+    proposeTask(plan, 'T-2', 'a', { name: 'Undo', serves: 'keep a list' });
+    proposeTask(plan, 'T-6', 'a', { name: 'Sign in with Google', serves: 'register quickly' });
+    proposeTask(plan, 'T-8', 'a', { name: 'Faster qubits', serves: 'sort' });
+    proposeTask(plan, 'T-8', 'a', { name: 'Ship quantum now', serves: 'sort', raiseParent: 'Quantum sorting should be a Must' });
+    const byName = (v: ReturnType<typeof buildView>) => Object.fromEntries(v.proposals.map(p => [p.name, [p.pathLevel, p.isNow]]));
+    assert.deepEqual(byName(buildView(plan)), {
+        Undo: ['Must', true],
+        'Sign in with Google': ['Should', false],
+        'Faster qubits': ['Could', false],
+        'Ship quantum now': ['Could', true],
+    });
+    // Once everything Must is done, Should-path proposals come up for review.
+    for (const id of ['T-3', 'T-4', 'T-9']) {
+        updateTask(plan, id, undefined, { status: 'Complete' });
+    }
+    assert.equal(overallLevel(plan), 'Should');
+    assert.deepEqual(byName(buildView(plan))['Sign in with Google'], ['Should', true]);
+    assert.deepEqual(byName(buildView(plan))['Faster qubits'], ['Could', false]);
 });

@@ -1,5 +1,5 @@
-import { DO_MORE_ORDER } from './types.ts';
-import type { DoMore, Plan, Task } from './types.ts';
+import { DO_MORE_ORDER, MSCW } from './types.ts';
+import type { DoMore, Mscw, Plan, Task } from './types.ts';
 import { walk } from './plan.ts';
 import { isClaimStale } from './ops.ts';
 
@@ -106,6 +106,17 @@ export function nextTasks(plan: Plan, options: { includeClaimed?: boolean; agent
     const score = (n: NextTask) =>
         (n.blockedBy.length > 0 || n.task.status === 'Blocked' ? 4 : 0) + (n.task.claimedBy ? 2 : 0) + (n.task.status === 'In Progress' ? 0 : 1);
     return results.sort((a, b) => score(a) - score(b));
+}
+
+// A proposal's path: the least important priority among the tasks above it (the top task aside). It only matters once
+// the project has done everything more important, so until then it waits in the later pile.
+export function pathLevel(parents: Task[]): Mscw {
+    return MSCW[Math.max(0, ...parents.slice(1).map(p => MSCW.indexOf(p.mscw)))];
+}
+
+// Proposals to review now: those on the path of the project's current level, and any asking to raise a parent.
+export function isReviewableNow(task: Task, parents: Task[], level: DoMore): boolean {
+    return Boolean(task.raiseParent) || rank(pathLevel(parents)) <= rank(level);
 }
 
 export function overallLevel(plan: Plan): DoMore {

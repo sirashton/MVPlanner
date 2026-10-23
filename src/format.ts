@@ -69,6 +69,9 @@ export function renderTask(plan: Plan, task: Task, path?: string): string {
     if (task.serves) {
         lines.push(`Serves: ${task.serves}`);
     }
+    if (task.raiseParent) {
+        lines.push(`Asks to raise a parent: ${task.raiseParent}`);
+    }
     if (task.description) {
         lines.push(`Description: ${task.description}`);
     }

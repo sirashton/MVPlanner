@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 124,
+  "revision": 125,
   "nextId": 68,
   "root": {
     "id": "T-1",
@@ -1115,21 +1115,21 @@
           {
             "id": "T-67",
             "name": "Switch the logo to the M path, with MVP in priority colours",
-            "status": "In Progress",
+            "status": "Complete",
             "mscw": "Could",
             "description": "Alex changed his mind on the logo: use concept F (the M drawn as a path through task nodes), colour the M, V and P letters of the wordmark in the Must, Should and Could colours, and show the bold-MVP, regular-lanner wordmark in the web page header.",
             "acceptance": [
               {
                 "text": "assets icon, favicon and wordmark use the M-path mark",
-                "done": false
+                "done": true
               },
               {
                 "text": "The wordmark's M, V and P are in the Must, Should and Could colours, with lanner in a regular weight",
-                "done": false
+                "done": true
               },
               {
                 "text": "The web page header shows the wordmark and the favicon is the M-path mark",
-                "done": false
+                "done": true
               }
             ],
             "log": [
@@ -1142,13 +1142,13 @@
                 "at": "2026-10-23T02:41:51.536Z",
                 "agent": "claude-9cc89b7b",
                 "text": "Claimed on claude/project-thread-e0welq"
+              },
+              {
+                "at": "2026-10-23T02:43:22.361Z",
+                "agent": "claude-9cc89b7b",
+                "text": "status In Progress -> Complete; checked \"assets icon, favicon and wordmark use the M-path mark\"; checked \"The wordmark's M, V and P are in the Must, Should and Could colours, with lanner in a regular weight\"; checked \"The web page header shows the wordmark and the favicon is the M-path mark\"; assets/icon.svg, favicon.svg (16px grid) and wordmark.svg redrawn as the M path; wordmark M/V/P in Must/Should/Could colours, lanner regular; header brand bar shows it with Live/theme on the right. Handoff: in PR #17."
               }
-            ],
-            "claimedBy": {
-              "agent": "claude-9cc89b7b",
-              "at": "2026-10-23T02:41:51.535Z",
-              "branch": "claude/project-thread-e0welq"
-            }
+            ]
           }
         ],
         "log": [

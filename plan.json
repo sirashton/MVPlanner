@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 154,
+  "revision": 155,
   "nextId": 77,
   "root": {
     "id": "T-1",
@@ -514,7 +514,7 @@
           {
             "id": "T-76",
             "name": "Say what breaks without each Must",
-            "status": "Not Started",
+            "status": "In Progress",
             "mscw": "Should",
             "description": "Refines p3g10: when proposing a Must, the agent says what would happen without it. If it would still work, just not as nicely, it is not a Must.",
             "acceptance": [
@@ -528,8 +528,18 @@
                 "at": "2026-10-23T03:05:27.100Z",
                 "agent": "claude-59d579af",
                 "text": "Added under T-14, approved by Alex, in this conversation"
+              },
+              {
+                "at": "2026-10-23T03:05:34.968Z",
+                "agent": "claude-59d579af",
+                "text": "Claimed on claude/project-thread-55vl7h"
               }
-            ]
+            ],
+            "claimedBy": {
+              "agent": "claude-59d579af",
+              "at": "2026-10-23T03:05:34.968Z",
+              "branch": "claude/project-thread-55vl7h"
+            }
           }
         ]
       },

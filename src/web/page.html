@@ -25,13 +25,7 @@
   --focus: #3b3fb6;
   color-scheme: light;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --paper: #141a22; --sheet: #1b232d; --ink: #e3e9f0; --ink-soft: #9aa7b6; --rule: #2d3844;
-    --must: #9da2ff; --should: #5cc4bb; --could: #e0a54a; --wont: #6f7b8a; --live: #ff6fb0; --done: #6fcf8d;
-    --danger: #ff8a80; --focus: #9da2ff; color-scheme: dark;
-  }
-}
+/* Light unless the viewer picks dark with the switch in the header. */
 :root[data-theme="dark"] {
   --paper: #141a22; --sheet: #1b232d; --ink: #e3e9f0; --ink-soft: #9aa7b6; --rule: #2d3844;
   --must: #9da2ff; --should: #5cc4bb; --could: #e0a54a; --wont: #6f7b8a; --live: #ff6fb0; --done: #6fcf8d;
@@ -51,6 +45,9 @@ header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spac
 .conn i { width: 8px; height: 8px; border-radius: 50%; background: var(--wont); display: inline-block; }
 .conn.live i { background: var(--done); }
 .conn.saving i { background: var(--live); }
+.theme { font-size: 13px; color: var(--ink-soft); background: none; border: 1px solid var(--rule); border-radius: 999px; padding: 2px 10px; cursor: pointer; }
+.theme:hover { color: var(--ink); }
+.tid { flex: none; font-size: 12px; color: var(--ink-soft); font-variant-numeric: tabular-nums; font-weight: 400; font-style: normal; }
 
 .ladder { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 18px 0 20px; }
 .rung { font-size: 13px; color: var(--ink-soft); }
@@ -193,6 +190,7 @@ aside.detail .foot { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap;
     <h1 id="name">Plan</h1>
     <span class="status-line" id="status"></span>
     <span class="conn" id="conn"><i></i><span>Connecting</span></span>
+    <button type="button" class="theme" id="theme-toggle"></button>
   </header>
   <section class="ladder" id="ladder" aria-label="Progress by priority"></section>
 
@@ -220,6 +218,22 @@ aside.detail .foot { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap;
 </div>
 <div class="toast" id="toast" role="status" title="Click to dismiss" hidden></div>
 <script>
+// Light by default; the header switch remembers a choice of dark in this browser.
+const applyTheme = theme => {
+  document.documentElement.dataset.theme = theme;
+  const button = document.getElementById('theme-toggle');
+  button.textContent = theme === 'dark' ? 'Light' : 'Dark';
+  button.setAttribute('aria-label', `Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`);
+};
+let savedTheme = 'light';
+try { savedTheme = localStorage.getItem('mvplanner-theme') === 'dark' ? 'dark' : 'light'; } catch {}
+applyTheme(savedTheme);
+document.getElementById('theme-toggle').addEventListener('click', () => {
+  const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+  try { localStorage.setItem('mvplanner-theme', next); } catch {}
+});
+
 const P = ['Must', 'Should', 'Could', "Won't"];
 const RANK = Object.fromEntries(P.map((p, i) => [p, i]));
 const LETTER = { Must: 'M', Should: 'S', Could: 'C', "Won't": 'W' };
@@ -376,7 +390,7 @@ function render() {
       const kidsOf = (kids.get(p.id) || []).filter(k => k.isProposed);
       return el('li', {},
         el('div', { class: 'proposal' },
-          el('div', {}, el('b', {}, p.name), ` `, el('span', { class: 'chip', 'data-p': p.mscw, 'data-letter': LETTER[p.mscw] }),
+          el('div', {}, el('span', { class: 'tid' }, p.id), ` `, el('b', {}, p.name), ` `, el('span', { class: 'chip', 'data-p': p.mscw, 'data-letter': LETTER[p.mscw] }),
             el('span', { class: 'where' }, ` under ${p.path}${p.by ? `, proposed by ${p.by}` : ''}`)),
           p.description ? el('p', { class: 'why' }, p.description) : el('p', { class: 'why muted' }, 'No description was given.'),
           row && row.acceptance.length ? el('ul', { class: 'criteria' }, row.acceptance.map(c => el('li', {}, `Done when: ${c.text}`))) : null,
@@ -440,6 +454,7 @@ function rowFor(row, eff, childCount, open, isNext, changed) {
     el('button', { class: 'caret', disabled: !childCount, 'aria-label': open ? 'Collapse' : 'Expand', tabindex: '-1',
       onclick: e => { e.stopPropagation(); toggle(row.id, !open); } }, childCount ? (open ? '▼' : '▶') : ''),
     el('span', { class: `mark ${markFor(row)}`, role: 'img', 'aria-label': row.agent ? `being worked on by ${row.agent}` : row.status }),
+    el('span', { class: 'tid' }, row.id),
     el('span', { class: 'name', ondblclick: e => { e.stopPropagation(); startRename(e.currentTarget, row.id); } }, row.name),
     el('button', { class: 'more', tabindex: '-1', onclick: e => { e.stopPropagation(); toggle(row.id, true); } }),
     row.agent ? el('span', { class: 'tag agent' }, row.agent) : null,

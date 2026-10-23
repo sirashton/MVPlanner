@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 160,
+  "revision": 161,
   "nextId": 78,
   "root": {
     "id": "T-1",
@@ -1566,17 +1566,17 @@
           {
             "id": "T-77",
             "name": "Page doesn't jump while it loads",
-            "status": "In Progress",
+            "status": "Complete",
             "mscw": "Should",
             "description": "The header, progress ladder and add box move as the plan arrives and the font loads (measured cumulative layout shift 0.145). Send the plan with the page so the first paint is already laid out, and stop the font swap from moving text.",
             "acceptance": [
               {
                 "text": "Measured cumulative layout shift on load is below 0.01 at desktop and phone widths",
-                "done": false
+                "done": true
               },
               {
                 "text": "The page still works live, updating from the event stream",
-                "done": false
+                "done": true
               }
             ],
             "log": [
@@ -1589,13 +1589,13 @@
                 "at": "2026-10-23T03:11:37.371Z",
                 "agent": "claude-9cc89b7b",
                 "text": "Claimed on claude/project-thread-e0welq"
+              },
+              {
+                "at": "2026-10-23T03:13:40.749Z",
+                "agent": "claude-9cc89b7b",
+                "text": "status In Progress -> Complete; checked \"Measured cumulative layout shift on load is below 0.01 at desktop and phone widths\"; checked \"The page still works live, updating from the event stream\"; Server inlines the current view as JSON in the page (escaped so it can't close the script tag) and the page draws it before first paint; font loads with display=optional. Measured CLS went from 0.145 to 0.0000 at 1440 and 0.0004 at 390 (only the Connecting→Live label). Live updates and adding tasks still work."
               }
-            ],
-            "claimedBy": {
-              "agent": "claude-9cc89b7b",
-              "at": "2026-10-23T03:11:37.371Z",
-              "branch": "claude/project-thread-e0welq"
-            }
+            ]
           }
         ],
         "log": [

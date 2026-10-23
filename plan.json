@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 84,
+  "revision": 85,
   "nextId": 56,
   "root": {
     "id": "T-1",
@@ -999,7 +999,7 @@
           {
             "id": "T-53",
             "name": "Session link on every claim",
-            "status": "Not Started",
+            "status": "In Progress",
             "mscw": "Must",
             "description": "Store the session or thread link with each claim, so the transcript behind a task can be found without copying it anywhere.",
             "log": [
@@ -1011,8 +1011,18 @@
               {
                 "at": "2026-10-23T00:49:48.257Z",
                 "text": "Proposal accepted"
+              },
+              {
+                "at": "2026-10-23T00:57:08.815Z",
+                "agent": "claude-167688b6",
+                "text": "Claimed on claude/project-thread-a96grs-t51"
               }
-            ]
+            ],
+            "claimedBy": {
+              "agent": "claude-167688b6",
+              "at": "2026-10-23T00:57:08.815Z",
+              "branch": "claude/project-thread-a96grs-t51"
+            }
           },
           {
             "id": "T-54",

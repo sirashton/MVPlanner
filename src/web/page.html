@@ -109,7 +109,9 @@ header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spac
 .btn:disabled { opacity: .5; cursor: default; }
 
 .board { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 24px; margin-top: 24px; align-items: start; }
-.board.nodetail { grid-template-columns: minmax(0, 1fr); }
+/* Keep a row's name and its priority close together on wide screens. */
+.board.nodetail { grid-template-columns: minmax(0, 880px); }
+.board > section { max-width: 880px; }
 .toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }
 .toolbar .legend { font-size: 12px; color: var(--ink-soft); margin-left: auto; display: flex; gap: 12px; flex-wrap: wrap; }
 .toggle { border: 1px solid var(--rule); background: transparent; border-radius: 999px; padding: 2px 10px; font-size: 13px; cursor: pointer; }
@@ -149,6 +151,8 @@ header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spac
 .row:hover .chip, .row.selected .chip, .row:focus-within .chip { display: none; }
 .chip { flex: none; width: 54px; text-align: right; font-size: 12px; font-weight: 600; }
 .chip::after { content: attr(data-p); }
+.chip[data-differs] { text-decoration: underline dotted; text-underline-offset: 3px; cursor: help; }
+aside.detail .counts { font-size: 13px; color: var(--ink-soft); margin: 6px 0 0; }
 .chip[data-p=Must] { color: var(--must); }
 .chip[data-p=Should] { color: var(--should); }
 .chip[data-p=Could] { color: var(--could); }
@@ -345,6 +349,15 @@ function effective(row, byId) {
   return P[rank];
 }
 
+// Who holds a claim, in words a person can place: the branch the agent works on, with the agent id on hover.
+function claimLabel(row) {
+  const claim = ui.view.claims.find(c => c.id === row.id);
+  const branch = claim && claim.branch ? claim.branch.replace(/^claude\//, '') : '';
+  const who = /^claude-/.test(row.agent) ? 'Claude' : row.agent;
+  const since = claim ? `, claimed ${ago(claim.since)}` : '';
+  return { text: branch ? `${who} on ${branch}` : who, title: `${row.agent}${branch ? ` on branch ${claim.branch}` : ''}${since}` };
+}
+
 function markFor(row) {
   if (row.agent) return 'working';
   if (row.status === 'Complete') return 'done';
@@ -468,11 +481,12 @@ function rowFor(row, eff, childCount, open, isNext, changed) {
     el('span', { class: 'tid' }, row.id),
     el('span', { class: 'name', ondblclick: e => { e.stopPropagation(); startRename(e.currentTarget, row.id); } }, row.name),
     el('button', { class: 'more', tabindex: '-1', onclick: e => { e.stopPropagation(); toggle(row.id, true); } }),
-    row.agent ? el('span', { class: 'tag agent' }, row.agent) : null,
+    row.agent ? el('span', { class: 'tag agent', title: claimLabel(row).title }, claimLabel(row).text) : null,
     isNext ? el('span', { class: 'tag next' }, 'next') : null,
     row.isProposed ? el('span', { class: 'tag proposed' }, 'proposed') : null,
     row.isDeferred ? el('span', { class: 'tag muted' }, 'deferred') : null,
-    row.depth > 0 ? el('span', { class: 'chip', 'data-p': row.mscw, 'data-letter': LETTER[row.mscw], title: row.mscw }) : null,
+    row.depth > 0 ? el('span', { class: 'chip', 'data-p': row.mscw, 'data-letter': LETTER[row.mscw], 'data-differs': eff !== row.mscw,
+      title: eff !== row.mscw ? `${row.mscw} under its parent, so ${eff} for the project` : row.mscw }) : null,
     row.depth > 0 ? prioControl(row.mscw, p => edit({ op: 'update', id: row.id, mscw: p }), `Priority of ${row.name}`) : null,
     el('span', { class: 'acts' },
       el('button', { class: 'icon', title: 'Add a task under this one', 'aria-label': `Add under ${row.name}`, onclick: e => { e.stopPropagation(); addUnder(row.id); } }, '+')));
@@ -533,9 +547,10 @@ function renderDetail(byId) {
     el('button', { class: 'icon close', 'aria-label': 'Close', onclick: () => select(row.id) }, '×'),
     el('h3', {}, row.name),
     el('div', { class: 'path' }, `${row.id}${row.path ? ` in ${row.path}` : ''}`),
-    row.agent ? el('p', {}, el('span', { class: 'tag agent' }, row.agent), ' is working on this') : null,
+    row.agent ? el('p', {}, el('span', { class: 'tag agent' }, claimLabel(row).text), ' is working on this', el('br'), el('span', { class: 'counts' }, claimLabel(row).title)) : null,
     row.isProposed && !ui.deciding.has(row.id) ? [el('label', {}, `Decide: ${row.mscw} suggested. M, S or C accepts at that priority; W declines`), decisionControl(row)] : null,
-    row.depth > 0 ? [el('label', {}, 'Priority under its parent'), prioControl(row.mscw, p => edit({ op: 'update', id: row.id, mscw: p }), 'Priority')] : null,
+    row.depth > 0 ? [el('label', {}, 'Priority under its parent'), prioControl(row.mscw, p => edit({ op: 'update', id: row.id, mscw: p }), 'Priority'),
+      effective(row, byId) !== row.mscw ? el('p', { class: 'counts' }, `Counts as ${effective(row, byId)} for the project, because a task above it is ${effective(row, byId)}.`) : null] : null,
     el('label', { for: 'd-status' }, 'Status'),
     el('select', { id: 'd-status', onchange: e => edit({ op: 'update', id: row.id, status: e.target.value }) },
       STATUSES.map(s => el('option', { value: s, selected: s === row.status }, s))),
@@ -595,7 +610,12 @@ document.addEventListener('keydown', e => {
   const rows = [...document.querySelectorAll('.row')];
   const i = rows.indexOf(row);
   const data = ui.view.tree.find(r => r.id === id);
-  const go = r => { if (r) { r.focus(); } };
+  // While a task is open in the detail panel, moving moves the selection too, so focus and selection never part.
+  const go = r => {
+    if (!r) return;
+    if (ui.selected) { ui.selected = r.dataset.id; render(); document.querySelector(`.row[data-id="${r.dataset.id}"]`)?.focus(); }
+    else r.focus();
+  };
   if (e.key === 'ArrowDown') { e.preventDefault(); go(rows[i + 1]); }
   else if (e.key === 'ArrowUp') { e.preventDefault(); go(rows[i - 1]); }
   else if (e.key === 'ArrowRight') { e.preventDefault(); toggle(id, true); }

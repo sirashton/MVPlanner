@@ -11,7 +11,7 @@ export type PanelView = {
   status: string
   ladder: { label: string; done: number; total: number; isCurrent: boolean }[]
   proposals: (PanelTask & { description?: string; by?: string })[]
-  claims: (PanelTask & { agent: string; branch?: string; since: string; lastActivity: string; isStale: boolean })[]
+  claims: (PanelTask & { agent: string; branch?: string; session?: string; since: string; lastActivity: string; isStale: boolean })[]
   next: (PanelTask & { blockedBy: string[]; acceptance: string[] })[]
   deferred: (PanelTask & { trigger?: string; markers: { file: string; line: number; kind: string }[] })[]
   activity: { at: string; agent?: string; id: string; name: string; text: string }[]

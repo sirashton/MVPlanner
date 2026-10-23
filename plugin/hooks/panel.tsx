@@ -118,7 +118,7 @@ export const register: Register = (on, options) => {
   })
 
   on('ui.render', { component: 'Pane', requestId: PANE }, async ($, e) => {
-    const { Box, Text, Button } = $.ui.resolve(e)
+    const { Box, Text, Button, Link } = $.ui.resolve(e)
     const plan = await read($, view)
     const problem = await read($, error)
     const message = await read($, notice)
@@ -224,6 +224,7 @@ export const register: Register = (on, options) => {
               <Text color={task.isStale ? 'yellow' : undefined} dimColor={!task.isStale}>
                 {task.agent} · {task.isStale ? `quiet for ${age(task.lastActivity, now)}` : age(task.lastActivity, now)}
               </Text>
+              {task.session?.startsWith('https://') ? <Text> · <Link href={task.session} label="session" /></Text> : null}
             </Text>
           ))}
         </Box>

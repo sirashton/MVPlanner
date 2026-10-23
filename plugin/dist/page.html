@@ -153,7 +153,7 @@ header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spac
 .row[data-status=Complete] .name { color: var(--ink-soft); font-weight: 400; }
 .row.proposed .name { font-style: italic; }
 .tag { font-size: 12px; border-radius: 999px; padding: 1px 8px; flex: none; white-space: nowrap; }
-.tag.agent { color: var(--live); border: 1px solid color-mix(in srgb, var(--live) 50%, transparent); }
+.tag.agent { color: var(--live); text-decoration: none; border: 1px solid color-mix(in srgb, var(--live) 50%, transparent); }
 .row .tag.agent { flex: 0 1 auto; min-width: 0; max-width: 260px; overflow: hidden; text-overflow: ellipsis; }
 .tag.next { color: var(--could); border: 1px solid color-mix(in srgb, var(--could) 50%, transparent); }
 .tag.proposed { color: var(--ink-soft); border: 1px dashed var(--ink-soft); }
@@ -391,7 +391,19 @@ function claimLabel(row) {
   const branch = claim && claim.branch ? claim.branch.replace(/^claude\//, '') : '';
   const who = /^claude-/.test(row.agent) ? 'Claude' : row.agent;
   const since = claim ? `, claimed ${ago(claim.since)}` : '';
-  return { text: branch ? `${who} on ${branch}` : who, title: `${row.agent}${branch ? ` on branch ${claim.branch}` : ''}${since}` };
+  // A cloud session's link opens the conversation behind the claim; a local session id is only shown on hover.
+  const session = claim && claim.session;
+  const href = session && session.startsWith('https://') ? session : undefined;
+  return { text: branch ? `${who} on ${branch}` : who, href,
+    title: `${row.agent}${branch ? ` on branch ${claim.branch}` : ''}${since}${!href && session ? `. Session ${session}` : ''}` };
+}
+
+// The claim tag, a link to the agent's session when one was recorded.
+function claimTag(row) {
+  const label = claimLabel(row);
+  return label.href
+    ? el('a', { class: 'tag agent', href: label.href, target: '_blank', rel: 'noopener noreferrer', title: `${label.title}. Opens the session`, onclick: e => e.stopPropagation() }, `${label.text} ↗`)
+    : el('span', { class: 'tag agent', title: label.title }, label.text);
 }
 
 function markFor(row) {
@@ -522,7 +534,7 @@ function rowFor(row, eff, childCount, open, isNext, changed) {
     el('span', { class: 'tid' }, row.id),
     el('span', { class: 'name', ondblclick: e => { e.stopPropagation(); startRename(e.currentTarget, row.id); } }, row.name),
     el('button', { class: 'more', tabindex: '-1', onclick: e => { e.stopPropagation(); toggle(row.id, true); } }),
-    row.agent ? el('span', { class: 'tag agent', title: claimLabel(row).title }, claimLabel(row).text) : null,
+    row.agent ? claimTag(row) : null,
     isNext ? el('span', { class: 'tag next' }, 'next') : null,
     row.isProposed ? el('span', { class: 'tag proposed' }, 'proposed') : null,
     row.isDeferred ? el('span', { class: 'tag muted' }, 'deferred') : null,
@@ -593,7 +605,7 @@ function renderDetail(byId) {
     el('button', { class: 'icon close', 'aria-label': 'Close', onclick: () => select(row.id) }, '×'),
     el('h3', {}, row.name),
     el('div', { class: 'path' }, `${row.id}${row.path ? ` in ${row.path}` : ''}`),
-    row.agent ? el('p', {}, el('span', { class: 'tag agent' }, claimLabel(row).text), ' is working on this', el('br'), el('span', { class: 'counts' }, claimLabel(row).title)) : null,
+    row.agent ? el('p', {}, claimTag(row), ' is working on this', el('br'), el('span', { class: 'counts' }, claimLabel(row).title)) : null,
     row.isProposed && !ui.deciding.has(row.id) ? [el('label', {}, `Decide: ${row.mscw} suggested. M, S or C accepts at that priority; W declines`), decisionControl(row)] : null,
     row.depth > 0 ? [el('label', {}, 'Priority under its parent'), prioControl(row.mscw, p => edit({ op: 'update', id: row.id, mscw: p }), 'Priority'),
       effective(row, byId) !== row.mscw ? el('p', { class: 'counts' }, `Counts as ${effective(row, byId)} for the project, because a task above it is ${effective(row, byId)}.`) : null] : null,

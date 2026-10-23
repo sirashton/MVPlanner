@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 129,
-  "nextId": 69,
+  "revision": 130,
+  "nextId": 70,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -1177,6 +1177,26 @@
                 "at": "2026-10-23T02:44:57.916Z",
                 "agent": "claude-9cc89b7b",
                 "text": "status In Progress -> Complete; checked \"The Shortcuts panel lists each key next to what it does, in plain words\"; \"Keyboard shortcuts\" toggle now opens a popover with each key (as a keycap) beside a plain description; checked at 1440 and 390 wide. Handoff: in PR #17."
+              }
+            ]
+          },
+          {
+            "id": "T-69",
+            "name": "Focus label reads as a label, not a button",
+            "status": "Not Started",
+            "mscw": "Should",
+            "description": "The word 'Focus' sits in the same box as the level buttons, so it looks clickable. Show it as plain text beside them.",
+            "acceptance": [
+              {
+                "text": "'Focus' is plain text with no button styling, and the Must/Should/Could/All buttons still look like buttons",
+                "done": false
+              }
+            ],
+            "log": [
+              {
+                "at": "2026-10-23T02:50:16.440Z",
+                "agent": "claude-9cc89b7b",
+                "text": "Added under T-26, approved by Alex, in the \"Web UI design review\" thread (said 'Focus' looks like a button)"
               }
             ]
           }

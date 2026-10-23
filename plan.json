@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 181,
+  "revision": 182,
   "nextId": 86,
   "root": {
     "id": "T-1",
@@ -972,6 +972,11 @@
                 "at": "2026-10-23T03:33:52.112Z",
                 "agent": "claude-f555c004",
                 "text": "status In Progress -> Complete; Merged in PR #20 (cf61118); Alex reviewed it and approved completing it in this thread. Handoff: focus restore lives in render(); ui.cursor tracks the last focused row for keys pressed outside the tree."
+              },
+              {
+                "at": "2026-10-23T03:39:00.643Z",
+                "agent": "claude-f555c004",
+                "text": "Follow-up: recorded in project memory that Alex accepted the top-down tasks (T-78 to T-85); no code change."
               }
             ],
             "links": [

@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 133,
+  "revision": 134,
   "nextId": 71,
   "root": {
     "id": "T-1",
@@ -1213,7 +1213,7 @@
           {
             "id": "T-70",
             "name": "Grid-path logo",
-            "status": "Not Started",
+            "status": "In Progress",
             "mscw": "Could",
             "description": "Replace the M-path logo with Alex's design R: a white tile, the critical path stepping down through a 3x3 grid of tasks as a diagonal M in Must indigo, and skipped tasks as smaller Should teal and Could amber dots on faint links to their parents.",
             "acceptance": [
@@ -1231,8 +1231,18 @@
                 "at": "2026-10-23T02:51:32.489Z",
                 "agent": "claude-9cc89b7b",
                 "text": "Added under T-26, approved by Alex, in the \"Web UI design review\" thread (sketched the grid-path logo and picked variant R)"
+              },
+              {
+                "at": "2026-10-23T02:51:38.269Z",
+                "agent": "claude-9cc89b7b",
+                "text": "Claimed on claude/project-thread-e0welq"
               }
-            ]
+            ],
+            "claimedBy": {
+              "agent": "claude-9cc89b7b",
+              "at": "2026-10-23T02:51:38.269Z",
+              "branch": "claude/project-thread-e0welq"
+            }
           }
         ],
         "log": [

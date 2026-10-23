@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 75,
+  "revision": 76,
   "nextId": 55,
   "root": {
     "id": "T-1",
@@ -251,13 +251,13 @@
           {
             "id": "T-45",
             "name": "Enforce claims by default in new plans",
-            "status": "In Progress",
+            "status": "Complete",
             "mscw": "Must",
             "description": "mvplan init and the plugin default to strictness enforce, so an agent cannot edit code without a claimed task unless a human turns it down to warn.",
             "acceptance": [
               {
                 "text": "A new plan blocks edits without a claim out of the box",
-                "done": false
+                "done": true
               }
             ],
             "log": [
@@ -270,12 +270,16 @@
                 "at": "2026-10-23T00:52:27.779Z",
                 "agent": "claude-167688b6",
                 "text": "Claimed"
+              },
+              {
+                "at": "2026-10-23T00:53:40.440Z",
+                "agent": "claude-167688b6",
+                "text": "status In Progress -> Complete; checked \"A new plan blocks edits without a claim out of the box\"; linked https://github.com/sirashton/MVPlanner/pull/10; Hook and plugin setting now default strictness to enforce (unknown values fall back to enforce); test covers an unconfigured plan denying unclaimed edits."
               }
             ],
-            "claimedBy": {
-              "agent": "claude-167688b6",
-              "at": "2026-10-23T00:52:27.693Z"
-            }
+            "links": [
+              "https://github.com/sirashton/MVPlanner/pull/10"
+            ]
           },
           {
             "id": "T-46",

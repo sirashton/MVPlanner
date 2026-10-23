@@ -47,6 +47,10 @@ header.top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16p
 .brand b { font-weight: 880; color: var(--p); }
 .brand .lanner { font-weight: 400; color: var(--ink-soft); }
 header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spacing: -0.02em; margin: 0; }
+/* When the plan is MVPlanner itself, the wordmark is the heading: show it at heading size and keep the plain name for screen readers only. */
+.own .brand { font-size: 32px; gap: 10px; }
+.own .brand svg { width: 36px; height: 36px; }
+.own header.top h1 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .status-line { color: var(--ink-soft); font-size: 15px; }
 .conn { margin-left: auto; font-size: 13px; color: var(--ink-soft); display: flex; align-items: center; gap: 6px; }
 .conn i { width: 8px; height: 8px; border-radius: 50%; background: var(--wont); display: inline-block; }
@@ -476,6 +480,7 @@ function render() {
   if (!v) return;
   document.title = `${v.name} plan`;
   $('name').textContent = v.name;
+  document.body.classList.toggle('own', v.name.trim().toLowerCase() === 'mvplanner');
   $('status').textContent = v.status;
   $('ladder').replaceChildren(...v.ladder.map((r, i) => el('div', { class: r.isCurrent ? 'rung current' : 'rung', 'data-p': P[i] === "Won't" ? undefined : P[i] },
     el('b', {}, r.label), ` ${r.done} of ${r.total} done`,

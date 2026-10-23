@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 95,
-  "nextId": 62,
+  "revision": 96,
+  "nextId": 63,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -874,6 +874,31 @@
             "log": [
               {
                 "at": "2026-10-23T01:02:56.948Z",
+                "agent": "claude-9cc89b7b",
+                "text": "Proposed under T-26"
+              }
+            ]
+          },
+          {
+            "id": "T-62",
+            "name": "Logo and favicon",
+            "status": "Not Started",
+            "mscw": "Could",
+            "proposed": true,
+            "description": "Alex asked for a logo. The design review sketched three concepts (ladder, weighted wordmark, scope box) and recommends the ladder: four bars Must to Won't in the priority colours. Sketches: mvplanner/design-review/logos.html in the project files.",
+            "acceptance": [
+              {
+                "text": "Alex has picked a concept",
+                "done": false
+              },
+              {
+                "text": "The web page has a favicon and the mark in its header",
+                "done": false
+              }
+            ],
+            "log": [
+              {
+                "at": "2026-10-23T01:03:02.102Z",
                 "agent": "claude-9cc89b7b",
                 "text": "Proposed under T-26"
               }

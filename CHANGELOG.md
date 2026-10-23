@@ -2,7 +2,7 @@
 
 ## 0.2.0
 
-- Soft nudges in the skills, planner agent and tool hints: group related subtasks under a themed parent, and challenge Musts with p3g10 (pi is 3, gravity is 10). Tool replies mention when a parent passes eight subtasks.
+- Soft nudges in the skills, planner agent and tool hints: group related subtasks under a themed parent, and challenge Musts with p3g10 (pi is 3, gravity is 10) by saying what would happen without each one. Tool replies mention when a parent passes eight subtasks.
 - Rebuilt as a Claude Code plugin: MCP server, hooks, skills and agents, installable from this repo's marketplace.
 - Plan format version 2: stable task ids, acceptance criteria, claims, dependencies, deferrals, proposals and a log. `mvplan migrate` converts version 1.
 - The live plan is held on a `mvplanner/plan` branch, shared by every worktree, session and project; a single-file backend is available for one machine.

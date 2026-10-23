@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 179,
+  "revision": 180,
   "nextId": 86,
   "root": {
     "id": "T-1",
@@ -2132,7 +2132,6 @@
             "name": "Review a proposal with its route from the top task",
             "status": "Not Started",
             "mscw": "Must",
-            "proposed": true,
             "description": "On the page, each proposal shows the chain from the top task down to it, with each step's priority and stated need, and the AI-suggested MoSCoW. Without it, the human judges a task on its own instead of \"does this parent need this?\".",
             "acceptance": [
               {
@@ -2149,6 +2148,10 @@
                 "at": "2026-10-23T03:29:47.333Z",
                 "agent": "claude-f555c004",
                 "text": "Proposed under T-78"
+              },
+              {
+                "at": "2026-10-23T03:37:24.063Z",
+                "text": "Proposal accepted"
               }
             ]
           },

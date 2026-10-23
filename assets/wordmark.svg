@@ -1,15 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 44" role="img" aria-label="MVPlanner">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 262 44" role="img" aria-label="MVPlanner">
   <title>MVPlanner</title>
-  <g transform="translate(2 4) scale(2.25)">
-  <path d="M2 6V4.5H14V6M4.5 13.5H7" stroke="#c4ccd6" stroke-width="0.9" fill="none" stroke-linejoin="round"/>
-  <rect x="4" y="0" width="8" height="3" rx="1" fill="#3b3fb6"/>
-  <rect x="7" y="3" width="2" height="3" fill="#3b3fb6"/>
-  <rect x="0" y="6" width="4" height="3" rx="1" fill="#1d7570"/>
-  <rect x="5" y="6" width="6" height="4" rx="1" fill="#3b3fb6"/>
-  <rect x="12" y="6" width="4" height="3" rx="1" fill="#8a5a0f"/>
-  <rect x="7" y="10" width="2" height="3" fill="#3b3fb6"/>
-  <rect x="1" y="12.5" width="4" height="2.5" rx="0.9" fill="#8a96a6"/>
-  <rect x="7" y="12" width="7" height="4" rx="1" fill="#3b3fb6"/>
+  <g transform="translate(0 4) scale(1.125)">
+  <rect width="32" height="32" rx="7.5" fill="#1d2a3a"/>
+  <path d="M16 18L24 9V24" stroke="#5d6b7c" stroke-width="2.6" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M8 24V9L16 18" stroke="#9da2ff" stroke-width="3" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+  <circle cx="8" cy="24" r="2.2" fill="#9da2ff"/><circle cx="8" cy="9" r="2.6" fill="#9da2ff"/><circle cx="16" cy="18" r="2.6" fill="#9da2ff"/>
+  <circle cx="24" cy="9" r="2.4" fill="#5cc4bb"/><circle cx="24" cy="24" r="2.2" fill="#e0a54a"/>
   </g>
-  <text x="48" y="33" font-family="'Schibsted Grotesk', system-ui, sans-serif" font-size="31" letter-spacing="-0.6" fill="#1d2a3a"><tspan font-weight="880">MVP</tspan><tspan font-weight="360" fill="#5d6b7c">lanner</tspan></text>
+  <text x="46" y="33" font-family="'Schibsted Grotesk', system-ui, sans-serif" font-size="31" letter-spacing="-0.6"><tspan font-weight="880" fill="#3b3fb6">M</tspan><tspan font-weight="880" fill="#1d7570">V</tspan><tspan font-weight="880" fill="#8a5a0f">P</tspan><tspan font-weight="400" fill="#5d6b7c">lanner</tspan></text>
 </svg>

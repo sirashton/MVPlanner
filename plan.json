@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 141,
-  "nextId": 73,
+  "revision": 142,
+  "nextId": 75,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -453,6 +453,34 @@
                 "text": "priority Won't -> Could"
               }
             ]
+          },
+          {
+            "id": "T-73",
+            "name": "Nudge agents to group related subtasks",
+            "status": "Not Started",
+            "mscw": "Should",
+            "description": "Soft prompting so agents put related subtasks under a themed parent instead of growing long flat lists. No hard limits.",
+            "acceptance": [
+              {
+                "text": "Plan and scope skills and the planner agent ask agents to group as they go (about 3-7 subtasks per parent, themed parents named for the outcome)",
+                "done": false
+              },
+              {
+                "text": "Parent hints on task_add, task_propose, task_defer and plan_edit ask for the most specific parent",
+                "done": false
+              },
+              {
+                "text": "Tool replies add a one-line, non-blocking reminder when a parent passes 8 subtasks",
+                "done": false
+              }
+            ],
+            "log": [
+              {
+                "at": "2026-10-23T03:01:41.917Z",
+                "agent": "claude-59d579af",
+                "text": "Added under T-14, approved by Alex, in this conversation"
+              }
+            ]
           }
         ]
       },
@@ -775,487 +803,6 @@
             ]
           },
           {
-            "id": "T-56",
-            "name": "Light page by default, ids beside task names",
-            "status": "Complete",
-            "mscw": "Should",
-            "description": "The web page follows the system's dark mode, which Alex doesn't want. It should open light, with a switch for dark. Task ids are also hidden, so Alex can't match the T-numbers that agents mention to tasks.",
-            "acceptance": [
-              {
-                "text": "The page opens light whatever the system setting, and a switch in the header remembers dark or light",
-                "done": true
-              },
-              {
-                "text": "Each task row, proposal and claim shows its id in muted text beside the name",
-                "done": true
-              }
-            ],
-            "log": [
-              {
-                "at": "2026-10-23T00:57:37.542Z",
-                "agent": "claude-5f5428c4",
-                "text": "Added under T-26, approved by Alex, in the project thread"
-              },
-              {
-                "at": "2026-10-23T00:57:43.065Z",
-                "agent": "claude-5f5428c4",
-                "text": "Claimed on pr11"
-              },
-              {
-                "at": "2026-10-23T00:59:31.272Z",
-                "agent": "claude-5f5428c4",
-                "text": "status In Progress -> Complete; checked \"The page opens light whatever the system setting, and a switch in the header remembers dark or light\"; checked \"Each task row, proposal and claim shows its id in muted text beside the name\"; linked https://github.com/sirashton/MVPlanner/pull/14; Merged in PR #14. Handoff: the page is light unless the header switch picks dark, stored in localStorage as 'mvplanner-theme'. The prefers-color-scheme media query was removed on purpose, because Alex wants light. Ids are a .tid span outside .name, so renaming is unaffected. Claim tags don't show ids, but the row they sit on does."
-              }
-            ],
-            "links": [
-              "https://github.com/sirashton/MVPlanner/pull/14"
-            ]
-          },
-          {
-            "id": "T-58",
-            "name": "Make plan rows readable at a glance",
-            "status": "Complete",
-            "mscw": "Should",
-            "description": "From the web page design review (findings 1, 3, 5, 7). On wide screens the priority label sits ~900px from the task name; the label shows priority under the parent while line weight shows project-level priority, with no hint why they differ; agent tags are opaque ids; arrow-key focus and selection disagree.",
-            "acceptance": [
-              {
-                "text": "At 1440px wide, a row's name and priority can be read without the eye crossing more than ~300px",
-                "done": true
-              },
-              {
-                "text": "When a task's own priority differs from its project-level priority, the page says so (tooltip or detail panel)",
-                "done": true
-              },
-              {
-                "text": "Agent tags show a human-readable name (thread or branch) rather than only the agent id",
-                "done": true
-              },
-              {
-                "text": "Keyboard focus and selection never highlight two different rows at once",
-                "done": true
-              }
-            ],
-            "log": [
-              {
-                "at": "2026-10-23T01:02:42.477Z",
-                "agent": "claude-9cc89b7b",
-                "text": "Proposed under T-26"
-              },
-              {
-                "at": "2026-10-23T01:06:18.862Z",
-                "text": "Proposal accepted"
-              },
-              {
-                "at": "2026-10-23T01:10:32.124Z",
-                "agent": "claude-9cc89b7b",
-                "text": "Claimed on claude/project-thread-e0welq"
-              },
-              {
-                "at": "2026-10-23T01:12:00.573Z",
-                "agent": "claude-9cc89b7b",
-                "text": "status In Progress -> Complete; checked \"At 1440px wide, a row's name and priority can be read without the eye crossing more than ~300px\"; checked \"When a task's own priority differs from its project-level priority, the page says so (tooltip or detail panel)\"; checked \"Agent tags show a human-readable name (thread or branch) rather than only the agent id\"; checked \"Keyboard focus and selection never highlight two different rows at once\"; Tree capped at 880px (name to priority ~450px max, most rows far less); differing priority gets a dotted underline, tooltip and \"Counts as X for the project\" line; agent tags read \"Claude on <branch>\" with id on hover; arrows move selection while the detail panel is open. Handoff: same PR as T-59/T-60/T-61."
-              }
-            ]
-          },
-          {
-            "id": "T-59",
-            "name": "Give proposals their own look, separate from agent work",
-            "status": "Complete",
-            "mscw": "Should",
-            "description": "From the web page design review (findings 2, 6, 8, 9). Pink currently means agent working, proposed, and needs-your-decision. The suggested decision button is outlined in the focus colour. The how-to hint mixes proposal help with keyboard shortcuts. The proposal card's path line wraps into the title.",
-            "acceptance": [
-              {
-                "text": "Pink is used only for live agent work",
-                "done": true
-              },
-              {
-                "text": "The suggested decision button is marked in its priority's colour and labelled 'suggested'",
-                "done": true
-              },
-              {
-                "text": "Decision help sits beside the Decide buttons; keyboard shortcuts are out of the always-visible hint",
-                "done": true
-              },
-              {
-                "text": "Proposal path and proposer sit on their own line under the title",
-                "done": true
-              }
-            ],
-            "log": [
-              {
-                "at": "2026-10-23T01:02:47.615Z",
-                "agent": "claude-9cc89b7b",
-                "text": "Proposed under T-26"
-              },
-              {
-                "at": "2026-10-23T01:06:18.862Z",
-                "text": "Proposal accepted"
-              },
-              {
-                "at": "2026-10-23T01:08:53.819Z",
-                "agent": "claude-9cc89b7b",
-                "text": "Claimed on claude/project-thread-e0welq"
-              },
-              {
-                "at": "2026-10-23T01:10:17.692Z",
-                "agent": "claude-9cc89b7b",
-                "text": "status In Progress -> Complete; checked \"Pink is used only for live agent work\"; checked \"The suggested decision button is marked in its priority's colour and labelled 'suggested'\"; checked \"Decision help sits beside the Decide buttons; keyboard shortcuts are out of the always-visible hint\"; checked \"Proposal path and proposer sit on their own line under the title\"; Pink kept for agent work only (decisions border now ink, saving dot indigo, proposed tag and mark dashed neutral); suggested button outlined in its priority colour with \"X suggested\" text; keyboard help behind a Shortcuts toggle. Handoff: same PR as T-58/T-60/T-61 on claude/project-thread-e0welq."
-              }
-            ]
-          },
-          {
-            "id": "T-60",
-            "name": "Show the plan first on a phone",
-            "status": "Complete",
-            "mscw": "Should",
-            "description": "From the web page design review (findings 4, 11). At 390px wide the first task row is ~1,650px down, below the add box, a four-line hint and the proposals. The detail sheet covers 70% of the screen with no backdrop and hides the tapped row.",
-            "acceptance": [
-              {
-                "text": "At 390x844 the first plan rows are visible without scrolling",
-                "done": true
-              },
-              {
-                "text": "The phone detail sheet has a backdrop and the tapped row stays visible",
-                "done": true
-              }
-            ],
-            "log": [
-              {
-                "at": "2026-10-23T01:02:52.169Z",
-                "agent": "claude-9cc89b7b",
-                "text": "Proposed under T-26"
-              },
-              {
-                "at": "2026-10-23T01:06:18.862Z",
-                "text": "Proposal accepted"
-              },
-              {
-                "at": "2026-10-23T01:13:05.701Z",
-                "agent": "claude-9cc89b7b",
-                "text": "Claimed on claude/project-thread-e0welq"
-              },
-              {
-                "at": "2026-10-23T01:14:52.476Z",
-                "agent": "claude-9cc89b7b",
-                "text": "status In Progress -> Complete; checked \"At 390x844 the first plan rows are visible without scrolling\"; checked \"The phone detail sheet has a backdrop and the tapped row stays visible\"; At 390x844 the tree starts ~700px down (was ~1,650) with eight rows on the first screen; detail sheet has a backdrop (tap closes) and scrolls the tapped row to the top. Handoff: same PR as T-58/T-59/T-61/T-64."
-              }
-            ]
-          },
-          {
-            "id": "T-61",
-            "name": "Readable contrast for Could and Won't labels",
-            "status": "Complete",
-            "mscw": "Should",
-            "description": "From the web page design review (finding 10). In the light theme Could (#a36a12) is 4.0:1 and Won't (#8a94a3) is 2.7:1 against the page background at 12px; WCAG AA needs 4.5:1.",
-            "acceptance": [
-              {
-                "text": "All priority label colours reach 4.5:1 against their background in both themes",
-                "done": true
-              }
-            ],
-            "log": [
-              {
-                "at": "2026-10-23T01:02:56.948Z",
-                "agent": "claude-9cc89b7b",
-                "text": "Proposed under T-26"
-              },
-              {
-                "at": "2026-10-23T01:06:18.862Z",
-                "text": "Proposal accepted"
-              },
-              {
-                "at": "2026-10-23T01:08:01.396Z",
-                "agent": "claude-9cc89b7b",
-                "text": "Claimed"
-              },
-              {
-                "at": "2026-10-23T01:08:43.766Z",
-                "agent": "claude-9cc89b7b",
-                "text": "status In Progress -> Complete; checked \"All priority label colours reach 4.5:1 against their background in both themes\"; Light: Should #1d7570 (4.8:1), Could #8a5a0f (5.2:1), Won't #616c7b (4.7:1); dark Won't #8a96a6 (5.8:1). Handoff: on branch claude/project-thread-e0welq, shipped in the same PR as T-58/T-59/T-60."
-              }
-            ]
-          },
-          {
-            "id": "T-62",
-            "name": "Logo and favicon",
-            "status": "Complete",
-            "mscw": "Could",
-            "description": "Alex asked for a logo. The design review sketched three concepts (ladder, weighted wordmark, scope box) and recommends the ladder: four bars Must to Won't in the priority colours. Sketches: mvplanner/design-review/logos.html in the project files.",
-            "acceptance": [
-              {
-                "text": "Alex has picked a concept",
-                "done": true
-              },
-              {
-                "text": "The web page has a favicon and the mark in its header",
-                "done": true
-              }
-            ],
-            "log": [
-              {
-                "at": "2026-10-23T01:03:02.102Z",
-                "agent": "claude-9cc89b7b",
-                "text": "Proposed under T-26"
-              },
-              {
-                "at": "2026-10-23T01:06:18.862Z",
-                "text": "Proposal accepted"
-              },
-              {
-                "at": "2026-10-23T01:14:58.201Z",
-                "agent": "claude-9cc89b7b",
-                "text": "Claimed on claude/project-thread-e0welq"
-              },
-              {
-                "at": "2026-10-23T01:17:36.536Z",
-                "agent": "claude-9cc89b7b",
-                "text": "status In Progress -> Complete; checked \"Alex has picked a concept\"; checked \"The web page has a favicon and the mark in its header\"; Alex picked concept D (critical-path tree). assets/icon.svg, favicon.svg (16px grid, lighter in dark mode), wordmark.svg; page has the favicon and header mark; README shows the wordmark. Handoff: same PR as T-58..T-64."
-              }
-            ]
-          },
-          {
-            "id": "T-64",
-            "name": "Focus by priority: Must, Should or Could",
-            "status": "Complete",
-            "mscw": "Should",
-            "description": "Alex asked for the Focus filter to have levels: focus on Must only, up to Should, or up to Could, so Could-only work can still be seen when wanted.",
-            "acceptance": [
-              {
-                "text": "The Focus control offers Must, Should and Could levels plus showing everything",
-                "done": true
-              },
-              {
-                "text": "Each level hides tasks whose project-level priority is below it",
-                "done": true
-              },
-              {
-                "text": "The chosen level is remembered in the browser",
-                "done": true
-              }
-            ],
-            "log": [
-              {
-                "at": "2026-10-23T01:11:39.978Z",
-                "agent": "claude-9cc89b7b",
-                "text": "Added under T-26, approved by Alex, in the \"Web UI design review\" thread"
-              },
-              {
-                "at": "2026-10-23T01:12:05.517Z",
-                "agent": "claude-9cc89b7b",
-                "text": "Claimed on claude/project-thread-e0welq"
-              },
-              {
-                "at": "2026-10-23T01:13:00.943Z",
-                "agent": "claude-9cc89b7b",
-                "text": "status In Progress -> Complete; checked \"The Focus control offers Must, Should and Could levels plus showing everything\"; checked \"Each level hides tasks whose project-level priority is below it\"; checked \"The chosen level is remembered in the browser\"; Focus is now Must / Should / Could / All, filtering by project-level priority; default Could; remembered in localStorage (checked by reload in Playwright). Handoff: same PR as T-58..T-61."
-              }
-            ]
-          },
-          {
-            "id": "T-65",
-            "name": "Priority colours on every M, S, C, W control",
-            "status": "Complete",
-            "mscw": "Should",
-            "description": "Alex: give M, S and C their distinct colours everywhere on the page for consistency: priority pickers, decision buttons, Focus levels and the ladder.",
-            "acceptance": [
-              {
-                "text": "Every M/S/C/W button shows its letter in its priority colour, and fills with that colour when chosen",
-                "done": true
-              },
-              {
-                "text": "Focus levels and ladder labels use the same priority colours",
-                "done": true
-              }
-            ],
-            "log": [
-              {
-                "at": "2026-10-23T02:36:52.525Z",
-                "agent": "claude-9cc89b7b",
-                "text": "Added under T-26, approved by Alex, in the \"Web UI design review\" thread"
-              },
-              {
-                "at": "2026-10-23T02:36:57.387Z",
-                "agent": "claude-9cc89b7b",
-                "text": "Claimed on claude/project-thread-e0welq"
-              },
-              {
-                "at": "2026-10-23T02:38:33.078Z",
-                "agent": "claude-9cc89b7b",
-                "text": "status In Progress -> Complete; checked \"Every M/S/C/W button shows its letter in its priority colour, and fills with that colour when chosen\"; checked \"Focus levels and ladder labels use the same priority colours\"; One --p colour per priority via [data-p], used by pickers, decision buttons, Focus levels, ladder and chips. Handoff: same PR as T-66 on claude/project-thread-e0welq."
-              }
-            ]
-          },
-          {
-            "id": "T-66",
-            "name": "Show how far each task is done, by priority",
-            "status": "Complete",
-            "mscw": "Should",
-            "description": "Alex: a task's mark should show to what extent it is done based on its children: done all we Must, done all we Should, done all we Could, without needing words.",
-            "acceptance": [
-              {
-                "text": "A task with subtasks shows a compact mark of which priority levels beneath it are fully done, in the priority colours",
-                "done": true
-              },
-              {
-                "text": "Hovering the mark says it in words, e.g. 'All Musts done; Should work remains'",
-                "done": true
-              },
-              {
-                "text": "The legend explains the mark",
-                "done": true
-              }
-            ],
-            "log": [
-              {
-                "at": "2026-10-23T02:36:52.525Z",
-                "agent": "claude-9cc89b7b",
-                "text": "Added under T-26, approved by Alex, in the \"Web UI design review\" thread"
-              },
-              {
-                "at": "2026-10-23T02:38:38.900Z",
-                "agent": "claude-9cc89b7b",
-                "text": "Claimed on claude/project-thread-e0welq"
-              },
-              {
-                "at": "2026-10-23T02:40:40.588Z",
-                "agent": "claude-9cc89b7b",
-                "text": "status In Progress -> Complete; checked \"A task with subtasks shows a compact mark of which priority levels beneath it are fully done, in the priority colours\"; checked \"Hovering the mark says it in words, e.g. 'All Musts done; Should work remains'\"; checked \"The legend explains the mark\"; Three bars (Must, Should, Could) on tasks with subtasks, filled from the do-more level (so priority is relative to parent); hover and detail panel say \"Done all we Must\" etc., per Alex's wording; legend item added. Handoff: PR with T-65 on claude/project-thread-e0welq."
-              }
-            ]
-          },
-          {
-            "id": "T-67",
-            "name": "Switch the logo to the M path, with MVP in priority colours",
-            "status": "Complete",
-            "mscw": "Could",
-            "description": "Alex changed his mind on the logo: use concept F (the M drawn as a path through task nodes), colour the M, V and P letters of the wordmark in the Must, Should and Could colours, and show the bold-MVP, regular-lanner wordmark in the web page header.",
-            "acceptance": [
-              {
-                "text": "assets icon, favicon and wordmark use the M-path mark",
-                "done": true
-              },
-              {
-                "text": "The wordmark's M, V and P are in the Must, Should and Could colours, with lanner in a regular weight",
-                "done": true
-              },
-              {
-                "text": "The web page header shows the wordmark and the favicon is the M-path mark",
-                "done": true
-              }
-            ],
-            "log": [
-              {
-                "at": "2026-10-23T02:41:44.815Z",
-                "agent": "claude-9cc89b7b",
-                "text": "Added under T-26, approved by Alex, in the \"Web UI design review\" thread"
-              },
-              {
-                "at": "2026-10-23T02:41:51.536Z",
-                "agent": "claude-9cc89b7b",
-                "text": "Claimed on claude/project-thread-e0welq"
-              },
-              {
-                "at": "2026-10-23T02:43:22.361Z",
-                "agent": "claude-9cc89b7b",
-                "text": "status In Progress -> Complete; checked \"assets icon, favicon and wordmark use the M-path mark\"; checked \"The wordmark's M, V and P are in the Must, Should and Could colours, with lanner in a regular weight\"; checked \"The web page header shows the wordmark and the favicon is the M-path mark\"; assets/icon.svg, favicon.svg (16px grid) and wordmark.svg redrawn as the M path; wordmark M/V/P in Must/Should/Could colours, lanner regular; header brand bar shows it with Live/theme on the right. Handoff: in PR #17."
-              }
-            ]
-          },
-          {
-            "id": "T-68",
-            "name": "Clear keyboard shortcuts list",
-            "status": "Complete",
-            "mscw": "Should",
-            "description": "Alex couldn't understand the Shortcuts text. Show it as a list of keys and what each does.",
-            "acceptance": [
-              {
-                "text": "The Shortcuts panel lists each key next to what it does, in plain words",
-                "done": true
-              }
-            ],
-            "log": [
-              {
-                "at": "2026-10-23T02:43:27.743Z",
-                "agent": "claude-9cc89b7b",
-                "text": "Added under T-26, approved by Alex, in the \"Web UI design review\" thread (said the shortcuts text was not understandable)"
-              },
-              {
-                "at": "2026-10-23T02:44:23.401Z",
-                "agent": "claude-9cc89b7b",
-                "text": "Claimed on claude/project-thread-e0welq"
-              },
-              {
-                "at": "2026-10-23T02:44:57.916Z",
-                "agent": "claude-9cc89b7b",
-                "text": "status In Progress -> Complete; checked \"The Shortcuts panel lists each key next to what it does, in plain words\"; \"Keyboard shortcuts\" toggle now opens a popover with each key (as a keycap) beside a plain description; checked at 1440 and 390 wide. Handoff: in PR #17."
-              }
-            ]
-          },
-          {
-            "id": "T-69",
-            "name": "Focus label reads as a label, not a button",
-            "status": "Complete",
-            "mscw": "Should",
-            "description": "The word 'Focus' sits in the same box as the level buttons, so it looks clickable. Show it as plain text beside them.",
-            "acceptance": [
-              {
-                "text": "'Focus' is plain text with no button styling, and the Must/Should/Could/All buttons still look like buttons",
-                "done": true
-              }
-            ],
-            "log": [
-              {
-                "at": "2026-10-23T02:50:16.440Z",
-                "agent": "claude-9cc89b7b",
-                "text": "Added under T-26, approved by Alex, in the \"Web UI design review\" thread (said 'Focus' looks like a button)"
-              },
-              {
-                "at": "2026-10-23T02:50:22.406Z",
-                "agent": "claude-9cc89b7b",
-                "text": "Claimed on claude/project-thread-e0welq"
-              },
-              {
-                "at": "2026-10-23T02:51:27.857Z",
-                "agent": "claude-9cc89b7b",
-                "text": "status In Progress -> Complete; checked \"'Focus' is plain text with no button styling, and the Must/Should/Could/All buttons still look like buttons\"; 'Focus' moved out of the bordered group into a plain text label (aria-labelledby on the group); checked at 1440 and 390 wide."
-              }
-            ]
-          },
-          {
-            "id": "T-70",
-            "name": "Grid-path logo",
-            "status": "Complete",
-            "mscw": "Could",
-            "description": "Replace the M-path logo with Alex's design R: a white tile, the critical path stepping down through a 3x3 grid of tasks as a diagonal M in Must indigo, and skipped tasks as smaller Should teal and Could amber dots on faint links to their parents.",
-            "acceptance": [
-              {
-                "text": "assets/icon.svg, assets/favicon.svg and assets/wordmark.svg use design R",
-                "done": true
-              },
-              {
-                "text": "The page header icon and the favicon use design R and read at 16px",
-                "done": true
-              }
-            ],
-            "log": [
-              {
-                "at": "2026-10-23T02:51:32.489Z",
-                "agent": "claude-9cc89b7b",
-                "text": "Added under T-26, approved by Alex, in the \"Web UI design review\" thread (sketched the grid-path logo and picked variant R)"
-              },
-              {
-                "at": "2026-10-23T02:51:38.269Z",
-                "agent": "claude-9cc89b7b",
-                "text": "Claimed on claude/project-thread-e0welq"
-              },
-              {
-                "at": "2026-10-23T02:52:57.389Z",
-                "agent": "claude-9cc89b7b",
-                "text": "status In Progress -> Complete; checked \"assets/icon.svg, assets/favicon.svg and assets/wordmark.svg use design R\"; checked \"The page header icon and the favicon use design R and read at 16px\"; icon, favicon (16px grid, links dropped), wordmark, page header and inlined favicon now use design R; checked at 96/32/16px, in light and dark tabs and page headers."
-              }
-            ]
-          },
-          {
             "id": "T-71",
             "name": "Show what belongs to what in a deep tree",
             "status": "Complete",
@@ -1329,6 +876,573 @@
               "agent": "claude-f555c004",
               "at": "2026-10-23T02:59:29.863Z"
             }
+          },
+          {
+            "id": "T-74",
+            "name": "Page looks polished",
+            "status": "Complete",
+            "mscw": "Should",
+            "description": "Design-review polish for the web page, grouped from Plan viewer's flat list.",
+            "log": [
+              {
+                "at": "2026-10-23T03:01:41.917Z",
+                "agent": "claude-59d579af",
+                "text": "Added under T-26, approved by Alex, in this conversation"
+              },
+              {
+                "at": "2026-10-23T03:01:41.919Z",
+                "agent": "claude-59d579af",
+                "text": "status Not Started -> Complete"
+              }
+            ],
+            "subtasks": [
+              {
+                "id": "T-56",
+                "name": "Light page by default, ids beside task names",
+                "status": "Complete",
+                "mscw": "Should",
+                "description": "The web page follows the system's dark mode, which Alex doesn't want. It should open light, with a switch for dark. Task ids are also hidden, so Alex can't match the T-numbers that agents mention to tasks.",
+                "acceptance": [
+                  {
+                    "text": "The page opens light whatever the system setting, and a switch in the header remembers dark or light",
+                    "done": true
+                  },
+                  {
+                    "text": "Each task row, proposal and claim shows its id in muted text beside the name",
+                    "done": true
+                  }
+                ],
+                "log": [
+                  {
+                    "at": "2026-10-23T00:57:37.542Z",
+                    "agent": "claude-5f5428c4",
+                    "text": "Added under T-26, approved by Alex, in the project thread"
+                  },
+                  {
+                    "at": "2026-10-23T00:57:43.065Z",
+                    "agent": "claude-5f5428c4",
+                    "text": "Claimed on pr11"
+                  },
+                  {
+                    "at": "2026-10-23T00:59:31.272Z",
+                    "agent": "claude-5f5428c4",
+                    "text": "status In Progress -> Complete; checked \"The page opens light whatever the system setting, and a switch in the header remembers dark or light\"; checked \"Each task row, proposal and claim shows its id in muted text beside the name\"; linked https://github.com/sirashton/MVPlanner/pull/14; Merged in PR #14. Handoff: the page is light unless the header switch picks dark, stored in localStorage as 'mvplanner-theme'. The prefers-color-scheme media query was removed on purpose, because Alex wants light. Ids are a .tid span outside .name, so renaming is unaffected. Claim tags don't show ids, but the row they sit on does."
+                  },
+                  {
+                    "at": "2026-10-23T03:01:41.918Z",
+                    "agent": "claude-59d579af",
+                    "text": "Moved from T-26 to T-74"
+                  }
+                ],
+                "links": [
+                  "https://github.com/sirashton/MVPlanner/pull/14"
+                ]
+              },
+              {
+                "id": "T-58",
+                "name": "Make plan rows readable at a glance",
+                "status": "Complete",
+                "mscw": "Should",
+                "description": "From the web page design review (findings 1, 3, 5, 7). On wide screens the priority label sits ~900px from the task name; the label shows priority under the parent while line weight shows project-level priority, with no hint why they differ; agent tags are opaque ids; arrow-key focus and selection disagree.",
+                "acceptance": [
+                  {
+                    "text": "At 1440px wide, a row's name and priority can be read without the eye crossing more than ~300px",
+                    "done": true
+                  },
+                  {
+                    "text": "When a task's own priority differs from its project-level priority, the page says so (tooltip or detail panel)",
+                    "done": true
+                  },
+                  {
+                    "text": "Agent tags show a human-readable name (thread or branch) rather than only the agent id",
+                    "done": true
+                  },
+                  {
+                    "text": "Keyboard focus and selection never highlight two different rows at once",
+                    "done": true
+                  }
+                ],
+                "log": [
+                  {
+                    "at": "2026-10-23T01:02:42.477Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "Proposed under T-26"
+                  },
+                  {
+                    "at": "2026-10-23T01:06:18.862Z",
+                    "text": "Proposal accepted"
+                  },
+                  {
+                    "at": "2026-10-23T01:10:32.124Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "Claimed on claude/project-thread-e0welq"
+                  },
+                  {
+                    "at": "2026-10-23T01:12:00.573Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "status In Progress -> Complete; checked \"At 1440px wide, a row's name and priority can be read without the eye crossing more than ~300px\"; checked \"When a task's own priority differs from its project-level priority, the page says so (tooltip or detail panel)\"; checked \"Agent tags show a human-readable name (thread or branch) rather than only the agent id\"; checked \"Keyboard focus and selection never highlight two different rows at once\"; Tree capped at 880px (name to priority ~450px max, most rows far less); differing priority gets a dotted underline, tooltip and \"Counts as X for the project\" line; agent tags read \"Claude on <branch>\" with id on hover; arrows move selection while the detail panel is open. Handoff: same PR as T-59/T-60/T-61."
+                  },
+                  {
+                    "at": "2026-10-23T03:01:41.918Z",
+                    "agent": "claude-59d579af",
+                    "text": "Moved from T-26 to T-74"
+                  }
+                ]
+              },
+              {
+                "id": "T-59",
+                "name": "Give proposals their own look, separate from agent work",
+                "status": "Complete",
+                "mscw": "Should",
+                "description": "From the web page design review (findings 2, 6, 8, 9). Pink currently means agent working, proposed, and needs-your-decision. The suggested decision button is outlined in the focus colour. The how-to hint mixes proposal help with keyboard shortcuts. The proposal card's path line wraps into the title.",
+                "acceptance": [
+                  {
+                    "text": "Pink is used only for live agent work",
+                    "done": true
+                  },
+                  {
+                    "text": "The suggested decision button is marked in its priority's colour and labelled 'suggested'",
+                    "done": true
+                  },
+                  {
+                    "text": "Decision help sits beside the Decide buttons; keyboard shortcuts are out of the always-visible hint",
+                    "done": true
+                  },
+                  {
+                    "text": "Proposal path and proposer sit on their own line under the title",
+                    "done": true
+                  }
+                ],
+                "log": [
+                  {
+                    "at": "2026-10-23T01:02:47.615Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "Proposed under T-26"
+                  },
+                  {
+                    "at": "2026-10-23T01:06:18.862Z",
+                    "text": "Proposal accepted"
+                  },
+                  {
+                    "at": "2026-10-23T01:08:53.819Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "Claimed on claude/project-thread-e0welq"
+                  },
+                  {
+                    "at": "2026-10-23T01:10:17.692Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "status In Progress -> Complete; checked \"Pink is used only for live agent work\"; checked \"The suggested decision button is marked in its priority's colour and labelled 'suggested'\"; checked \"Decision help sits beside the Decide buttons; keyboard shortcuts are out of the always-visible hint\"; checked \"Proposal path and proposer sit on their own line under the title\"; Pink kept for agent work only (decisions border now ink, saving dot indigo, proposed tag and mark dashed neutral); suggested button outlined in its priority colour with \"X suggested\" text; keyboard help behind a Shortcuts toggle. Handoff: same PR as T-58/T-60/T-61 on claude/project-thread-e0welq."
+                  },
+                  {
+                    "at": "2026-10-23T03:01:41.918Z",
+                    "agent": "claude-59d579af",
+                    "text": "Moved from T-26 to T-74"
+                  }
+                ]
+              },
+              {
+                "id": "T-60",
+                "name": "Show the plan first on a phone",
+                "status": "Complete",
+                "mscw": "Should",
+                "description": "From the web page design review (findings 4, 11). At 390px wide the first task row is ~1,650px down, below the add box, a four-line hint and the proposals. The detail sheet covers 70% of the screen with no backdrop and hides the tapped row.",
+                "acceptance": [
+                  {
+                    "text": "At 390x844 the first plan rows are visible without scrolling",
+                    "done": true
+                  },
+                  {
+                    "text": "The phone detail sheet has a backdrop and the tapped row stays visible",
+                    "done": true
+                  }
+                ],
+                "log": [
+                  {
+                    "at": "2026-10-23T01:02:52.169Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "Proposed under T-26"
+                  },
+                  {
+                    "at": "2026-10-23T01:06:18.862Z",
+                    "text": "Proposal accepted"
+                  },
+                  {
+                    "at": "2026-10-23T01:13:05.701Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "Claimed on claude/project-thread-e0welq"
+                  },
+                  {
+                    "at": "2026-10-23T01:14:52.476Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "status In Progress -> Complete; checked \"At 390x844 the first plan rows are visible without scrolling\"; checked \"The phone detail sheet has a backdrop and the tapped row stays visible\"; At 390x844 the tree starts ~700px down (was ~1,650) with eight rows on the first screen; detail sheet has a backdrop (tap closes) and scrolls the tapped row to the top. Handoff: same PR as T-58/T-59/T-61/T-64."
+                  },
+                  {
+                    "at": "2026-10-23T03:01:41.918Z",
+                    "agent": "claude-59d579af",
+                    "text": "Moved from T-26 to T-74"
+                  }
+                ]
+              },
+              {
+                "id": "T-61",
+                "name": "Readable contrast for Could and Won't labels",
+                "status": "Complete",
+                "mscw": "Should",
+                "description": "From the web page design review (finding 10). In the light theme Could (#a36a12) is 4.0:1 and Won't (#8a94a3) is 2.7:1 against the page background at 12px; WCAG AA needs 4.5:1.",
+                "acceptance": [
+                  {
+                    "text": "All priority label colours reach 4.5:1 against their background in both themes",
+                    "done": true
+                  }
+                ],
+                "log": [
+                  {
+                    "at": "2026-10-23T01:02:56.948Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "Proposed under T-26"
+                  },
+                  {
+                    "at": "2026-10-23T01:06:18.862Z",
+                    "text": "Proposal accepted"
+                  },
+                  {
+                    "at": "2026-10-23T01:08:01.396Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "Claimed"
+                  },
+                  {
+                    "at": "2026-10-23T01:08:43.766Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "status In Progress -> Complete; checked \"All priority label colours reach 4.5:1 against their background in both themes\"; Light: Should #1d7570 (4.8:1), Could #8a5a0f (5.2:1), Won't #616c7b (4.7:1); dark Won't #8a96a6 (5.8:1). Handoff: on branch claude/project-thread-e0welq, shipped in the same PR as T-58/T-59/T-60."
+                  },
+                  {
+                    "at": "2026-10-23T03:01:41.918Z",
+                    "agent": "claude-59d579af",
+                    "text": "Moved from T-26 to T-74"
+                  }
+                ]
+              },
+              {
+                "id": "T-62",
+                "name": "Logo and favicon",
+                "status": "Complete",
+                "mscw": "Could",
+                "description": "Alex asked for a logo. The design review sketched three concepts (ladder, weighted wordmark, scope box) and recommends the ladder: four bars Must to Won't in the priority colours. Sketches: mvplanner/design-review/logos.html in the project files.",
+                "acceptance": [
+                  {
+                    "text": "Alex has picked a concept",
+                    "done": true
+                  },
+                  {
+                    "text": "The web page has a favicon and the mark in its header",
+                    "done": true
+                  }
+                ],
+                "log": [
+                  {
+                    "at": "2026-10-23T01:03:02.102Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "Proposed under T-26"
+                  },
+                  {
+                    "at": "2026-10-23T01:06:18.862Z",
+                    "text": "Proposal accepted"
+                  },
+                  {
+                    "at": "2026-10-23T01:14:58.201Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "Claimed on claude/project-thread-e0welq"
+                  },
+                  {
+                    "at": "2026-10-23T01:17:36.536Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "status In Progress -> Complete; checked \"Alex has picked a concept\"; checked \"The web page has a favicon and the mark in its header\"; Alex picked concept D (critical-path tree). assets/icon.svg, favicon.svg (16px grid, lighter in dark mode), wordmark.svg; page has the favicon and header mark; README shows the wordmark. Handoff: same PR as T-58..T-64."
+                  },
+                  {
+                    "at": "2026-10-23T03:01:41.918Z",
+                    "agent": "claude-59d579af",
+                    "text": "Moved from T-26 to T-74"
+                  }
+                ]
+              },
+              {
+                "id": "T-64",
+                "name": "Focus by priority: Must, Should or Could",
+                "status": "Complete",
+                "mscw": "Should",
+                "description": "Alex asked for the Focus filter to have levels: focus on Must only, up to Should, or up to Could, so Could-only work can still be seen when wanted.",
+                "acceptance": [
+                  {
+                    "text": "The Focus control offers Must, Should and Could levels plus showing everything",
+                    "done": true
+                  },
+                  {
+                    "text": "Each level hides tasks whose project-level priority is below it",
+                    "done": true
+                  },
+                  {
+                    "text": "The chosen level is remembered in the browser",
+                    "done": true
+                  }
+                ],
+                "log": [
+                  {
+                    "at": "2026-10-23T01:11:39.978Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "Added under T-26, approved by Alex, in the \"Web UI design review\" thread"
+                  },
+                  {
+                    "at": "2026-10-23T01:12:05.517Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "Claimed on claude/project-thread-e0welq"
+                  },
+                  {
+                    "at": "2026-10-23T01:13:00.943Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "status In Progress -> Complete; checked \"The Focus control offers Must, Should and Could levels plus showing everything\"; checked \"Each level hides tasks whose project-level priority is below it\"; checked \"The chosen level is remembered in the browser\"; Focus is now Must / Should / Could / All, filtering by project-level priority; default Could; remembered in localStorage (checked by reload in Playwright). Handoff: same PR as T-58..T-61."
+                  },
+                  {
+                    "at": "2026-10-23T03:01:41.919Z",
+                    "agent": "claude-59d579af",
+                    "text": "Moved from T-26 to T-74"
+                  }
+                ]
+              },
+              {
+                "id": "T-65",
+                "name": "Priority colours on every M, S, C, W control",
+                "status": "Complete",
+                "mscw": "Should",
+                "description": "Alex: give M, S and C their distinct colours everywhere on the page for consistency: priority pickers, decision buttons, Focus levels and the ladder.",
+                "acceptance": [
+                  {
+                    "text": "Every M/S/C/W button shows its letter in its priority colour, and fills with that colour when chosen",
+                    "done": true
+                  },
+                  {
+                    "text": "Focus levels and ladder labels use the same priority colours",
+                    "done": true
+                  }
+                ],
+                "log": [
+                  {
+                    "at": "2026-10-23T02:36:52.525Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "Added under T-26, approved by Alex, in the \"Web UI design review\" thread"
+                  },
+                  {
+                    "at": "2026-10-23T02:36:57.387Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "Claimed on claude/project-thread-e0welq"
+                  },
+                  {
+                    "at": "2026-10-23T02:38:33.078Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "status In Progress -> Complete; checked \"Every M/S/C/W button shows its letter in its priority colour, and fills with that colour when chosen\"; checked \"Focus levels and ladder labels use the same priority colours\"; One --p colour per priority via [data-p], used by pickers, decision buttons, Focus levels, ladder and chips. Handoff: same PR as T-66 on claude/project-thread-e0welq."
+                  },
+                  {
+                    "at": "2026-10-23T03:01:41.919Z",
+                    "agent": "claude-59d579af",
+                    "text": "Moved from T-26 to T-74"
+                  }
+                ]
+              },
+              {
+                "id": "T-66",
+                "name": "Show how far each task is done, by priority",
+                "status": "Complete",
+                "mscw": "Should",
+                "description": "Alex: a task's mark should show to what extent it is done based on its children: done all we Must, done all we Should, done all we Could, without needing words.",
+                "acceptance": [
+                  {
+                    "text": "A task with subtasks shows a compact mark of which priority levels beneath it are fully done, in the priority colours",
+                    "done": true
+                  },
+                  {
+                    "text": "Hovering the mark says it in words, e.g. 'All Musts done; Should work remains'",
+                    "done": true
+                  },
+                  {
+                    "text": "The legend explains the mark",
+                    "done": true
+                  }
+                ],
+                "log": [
+                  {
+                    "at": "2026-10-23T02:36:52.525Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "Added under T-26, approved by Alex, in the \"Web UI design review\" thread"
+                  },
+                  {
+                    "at": "2026-10-23T02:38:38.900Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "Claimed on claude/project-thread-e0welq"
+                  },
+                  {
+                    "at": "2026-10-23T02:40:40.588Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "status In Progress -> Complete; checked \"A task with subtasks shows a compact mark of which priority levels beneath it are fully done, in the priority colours\"; checked \"Hovering the mark says it in words, e.g. 'All Musts done; Should work remains'\"; checked \"The legend explains the mark\"; Three bars (Must, Should, Could) on tasks with subtasks, filled from the do-more level (so priority is relative to parent); hover and detail panel say \"Done all we Must\" etc., per Alex's wording; legend item added. Handoff: PR with T-65 on claude/project-thread-e0welq."
+                  },
+                  {
+                    "at": "2026-10-23T03:01:41.919Z",
+                    "agent": "claude-59d579af",
+                    "text": "Moved from T-26 to T-74"
+                  }
+                ]
+              },
+              {
+                "id": "T-67",
+                "name": "Switch the logo to the M path, with MVP in priority colours",
+                "status": "Complete",
+                "mscw": "Could",
+                "description": "Alex changed his mind on the logo: use concept F (the M drawn as a path through task nodes), colour the M, V and P letters of the wordmark in the Must, Should and Could colours, and show the bold-MVP, regular-lanner wordmark in the web page header.",
+                "acceptance": [
+                  {
+                    "text": "assets icon, favicon and wordmark use the M-path mark",
+                    "done": true
+                  },
+                  {
+                    "text": "The wordmark's M, V and P are in the Must, Should and Could colours, with lanner in a regular weight",
+                    "done": true
+                  },
+                  {
+                    "text": "The web page header shows the wordmark and the favicon is the M-path mark",
+                    "done": true
+                  }
+                ],
+                "log": [
+                  {
+                    "at": "2026-10-23T02:41:44.815Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "Added under T-26, approved by Alex, in the \"Web UI design review\" thread"
+                  },
+                  {
+                    "at": "2026-10-23T02:41:51.536Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "Claimed on claude/project-thread-e0welq"
+                  },
+                  {
+                    "at": "2026-10-23T02:43:22.361Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "status In Progress -> Complete; checked \"assets icon, favicon and wordmark use the M-path mark\"; checked \"The wordmark's M, V and P are in the Must, Should and Could colours, with lanner in a regular weight\"; checked \"The web page header shows the wordmark and the favicon is the M-path mark\"; assets/icon.svg, favicon.svg (16px grid) and wordmark.svg redrawn as the M path; wordmark M/V/P in Must/Should/Could colours, lanner regular; header brand bar shows it with Live/theme on the right. Handoff: in PR #17."
+                  },
+                  {
+                    "at": "2026-10-23T03:01:41.919Z",
+                    "agent": "claude-59d579af",
+                    "text": "Moved from T-26 to T-74"
+                  }
+                ]
+              },
+              {
+                "id": "T-68",
+                "name": "Clear keyboard shortcuts list",
+                "status": "Complete",
+                "mscw": "Should",
+                "description": "Alex couldn't understand the Shortcuts text. Show it as a list of keys and what each does.",
+                "acceptance": [
+                  {
+                    "text": "The Shortcuts panel lists each key next to what it does, in plain words",
+                    "done": true
+                  }
+                ],
+                "log": [
+                  {
+                    "at": "2026-10-23T02:43:27.743Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "Added under T-26, approved by Alex, in the \"Web UI design review\" thread (said the shortcuts text was not understandable)"
+                  },
+                  {
+                    "at": "2026-10-23T02:44:23.401Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "Claimed on claude/project-thread-e0welq"
+                  },
+                  {
+                    "at": "2026-10-23T02:44:57.916Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "status In Progress -> Complete; checked \"The Shortcuts panel lists each key next to what it does, in plain words\"; \"Keyboard shortcuts\" toggle now opens a popover with each key (as a keycap) beside a plain description; checked at 1440 and 390 wide. Handoff: in PR #17."
+                  },
+                  {
+                    "at": "2026-10-23T03:01:41.919Z",
+                    "agent": "claude-59d579af",
+                    "text": "Moved from T-26 to T-74"
+                  }
+                ]
+              },
+              {
+                "id": "T-69",
+                "name": "Focus label reads as a label, not a button",
+                "status": "Complete",
+                "mscw": "Should",
+                "description": "The word 'Focus' sits in the same box as the level buttons, so it looks clickable. Show it as plain text beside them.",
+                "acceptance": [
+                  {
+                    "text": "'Focus' is plain text with no button styling, and the Must/Should/Could/All buttons still look like buttons",
+                    "done": true
+                  }
+                ],
+                "log": [
+                  {
+                    "at": "2026-10-23T02:50:16.440Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "Added under T-26, approved by Alex, in the \"Web UI design review\" thread (said 'Focus' looks like a button)"
+                  },
+                  {
+                    "at": "2026-10-23T02:50:22.406Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "Claimed on claude/project-thread-e0welq"
+                  },
+                  {
+                    "at": "2026-10-23T02:51:27.857Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "status In Progress -> Complete; checked \"'Focus' is plain text with no button styling, and the Must/Should/Could/All buttons still look like buttons\"; 'Focus' moved out of the bordered group into a plain text label (aria-labelledby on the group); checked at 1440 and 390 wide."
+                  },
+                  {
+                    "at": "2026-10-23T03:01:41.919Z",
+                    "agent": "claude-59d579af",
+                    "text": "Moved from T-26 to T-74"
+                  }
+                ]
+              },
+              {
+                "id": "T-70",
+                "name": "Grid-path logo",
+                "status": "Complete",
+                "mscw": "Could",
+                "description": "Replace the M-path logo with Alex's design R: a white tile, the critical path stepping down through a 3x3 grid of tasks as a diagonal M in Must indigo, and skipped tasks as smaller Should teal and Could amber dots on faint links to their parents.",
+                "acceptance": [
+                  {
+                    "text": "assets/icon.svg, assets/favicon.svg and assets/wordmark.svg use design R",
+                    "done": true
+                  },
+                  {
+                    "text": "The page header icon and the favicon use design R and read at 16px",
+                    "done": true
+                  }
+                ],
+                "log": [
+                  {
+                    "at": "2026-10-23T02:51:32.489Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "Added under T-26, approved by Alex, in the \"Web UI design review\" thread (sketched the grid-path logo and picked variant R)"
+                  },
+                  {
+                    "at": "2026-10-23T02:51:38.269Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "Claimed on claude/project-thread-e0welq"
+                  },
+                  {
+                    "at": "2026-10-23T02:52:57.389Z",
+                    "agent": "claude-9cc89b7b",
+                    "text": "status In Progress -> Complete; checked \"assets/icon.svg, assets/favicon.svg and assets/wordmark.svg use design R\"; checked \"The page header icon and the favicon use design R and read at 16px\"; icon, favicon (16px grid, links dropped), wordmark, page header and inlined favicon now use design R; checked at 96/32/16px, in light and dark tabs and page headers."
+                  },
+                  {
+                    "at": "2026-10-23T03:01:41.919Z",
+                    "agent": "claude-59d579af",
+                    "text": "Moved from T-26 to T-74"
+                  }
+                ]
+              }
+            ]
           }
         ],
         "log": [

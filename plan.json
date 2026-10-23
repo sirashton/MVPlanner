@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 71,
+  "revision": 72,
   "nextId": 55,
   "root": {
     "id": "T-1",
@@ -927,14 +927,17 @@
             "id": "T-54",
             "name": "Questions on tasks",
             "status": "Not Started",
-            "mscw": "Should",
-            "proposed": true,
+            "mscw": "Could",
             "description": "An agent can ask a question on a task; the agent that did it sees it on its next plan call, and others see it in briefings. Unanswered ones show in the panel and page.",
             "log": [
               {
                 "at": "2026-10-23T00:33:04.991Z",
                 "agent": "claude-5f5428c4",
                 "text": "Proposed under T-50"
+              },
+              {
+                "at": "2026-10-23T00:49:54.564Z",
+                "text": "Proposal accepted"
               }
             ]
           }

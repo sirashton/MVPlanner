@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 93,
-  "nextId": 60,
+  "revision": 94,
+  "nextId": 61,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -828,6 +828,31 @@
             "log": [
               {
                 "at": "2026-10-23T01:02:47.615Z",
+                "agent": "claude-9cc89b7b",
+                "text": "Proposed under T-26"
+              }
+            ]
+          },
+          {
+            "id": "T-60",
+            "name": "Show the plan first on a phone",
+            "status": "Not Started",
+            "mscw": "Should",
+            "proposed": true,
+            "description": "From the web page design review (findings 4, 11). At 390px wide the first task row is ~1,650px down, below the add box, a four-line hint and the proposals. The detail sheet covers 70% of the screen with no backdrop and hides the tapped row.",
+            "acceptance": [
+              {
+                "text": "At 390x844 the first plan rows are visible without scrolling",
+                "done": false
+              },
+              {
+                "text": "The phone detail sheet has a backdrop and the tapped row stays visible",
+                "done": false
+              }
+            ],
+            "log": [
+              {
+                "at": "2026-10-23T01:02:52.169Z",
                 "agent": "claude-9cc89b7b",
                 "text": "Proposed under T-26"
               }

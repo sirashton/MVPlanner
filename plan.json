@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 111,
+  "revision": 112,
   "nextId": 65,
   "root": {
     "id": "T-1",
@@ -890,17 +890,17 @@
           {
             "id": "T-60",
             "name": "Show the plan first on a phone",
-            "status": "In Progress",
+            "status": "Complete",
             "mscw": "Should",
             "description": "From the web page design review (findings 4, 11). At 390px wide the first task row is ~1,650px down, below the add box, a four-line hint and the proposals. The detail sheet covers 70% of the screen with no backdrop and hides the tapped row.",
             "acceptance": [
               {
                 "text": "At 390x844 the first plan rows are visible without scrolling",
-                "done": false
+                "done": true
               },
               {
                 "text": "The phone detail sheet has a backdrop and the tapped row stays visible",
-                "done": false
+                "done": true
               }
             ],
             "log": [
@@ -917,13 +917,13 @@
                 "at": "2026-10-23T01:13:05.701Z",
                 "agent": "claude-9cc89b7b",
                 "text": "Claimed on claude/project-thread-e0welq"
+              },
+              {
+                "at": "2026-10-23T01:14:52.476Z",
+                "agent": "claude-9cc89b7b",
+                "text": "status In Progress -> Complete; checked \"At 390x844 the first plan rows are visible without scrolling\"; checked \"The phone detail sheet has a backdrop and the tapped row stays visible\"; At 390x844 the tree starts ~700px down (was ~1,650) with eight rows on the first screen; detail sheet has a backdrop (tap closes) and scrolls the tapped row to the top. Handoff: same PR as T-58/T-59/T-61/T-64."
               }
-            ],
-            "claimedBy": {
-              "agent": "claude-9cc89b7b",
-              "at": "2026-10-23T01:13:05.701Z",
-              "branch": "claude/project-thread-e0welq"
-            }
+            ]
           },
           {
             "id": "T-61",

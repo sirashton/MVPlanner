@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 72,
+  "revision": 73,
   "nextId": 55,
   "root": {
     "id": "T-1",
@@ -215,7 +215,7 @@
           {
             "id": "T-44",
             "name": "Distinct agent ids for sessions started from inside another session",
-            "status": "Not Started",
+            "status": "In Progress",
             "mscw": "Must",
             "description": "A claude process launched from inside another Claude Code session inherits its session id, so both get the same agent id and the second can re-claim the first's task. Seen in the T-19 dry run. Add something unique per process, or detect the inherited id.",
             "log": [
@@ -227,8 +227,18 @@
               {
                 "at": "2026-10-23T00:14:39.118Z",
                 "text": "Proposal accepted"
+              },
+              {
+                "at": "2026-10-23T00:50:37.253Z",
+                "agent": "claude-5f5428c4",
+                "text": "Claimed on claude/project-thread-mr24nb"
               }
-            ]
+            ],
+            "claimedBy": {
+              "agent": "claude-5f5428c4",
+              "at": "2026-10-23T00:50:37.253Z",
+              "branch": "claude/project-thread-mr24nb"
+            }
           },
           {
             "id": "T-45",

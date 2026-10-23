@@ -9,7 +9,7 @@ import { claimTask, newPlan, proposeTask } from '../src/core/index.ts';
 import { createServer } from '../src/mcp.ts';
 import { FileStore } from '../src/storage/stores.ts';
 
-test('task_update to Complete fails without a handoff note', async () => {
+test('task_update to Complete fails without a handoff note or a beyond-the-criteria answer', async () => {
     const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'mvplanner-mcp-'));
     const store = new FileStore(path.join(dir, 'plan.json'));
     const plan = newPlan('Tools');
@@ -22,20 +22,27 @@ test('task_update to Complete fails without a handoff note', async () => {
     await createServer(dir, Promise.resolve(store)).connect(serverSide);
     const client = new Client({ name: 'test', version: '0' });
     await client.connect(clientSide);
-    const complete = (note?: string) => client.callTool({ name: 'task_update', arguments: { id: 'T-2', agent: 'agent-a', status: 'Complete', ...(note === undefined ? {} : { note }) } }) as Promise<{ isError?: boolean; content: { text: string }[] }>;
+    const complete = (note?: string, beyond: string | null = 'nothing') => client.callTool({ name: 'task_update', arguments: {
+        id: 'T-2', agent: 'agent-a', status: 'Complete', ...(note === undefined ? {} : { note }), ...(beyond === null ? {} : { beyond_criteria: beyond }),
+    } }) as Promise<{ isError?: boolean; content: { text: string }[] }>;
 
     for (const note of [undefined, '  ']) {
         const refused = await complete(note);
         assert.equal(refused.isError, true);
         assert.match(refused.content[0].text, /needs a handoff note/);
     }
+    for (const beyond of [null, ' ']) {
+        const refused = await complete('Added the work.', beyond);
+        assert.equal(refused.isError, true);
+        assert.match(refused.content[0].text, /needs beyond_criteria/);
+    }
     assert.equal((await store.read()).root.subtasks![0].status, 'In Progress');
 
-    const done = await complete('Added the work. Left out retries (T-9). See src/work.ts.');
+    const done = await complete('Added the work. Left out retries (T-9). See src/work.ts.', 'a retry button, accepted as T-10');
     assert.equal(done.isError, undefined);
     const task = (await store.read()).root.subtasks![0];
     assert.equal(task.status, 'Complete');
-    assert.match(task.log!.at(-1)!.text, /Left out retries \(T-9\)/);
+    assert.match(task.log!.at(-1)!.text, /Left out retries \(T-9\)[^]*Beyond the criteria: a retry button, accepted as T-10/);
     await client.close();
 });
 

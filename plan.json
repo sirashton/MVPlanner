@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 90,
+  "revision": 91,
   "nextId": 58,
   "root": {
     "id": "T-1",
@@ -1086,8 +1086,7 @@
             "id": "T-57",
             "name": "Show the claim's session link in the panel and web page",
             "status": "Not Started",
-            "mscw": "Could",
-            "proposed": true,
+            "mscw": "Must",
             "description": "Claims now carry a session link (T-53) and the view data includes it, but the panel and web page don't draw it yet. Make the claimed-by label link to the session when it is a URL.",
             "acceptance": [
               {
@@ -1100,6 +1099,10 @@
                 "at": "2026-10-23T00:59:00.774Z",
                 "agent": "claude-167688b6",
                 "text": "Proposed under T-50"
+              },
+              {
+                "at": "2026-10-23T00:59:56.523Z",
+                "text": "Proposal accepted"
               }
             ]
           }

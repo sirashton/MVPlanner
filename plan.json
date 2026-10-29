@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 201,
-  "nextId": 90,
+  "revision": 202,
+  "nextId": 91,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -2426,6 +2426,36 @@
             "links": [
               "https://github.com/sirashton/MVPlanner/pull/30"
             ]
+          }
+        ]
+      },
+      {
+        "id": "T-90",
+        "name": "An orchestrating agent can run the plan for a swarm",
+        "status": "Not Started",
+        "mscw": "Could",
+        "proposed": true,
+        "description": "Need: a lead/orchestrator agent can pick ready work, brief builders, follow progress and route proposals to the human without a person driving each step. Human-only stays human-only: accepting or declining proposals, task_add/plan_edit without approval, changing priorities. Research: OpenRig (github.com/mvschwarz/openrig) runs Claude Code and Codex seats in tmux with a queue and plan-of-record files but no priorities, claims or proposal review, which is the gap MVPlanner fills. Without it: agents still use MVPlanner one session at a time, as now; works, just more hand-driving.",
+        "serves": "\"One prioritised plan that humans and agent swarms work from\": lets a lead agent (in OpenRig, Claude Code Agent Teams or similar) hand out plan tasks to a swarm, while humans still set priorities and accept proposals.",
+        "acceptance": [
+          {
+            "text": "A lead agent can get a batch of ready tasks it can hand out in parallel, and see when each finishes or a proposal is decided, without polling the whole plan",
+            "done": false
+          },
+          {
+            "text": "Nothing an orchestrator can call accepts proposals or changes priorities without a human",
+            "done": false
+          },
+          {
+            "text": "A worked example runs MVPlanner in one outside orchestrator (OpenRig first)",
+            "done": false
+          }
+        ],
+        "log": [
+          {
+            "at": "2026-10-29T21:30:44.699Z",
+            "agent": "claude-05e9d2c8",
+            "text": "Proposed under T-1"
           }
         ]
       }

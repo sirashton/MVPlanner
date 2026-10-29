@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 207,
-  "nextId": 95,
+  "revision": 208,
+  "nextId": 96,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -2576,6 +2576,32 @@
                 "text": "Proposed under T-90"
               }
             ]
+          }
+        ]
+      },
+      {
+        "id": "T-95",
+        "name": "Get listed in Anthropic's plugin directory",
+        "status": "Not Started",
+        "mscw": "Should",
+        "proposed": true,
+        "description": "Need: Claude Code users who don't know the repo can find and install MVPlanner from /plugin directory and claude.com/marketplace, so it gets used beyond our own projects. Route: submit via the developer portal at claude.ai/directory/manage (paid plan). The built-in claude-plugins-official marketplace takes no submissions. Checklist: https://claude.com/docs/plugins/pre-submission-checklist. The listing will be Claude Code only, because bin/ and the local MCP server can't install on claude.ai or Cowork.",
+        "serves": "MVPlanner's goal of being the plan every agent swarm works from: that needs people outside this project to find and install it.",
+        "acceptance": [
+          {
+            "text": "The portal's Validate shows no Blocking findings",
+            "done": false
+          },
+          {
+            "text": "MVPlanner is submitted, and the reviewer's outcome is recorded here",
+            "done": false
+          }
+        ],
+        "log": [
+          {
+            "at": "2026-10-29T22:07:26.352Z",
+            "agent": "claude-4562d347-p106",
+            "text": "Proposed under T-1"
           }
         ]
       }

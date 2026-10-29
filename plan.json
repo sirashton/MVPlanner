@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 213,
+  "revision": 214,
   "nextId": 101,
   "root": {
     "id": "T-1",
@@ -2602,6 +2602,11 @@
             "at": "2026-10-29T22:07:26.352Z",
             "agent": "claude-4562d347-p106",
             "text": "Proposed under T-1"
+          },
+          {
+            "at": "2026-10-29T22:08:11.300Z",
+            "agent": "claude-4562d347-p106",
+            "text": "need updated"
           }
         ],
         "subtasks": [
@@ -2743,7 +2748,8 @@
               }
             ]
           }
-        ]
+        ],
+        "need": "Claude Code users who don't know the repo can find and install MVPlanner from /plugin directory and claude.com/marketplace, so it gets used beyond our own projects"
       }
     ]
   }

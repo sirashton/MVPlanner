@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 194,
-  "nextId": 86,
+  "revision": 195,
+  "nextId": 87,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -862,6 +862,44 @@
                 ],
                 "links": [
                   "https://github.com/sirashton/MVPlanner/pull/5"
+                ]
+              },
+              {
+                "id": "T-86",
+                "name": "The plan page is always there, for every project on this PC",
+                "status": "Not Started",
+                "mscw": "Should",
+                "proposed": true,
+                "description": "One background page for all projects, started by the plugin. The SessionStart hook checks whether the page is running on 127.0.0.1:4747 and, if not, starts it detached from the installed plugin (skipped in cloud sessions, which have no browser). Each repo with a plan registers itself when a session opens there, and the page lets you switch between them. Replaces the npm-linked clone at C:\\projects\\MVPlanner. Overlaps T-35: /plan-web would just print the link and start the page if it stopped.",
+                "serves": "\"Browser page for reviewing the plan\": today a human has to ask an agent to start mvplan serve before they can review, one port per repo, from a clone that doesn't update with the plugin",
+                "acceptance": [
+                  {
+                    "text": "After opening any repo with a plan in Claude Code on a PC, http://127.0.0.1:4747 shows that plan without anyone asking an agent to start it",
+                    "done": false
+                  },
+                  {
+                    "text": "One server and one port serve every repo opened on this PC, with a way to switch between them",
+                    "done": false
+                  },
+                  {
+                    "text": "The page runs from the installed plugin, and after a plugin update it restarts on the new version by itself",
+                    "done": false
+                  },
+                  {
+                    "text": "Cloud sessions and repos without a plan don't start it",
+                    "done": false
+                  },
+                  {
+                    "text": "A setting turns the auto-start off",
+                    "done": false
+                  }
+                ],
+                "log": [
+                  {
+                    "at": "2026-10-29T21:27:56.994Z",
+                    "agent": "claude-c57cbc36",
+                    "text": "Proposed under T-30"
+                  }
                 ]
               }
             ],

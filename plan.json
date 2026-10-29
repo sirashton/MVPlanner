@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 195,
-  "nextId": 87,
+  "revision": 196,
+  "nextId": 88,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -547,6 +547,40 @@
             ],
             "links": [
               "https://github.com/sirashton/MVPlanner/pull/23"
+            ]
+          },
+          {
+            "id": "T-87",
+            "name": "Say when MVPlanner has updated and what changed",
+            "status": "Not Started",
+            "mscw": "Should",
+            "proposed": true,
+            "description": "Keep plugin.json unversioned so every merge still reaches users, but bump package.json and a CHANGELOG heading for user-visible changes. The briefing compares the installed version with the last one seen on this machine (kept in the plugin's data folder) and, when it changed, adds one line plus the changelog entries since. The panel and page footer show the version.",
+            "serves": "The plugin is how agents get MVPlanner's rules; updates land silently mid-project (every merge to main is a release), so neither agents nor the human know the rules changed",
+            "acceptance": [
+              {
+                "text": "The first session after an update says 'MVPlanner updated to X' with the changelog entries since the last version seen on that machine",
+                "done": false
+              },
+              {
+                "text": "Later sessions don't repeat it",
+                "done": false
+              },
+              {
+                "text": "The panel and web page show the running version",
+                "done": false
+              },
+              {
+                "text": "README says how to release: bump the version and add a changelog heading",
+                "done": false
+              }
+            ],
+            "log": [
+              {
+                "at": "2026-10-29T21:28:01.251Z",
+                "agent": "claude-c57cbc36",
+                "text": "Proposed under T-14"
+              }
             ]
           }
         ]

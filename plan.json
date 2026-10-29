@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 196,
-  "nextId": 88,
+  "revision": 197,
+  "nextId": 89,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -578,6 +578,35 @@
             "log": [
               {
                 "at": "2026-10-29T21:28:01.251Z",
+                "agent": "claude-c57cbc36",
+                "text": "Proposed under T-14"
+              }
+            ]
+          },
+          {
+            "id": "T-88",
+            "name": "mvplan doctor: check a PC or cloud environment is set up",
+            "status": "Not Started",
+            "mscw": "Could",
+            "proposed": true,
+            "serves": "Getting the plugin working on a new PC, project or cloud environment: says what's missing instead of agents failing later",
+            "acceptance": [
+              {
+                "text": "mvplan doctor reports Node version, plugin enabled, marketplace auto-update on, plan branch reachable, push access to it, repo files from mvplan setup present, and page running",
+                "done": false
+              },
+              {
+                "text": "Each failed check says the one command or setting that fixes it",
+                "done": false
+              },
+              {
+                "text": "Works in a cloud session",
+                "done": false
+              }
+            ],
+            "log": [
+              {
+                "at": "2026-10-29T21:28:04.960Z",
                 "agent": "claude-c57cbc36",
                 "text": "Proposed under T-14"
               }

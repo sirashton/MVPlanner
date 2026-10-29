@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 212,
-  "nextId": 100,
+  "revision": 213,
+  "nextId": 101,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -2712,6 +2712,32 @@
             "log": [
               {
                 "at": "2026-10-29T22:07:59.347Z",
+                "agent": "claude-4562d347-p106",
+                "text": "Proposed under T-95"
+              }
+            ]
+          },
+          {
+            "id": "T-100",
+            "name": "Demo video and launch posts",
+            "status": "Not Started",
+            "mscw": "Could",
+            "proposed": true,
+            "description": "A 30 to 60 second video: agents claim tasks while the plan page updates live, plus a before-and-after on feature drift (the keyboard shortcuts story). Put it in the README and post it to X, r/ClaudeAI and Show HN, and submit it to the awesome Claude Code lists. Alex approves any public post first.",
+            "serves": "\"so it gets used beyond our own projects\": a listing gets people to find it, and the demo gets them to install it.",
+            "acceptance": [
+              {
+                "text": "Demo video in the README",
+                "done": false
+              },
+              {
+                "text": "Posts drafted for Alex to approve",
+                "done": false
+              }
+            ],
+            "log": [
+              {
+                "at": "2026-10-29T22:08:02.004Z",
                 "agent": "claude-4562d347-p106",
                 "text": "Proposed under T-95"
               }

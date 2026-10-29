@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 197,
-  "nextId": 89,
+  "revision": 198,
+  "nextId": 90,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -607,6 +607,39 @@
             "log": [
               {
                 "at": "2026-10-29T21:28:04.960Z",
+                "agent": "claude-c57cbc36",
+                "text": "Proposed under T-14"
+              }
+            ]
+          },
+          {
+            "id": "T-89",
+            "name": "A stable release channel, separate from main",
+            "status": "Not Started",
+            "mscw": "Could",
+            "proposed": true,
+            "serves": "Sharing the plugin with other projects and people: today a broken merge to main reaches every PC and cloud environment at once, including the PR check other repos clone",
+            "acceptance": [
+              {
+                "text": "Other repos and people install from a stable branch or tag that moves only when a release is cut",
+                "done": false
+              },
+              {
+                "text": "This repo keeps tracking main to try changes first",
+                "done": false
+              },
+              {
+                "text": "The PR check workflow written by mvplan setup uses the stable channel",
+                "done": false
+              },
+              {
+                "text": "README documents how to cut a release",
+                "done": false
+              }
+            ],
+            "log": [
+              {
+                "at": "2026-10-29T21:28:08.129Z",
                 "agent": "claude-c57cbc36",
                 "text": "Proposed under T-14"
               }

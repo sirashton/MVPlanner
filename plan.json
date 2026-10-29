@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 199,
+  "revision": 200,
   "nextId": 90,
   "root": {
     "id": "T-1",
@@ -677,19 +677,18 @@
           {
             "id": "T-24",
             "name": "Fail feature PRs that touch plan.json or carry bad markers",
-            "status": "In Progress",
+            "status": "Complete",
             "mscw": "Must",
-            "claimedBy": {
-              "agent": "claude-4562d347",
-              "at": "2026-10-29T21:28:26.443Z",
-              "branch": "main",
-              "session": "https://claude.ai/code/session_01B7etsWS6rkDUrBRyiLEmSg"
-            },
             "log": [
               {
                 "at": "2026-10-29T21:28:26.446Z",
                 "agent": "claude-4562d347",
                 "text": "Claimed on main"
+              },
+              {
+                "at": "2026-10-29T21:29:49.458Z",
+                "agent": "claude-4562d347",
+                "text": "status In Progress -> Complete; check-pr fails a PR that changes plan.json at the repo top (files come from `git diff HEAD^1 HEAD` on GitHub's merge commit, so workflows need fetch-depth: 2; without it only the task is checked). Markers were already checked here by CI's `mvplan check`; the workflow `mvplan setup` writes now runs it too, but repos that already have mvplanner.yml keep their old copy until re-created. Commit 4d18fc1 on claude/project-thread-kovta4.. Beyond the criteria: nothing"
               }
             ]
           }

@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 206,
+  "revision": 207,
   "nextId": 95,
   "root": {
     "id": "T-1",
@@ -2309,13 +2309,13 @@
           {
             "id": "T-83",
             "name": "Scope review flags additions no parent need explains",
-            "status": "In Progress",
+            "status": "Complete",
             "mscw": "Should",
             "description": "The scope reviewer lists user-visible additions in a diff (new key handlers, controls, settings) and matches each to a criterion or accepted proposal. It runs as a required step before a PR opens. Without it, drift is caught only if the building agent reports it honestly.",
             "acceptance": [
               {
                 "text": "Run on PR #5's diff, the reviewer flags the keyboard shortcuts",
-                "done": false
+                "done": true
               }
             ],
             "log": [
@@ -2332,14 +2332,16 @@
                 "at": "2026-10-29T21:29:51.987Z",
                 "agent": "claude-4562d347",
                 "text": "Claimed on claude/project-thread-kovta4"
+              },
+              {
+                "at": "2026-10-29T21:32:11.204Z",
+                "agent": "claude-4562d347",
+                "text": "status In Progress -> Complete; checked \"Run on PR #5's diff, the reviewer flags the keyboard shortcuts\"; linked https://github.com/sirashton/MVPlanner/pull/31; scope-reviewer.md now lists every user-visible addition and matches it to a criterion, accepted proposal or the task description (a parent need alone doesn't count); unexplained = not ready. The next skill (step 5) and briefing rule 5 (src/format.ts) require it before a PR opens. It's still an instruction, not a hook. Tested on PR #5's diff: it flagged the keyboard shortcuts plus 6 others, and found that the task detail pane (T-34) was already built in PR #5 without a claim.. Beyond the criteria: nothing"
               }
             ],
-            "claimedBy": {
-              "agent": "claude-4562d347",
-              "at": "2026-10-29T21:29:51.987Z",
-              "branch": "claude/project-thread-kovta4",
-              "session": "https://claude.ai/code/session_01B7etsWS6rkDUrBRyiLEmSg"
-            }
+            "links": [
+              "https://github.com/sirashton/MVPlanner/pull/31"
+            ]
           },
           {
             "id": "T-84",

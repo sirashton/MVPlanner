@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 211,
-  "nextId": 99,
+  "revision": 212,
+  "nextId": 100,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -2682,6 +2682,36 @@
             "log": [
               {
                 "at": "2026-10-29T22:07:56.435Z",
+                "agent": "claude-4562d347-p106",
+                "text": "Proposed under T-95"
+              }
+            ]
+          },
+          {
+            "id": "T-99",
+            "name": "Version numbers on each release",
+            "status": "Not Started",
+            "mscw": "Should",
+            "proposed": true,
+            "description": "Today every merge to main is a release, versioned by commit SHA. Directory releases are reviewed one version at a time, so a version in plugin.json, raised per release, with a CHANGELOG entry, keeps the directory copy from lagging or being resubmitted on every merge. Overlaps the update-notice and stable-channel proposals (T-87, T-89): merge with those if accepted.",
+            "serves": "\"can find and install MVPlanner from the directory\": installs from the directory get clear, reviewable releases.",
+            "acceptance": [
+              {
+                "text": "plugin.json has a version, raised by each release",
+                "done": false
+              },
+              {
+                "text": "CHANGELOG.md has an entry per version",
+                "done": false
+              },
+              {
+                "text": "The README says how a release is cut",
+                "done": false
+              }
+            ],
+            "log": [
+              {
+                "at": "2026-10-29T22:07:59.347Z",
                 "agent": "claude-4562d347-p106",
                 "text": "Proposed under T-95"
               }

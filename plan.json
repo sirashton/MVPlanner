@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 208,
-  "nextId": 96,
+  "revision": 209,
+  "nextId": 97,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -2602,6 +2602,34 @@
             "at": "2026-10-29T22:07:26.352Z",
             "agent": "claude-4562d347-p106",
             "text": "Proposed under T-1"
+          }
+        ],
+        "subtasks": [
+          {
+            "id": "T-96",
+            "name": "README and licence inside the plugin folder",
+            "status": "Not Started",
+            "mscw": "Must",
+            "proposed": true,
+            "description": "The portal only reads plugin/. It blocks submission without a README of 40+ words and a LICENSE there. The README is also the listing's description, and the security scan expects it to disclose everything the plugin runs, sends or fetches (git fetch and push of the plan branch, the local web server).",
+            "serves": "\"can find and install MVPlanner from the directory\": without this the portal blocks the submission outright.",
+            "acceptance": [
+              {
+                "text": "plugin/README.md (40+ words outside code blocks) explains what it does and discloses what it runs, sends and fetches",
+                "done": false
+              },
+              {
+                "text": "plugin/ has a LICENSE file, or plugin.json sets license",
+                "done": false
+              }
+            ],
+            "log": [
+              {
+                "at": "2026-10-29T22:07:51.003Z",
+                "agent": "claude-4562d347-p106",
+                "text": "Proposed under T-95"
+              }
+            ]
           }
         ]
       }

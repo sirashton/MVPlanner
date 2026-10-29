@@ -32,13 +32,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: The PR names a claimed or complete MVPlanner task
-        run: |
-          git clone --depth 1 https://github.com/sirashton/MVPlanner "$RUNNER_TEMP/mvplanner"
-          node "$RUNNER_TEMP/mvplanner/plugin/dist/cli.js" check-pr
+      - run: git clone --depth 1 https://github.com/sirashton/MVPlanner "$RUNNER_TEMP/mvplanner"
+      - name: The PR names a claimed or complete MVPlanner task and leaves plan.json alone
+        run: node "$RUNNER_TEMP/mvplanner/plugin/dist/cli.js" check-pr
+      - name: Every MVP() and TODO() marker names an open task
+        run: node "$RUNNER_TEMP/mvplanner/plugin/dist/cli.js" check
 `;
 
 export async function writeRepoSetup(root: string): Promise<string[]> {

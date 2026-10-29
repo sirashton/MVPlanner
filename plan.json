@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 198,
+  "revision": 199,
   "nextId": 90,
   "root": {
     "id": "T-1",
@@ -677,8 +677,21 @@
           {
             "id": "T-24",
             "name": "Fail feature PRs that touch plan.json or carry bad markers",
-            "status": "Not Started",
-            "mscw": "Must"
+            "status": "In Progress",
+            "mscw": "Must",
+            "claimedBy": {
+              "agent": "claude-4562d347",
+              "at": "2026-10-29T21:28:26.443Z",
+              "branch": "main",
+              "session": "https://claude.ai/code/session_01B7etsWS6rkDUrBRyiLEmSg"
+            },
+            "log": [
+              {
+                "at": "2026-10-29T21:28:26.446Z",
+                "agent": "claude-4562d347",
+                "text": "Claimed on main"
+              }
+            ]
           }
         ]
       },

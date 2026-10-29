@@ -157,7 +157,7 @@ export function briefing(plan: Plan, agent: string, where: string): string {
         '2. Read and change the plan only through the MVPlanner tools (plan_overview, plan_next, task_get, task_claim, task_release, task_update, task_propose, task_defer, plan_check; task_add and plan_edit only when a human has approved the change in this conversation).',
         '3. Claim one task (task_claim) before editing code, and work only on that task. Build only what its acceptance criteria name.',
         '4. Anything else a person would notice (a shortcut, setting, button or mode) is new work, however small: propose it with task_propose, saying which part of the parent\'s need it serves and the priority you suggest (Must included), and build it only once a human accepts it. Calling something a Must? Say what would happen without it; if it would still work, just not as nicely, it is not a Must. Want to keep something minimal (p3g10: pi is 3, gravity is 10)? Use task_defer and leave MVP(<id>) or TODO(<id>) in the code.',
-        '5. Before you finish, update your task with task_update: status, checked acceptance criteria, a short note, and what you built beyond the criteria (with proposal ids), or "nothing".',
+        '5. Before you open a PR, run the scope-reviewer agent on your change, and propose or take out every addition it says nothing explains. Before you finish, update your task with task_update: status, checked acceptance criteria, a short note, and what you built beyond the criteria (with proposal ids), or "nothing".',
         '6. If the tools cannot find the plan, stop and report it. Do not create a plan file.',
         '',
     ];

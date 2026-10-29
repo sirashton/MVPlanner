@@ -6,14 +6,14 @@ import {
     PlanError, checkMarkers, checkPullRequest, claimTask, decideProposal, deferTask, getTask, migrateV1, nextTasks, newPlan, parentsWithoutNeed, requireServes,
     applyEdits, moveTask, parsePlan, proposeTask, releaseTask, removeTask, serializePlan, taskPath, updateTask, validatePlan, MSCW, STATUSES,
 } from './core/index.ts';
-import type { Mscw, Plan, Status } from './core/index.ts';
+import type { Mscw, Plan, PullRequestInfo, Status } from './core/index.ts';
 import { renderNeedless, renderNext, renderTask, renderTree } from './format.ts';
 import { scanRepo } from './scan.ts';
 import { openInBrowser, startServer } from './serve.ts';
 import { writeRepoSetup } from './setup.ts';
 import { currentSession } from './session.ts';
 import { buildView } from './view.ts';
-import { currentBranch, repoTopLevel } from './storage/git.ts';
+import { currentBranch, git, repoTopLevel } from './storage/git.ts';
 import { FileStore, GitBranchStore, openStore } from './storage/stores.ts';
 
 const HELP = `mvplan: work with the live MVPlanner plan
@@ -24,8 +24,9 @@ Reading
   mvplan next [--agent A]           Next tasks on the critical path
   mvplan get <id>                   One task in full
   mvplan check                      Validate the plan and the MVP()/TODO() markers in this repo
-  mvplan check-pr [--title T] [--branch B] [--body D]
+  mvplan check-pr [--title T] [--branch B] [--body D] [--file F]...
                                     Fail unless the pull request names a claimed or complete task
+                                    and leaves plan.json alone
                                     (reads the GitHub Actions event when the options are left out)
   mvplan view [--no-markers]        The review view as JSON, for the panel and the web UI
   mvplan serve [--port N] [--no-open]   The interactive plan page on localhost
@@ -75,6 +76,13 @@ function asMscw(value: string | undefined): Mscw | undefined {
 async function readPlanFile(file: string): Promise<Plan> {
     const value = JSON.parse(await fs.readFile(file, 'utf-8'));
     return value.version === 2 ? parsePlan(JSON.stringify(value)) : migrateV1(value);
+}
+
+// In a pull_request run, actions/checkout checks out GitHub's merge commit, whose first parent is the base branch.
+// It needs fetch-depth: 2. Without that parent the files are unknown and only the task is checked.
+async function pullRequestFiles(cwd: string): Promise<string[] | undefined> {
+    const result = await git(cwd, ['diff', '--name-only', 'HEAD^1', 'HEAD']);
+    return result.code === 0 ? result.stdout.split('\n').filter(Boolean) : undefined;
 }
 
 export async function main(argv: string[], cwd = process.cwd()): Promise<number> {
@@ -215,7 +223,7 @@ export async function main(argv: string[], cwd = process.cwd()): Promise<number>
             return 0;
         }
         case 'check-pr': {
-            let pr = { title: values.title, branch: values.branch, body: values.body };
+            let pr: PullRequestInfo = { title: values.title, branch: values.branch, body: values.body, files: values.file };
             if (!pr.title && !pr.branch && !pr.body && process.env.GITHUB_EVENT_PATH) {
                 const event = JSON.parse(await fs.readFile(process.env.GITHUB_EVENT_PATH, 'utf-8')) as {
                     pull_request?: { title?: string; body?: string | null; head?: { ref?: string } };
@@ -224,7 +232,12 @@ export async function main(argv: string[], cwd = process.cwd()): Promise<number>
                     out('Not a pull request; nothing to check.');
                     return 0;
                 }
-                pr = { title: event.pull_request.title, branch: event.pull_request.head?.ref, body: event.pull_request.body ?? undefined };
+                pr = {
+                    title: event.pull_request.title,
+                    branch: event.pull_request.head?.ref,
+                    body: event.pull_request.body ?? undefined,
+                    files: await pullRequestFiles(cwd),
+                };
             }
             const { ok, message } = checkPullRequest(await store.read({ fresh: true }), pr);
             out(message);

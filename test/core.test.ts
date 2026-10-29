@@ -284,6 +284,10 @@ test('a pull request must name a claimed or complete task', () => {
     assert.equal(unclaimed.ok, false);
     assert.match(unclaimed.message, /T-5 .* is not claimed/);
     assert.match(unclaimed.message, /T-999 is not in the plan/);
+    assert.equal(checkPullRequest(plan, { title: 'Add sorting (T-4)', files: ['src/sort.ts', 'docs/plan.json'] }).ok, true);
+    const touched = checkPullRequest(plan, { title: 'Add sorting (T-4)', files: ['src/sort.ts', 'plan.json'] });
+    assert.equal(touched.ok, false);
+    assert.match(touched.message, /changes plan\.json/);
 });
 
 test('only proposals on the current level\'s path are reviewed now, unless they ask to raise a parent', () => {

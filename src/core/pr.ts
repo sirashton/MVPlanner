@@ -2,15 +2,29 @@ import { findTask } from './plan.ts';
 import type { Plan } from './types.ts';
 
 // A pull request must name a task that an agent has claimed, or that is complete, so work done without the plugin
-// (and so without a claim) is caught before it merges.
+// (and so without a claim) is caught before it merges. It must not change a plan.json at the top of the repo either:
+// the live plan is changed only through the tools, and a committed copy goes stale.
 
 export interface PullRequestInfo {
     title?: string;
     branch?: string;
     body?: string;
+    /** Paths the pull request changes, when known */
+    files?: string[];
 }
 
 export function checkPullRequest(plan: Plan, pr: PullRequestInfo): { ok: boolean; message: string } {
+    const tasks = checkTasks(plan, pr);
+    if (!pr.files?.includes('plan.json')) {
+        return tasks;
+    }
+    return {
+        ok: false,
+        message: `${tasks.message}\n\nThis PR changes plan.json. Change the plan only through the MVPlanner tools, and take plan.json out of this PR (git checkout origin/<base> -- plan.json, or git rm --cached plan.json if it is new).`,
+    };
+}
+
+function checkTasks(plan: Plan, pr: PullRequestInfo): { ok: boolean; message: string } {
     const ids = [...new Set([pr.title, pr.branch, pr.body].join('\n').match(/\bT-\d+\b/g) ?? [])];
     if (ids.length === 0) {
         return {

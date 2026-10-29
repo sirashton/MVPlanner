@@ -27,7 +27,7 @@ Then create the live plan for a repository, once, from a checkout that can push 
 mvplan init --name "My project"        # or: mvplan init --from plan.json
 ```
 
-`init` also writes `.claude/settings.json`, a short section of `CLAUDE.md` and a `.github/workflows/mvplanner.yml` check. Claude Code then offers the plugin to everyone who opens the repo, an agent that starts without it stops and says so instead of working blind, and a pull request fails the check unless it names a task (such as T-12, in its title, branch or description) that is claimed or complete. Commit all three. For an existing plan, `mvplan setup` writes them.
+`init` also writes `.claude/settings.json`, a short section of `CLAUDE.md` and a `.github/workflows/mvplanner.yml` check. Claude Code then offers the plugin to everyone who opens the repo, an agent that starts without it stops and says so instead of working blind, and a pull request fails the check unless it names a task (such as T-12, in its title, branch or description) that is claimed or complete, leaves `plan.json` alone, and every `MVP()` or `TODO()` marker names an open task. Commit all three. For an existing plan, `mvplan setup` writes them.
 
 The repo settings also turn on auto-update for the MVPlanner marketplace, which Claude Code leaves off for third-party marketplaces. Running sessions pick up an update with `/reload-plugins`; new sessions load it by themselves. To update by hand: `claude plugin marketplace update mvplanner && claude plugin update mvplanner@mvplanner`.
 
@@ -61,7 +61,7 @@ Rules agents are given at the start of every session and subagent:
 | MCP server | `plan_overview`, `plan_next`, `task_get`, `task_claim`, `task_release`, `task_update`, `task_propose`, `task_add`, `task_defer`, `plan_edit` (batch add, move, rename, remove and decide, for human-directed sessions), `plan_check` |
 | Hooks | **SessionStart** and **SubagentStart** brief the agent: its id, the rules, its task or the next ones. **PreToolUse** denies direct edits to `plan.json`, and blocks (or, in `warn` mode, warns about) edits with no claimed task. **PostToolUse** sends back markers that name no task. **Stop** and **SubagentStop** nudge once when files changed but no progress was recorded |
 | Skills | `/mvplanner:scope` to shape a product with you as you talk, `/mvplanner:plan` to break work down with you, `/mvplanner:next` to pick up and finish a task, `/mvplanner:defer` for markers |
-| Agents | `planner` maintains the plan; `scope-reviewer` checks a change against its task |
+| Agents | `planner` maintains the plan; `scope-reviewer` checks a change against its task before a PR opens, and flags anything a person would notice that no criterion or accepted proposal explains |
 | Plan panel | A panel beside the chat for the human: progress by priority, the plan as a tree marking what's being worked on, proposals to accept or decline, next up, deferred work and recent activity. Opens by itself in repos with a plan; `/plan-panel` reopens it |
 | Web page | `mvplan serve` opens the plan in your browser: add tasks as fast as you can type, set priorities with one click or a key, rename, drag to move, accept proposals, and watch agents' changes arrive live. It runs on your machine and saves through the same tools the agents use |
 | `mvplan` CLI | The same operations from a terminal or CI, plus `init`, `accept`, `decline`, `move`, `remove` and `apply` (a batch of edits) for humans, `view` (the panel's data as JSON) and `serve` (the web page) |

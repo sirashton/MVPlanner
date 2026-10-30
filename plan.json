@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 219,
+  "revision": 220,
   "nextId": 101,
   "root": {
     "id": "T-1",
@@ -2481,7 +2481,6 @@
             "name": "plan_next can return a batch of ready tasks that can run side by side",
             "status": "Not Started",
             "mscw": "Must",
-            "proposed": true,
             "description": "plan_next takes a count and returns unclaimed tasks whose dependencies are met, that have acceptance criteria (ready for agents), and that don't share a parent's declared files where T-25 exists. Without it the lead hands out one task at a time or guesses which ones collide, which defeats a swarm.",
             "serves": "\"A lead agent can get a batch of ready tasks it can hand out in parallel\"",
             "acceptance": [
@@ -2503,6 +2502,10 @@
                 "at": "2026-10-29T21:31:05.091Z",
                 "agent": "claude-05e9d2c8",
                 "text": "Proposed under T-90"
+              },
+              {
+                "at": "2026-10-30T00:16:11.805Z",
+                "text": "Proposal accepted"
               }
             ]
           },

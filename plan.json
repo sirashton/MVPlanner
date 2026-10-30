@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 222,
+  "revision": 223,
   "nextId": 101,
   "root": {
     "id": "T-1",
@@ -2576,7 +2576,6 @@
             "name": "Open an OpenRig Ideas discussion about a pluggable plan of record",
             "status": "Not Started",
             "mscw": "Could",
-            "proposed": true,
             "description": "After the example rig works, post in OpenRig's Ideas discussions: link the bundle and ask whether they'd take a small docs PR (community harness examples) or a hook for an external work tracker. This posts outside the project, so Alex approves the text first.",
             "serves": "Alex's wish to \"make a PR to them someday\"; needed before any upstream PR per their contributing rules.",
             "acceptance": [
@@ -2598,6 +2597,10 @@
                 "at": "2026-10-29T21:31:13.298Z",
                 "agent": "claude-05e9d2c8",
                 "text": "Proposed under T-90"
+              },
+              {
+                "at": "2026-10-30T00:16:52.726Z",
+                "text": "Proposal accepted"
               }
             ]
           }

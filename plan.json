@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 221,
+  "revision": 222,
   "nextId": 101,
   "root": {
     "id": "T-1",
@@ -2514,7 +2514,6 @@
             "name": "Feed of plan changes for a lead agent",
             "status": "Not Started",
             "mscw": "Should",
-            "proposed": true,
             "description": "mvplan watch --json (and an MCP tool) that emits events since a revision: claimed, released, completed, proposal accepted or declined. mvplan serve already pushes live updates to the page, so this reuses that. Without it a lead can poll plan_overview: works, just slower and noisier.",
             "serves": "\"see when each finishes or a proposal is decided, without polling the whole plan\"",
             "acceptance": [
@@ -2532,6 +2531,10 @@
                 "at": "2026-10-29T21:31:07.868Z",
                 "agent": "claude-05e9d2c8",
                 "text": "Proposed under T-90"
+              },
+              {
+                "at": "2026-10-30T00:16:26.537Z",
+                "text": "Proposal accepted"
               }
             ]
           },

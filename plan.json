@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 218,
+  "revision": 219,
   "nextId": 101,
   "root": {
     "id": "T-1",
@@ -986,7 +986,6 @@
                 "name": "The plan page is always there, for every project on this PC",
                 "status": "Not Started",
                 "mscw": "Should",
-                "proposed": true,
                 "description": "One background page for all projects, started by the plugin. The SessionStart hook checks whether the page is running on 127.0.0.1:4747 and, if not, starts it detached from the installed plugin (skipped in cloud sessions, which have no browser). Each repo with a plan registers itself when a session opens there, and the page lets you switch between them. Replaces the npm-linked clone at C:\\projects\\MVPlanner. Overlaps T-35: /plan-web would just print the link and start the page if it stopped.",
                 "serves": "\"Browser page for reviewing the plan\": today a human has to ask an agent to start mvplan serve before they can review, one port per repo, from a clone that doesn't update with the plugin",
                 "acceptance": [
@@ -1016,6 +1015,10 @@
                     "at": "2026-10-29T21:27:56.994Z",
                     "agent": "claude-c57cbc36",
                     "text": "Proposed under T-30"
+                  },
+                  {
+                    "at": "2026-10-30T00:16:07.249Z",
+                    "text": "Proposal accepted"
                   }
                 ]
               }

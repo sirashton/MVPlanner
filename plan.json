@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 217,
+  "revision": 218,
   "nextId": 101,
   "root": {
     "id": "T-1",
@@ -623,7 +623,6 @@
             "name": "A stable release channel, separate from main",
             "status": "Not Started",
             "mscw": "Could",
-            "proposed": true,
             "serves": "Sharing the plugin with other projects and people: today a broken merge to main reaches every PC and cloud environment at once, including the PR check other repos clone",
             "acceptance": [
               {
@@ -648,6 +647,10 @@
                 "at": "2026-10-29T21:28:08.129Z",
                 "agent": "claude-c57cbc36",
                 "text": "Proposed under T-14"
+              },
+              {
+                "at": "2026-10-30T00:15:41.551Z",
+                "text": "Proposal accepted"
               }
             ]
           }

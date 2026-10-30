@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 216,
+  "revision": 217,
   "nextId": 101,
   "root": {
     "id": "T-1",
@@ -590,8 +590,7 @@
             "id": "T-88",
             "name": "mvplan doctor: check a PC or cloud environment is set up",
             "status": "Not Started",
-            "mscw": "Could",
-            "proposed": true,
+            "mscw": "Should",
             "serves": "Getting the plugin working on a new PC, project or cloud environment: says what's missing instead of agents failing later",
             "acceptance": [
               {
@@ -612,6 +611,10 @@
                 "at": "2026-10-29T21:28:04.960Z",
                 "agent": "claude-c57cbc36",
                 "text": "Proposed under T-14"
+              },
+              {
+                "at": "2026-10-30T00:15:35.173Z",
+                "text": "Proposal accepted"
               }
             ]
           },

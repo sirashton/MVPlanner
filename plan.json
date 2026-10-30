@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 228,
+  "revision": 229,
   "nextId": 101,
   "root": {
     "id": "T-1",
@@ -2768,8 +2768,7 @@
             "id": "T-100",
             "name": "Demo video and launch posts",
             "status": "Not Started",
-            "mscw": "Could",
-            "proposed": true,
+            "mscw": "Should",
             "description": "A 30 to 60 second video: agents claim tasks while the plan page updates live, plus a before-and-after on feature drift (the keyboard shortcuts story). Put it in the README and post it to X, r/ClaudeAI and Show HN, and submit it to the awesome Claude Code lists. Alex approves any public post first.",
             "serves": "\"so it gets used beyond our own projects\": a listing gets people to find it, and the demo gets them to install it.",
             "acceptance": [
@@ -2787,6 +2786,10 @@
                 "at": "2026-10-29T22:08:02.004Z",
                 "agent": "claude-4562d347-p106",
                 "text": "Proposed under T-95"
+              },
+              {
+                "at": "2026-10-30T00:18:19.447Z",
+                "text": "Proposal accepted"
               }
             ]
           }

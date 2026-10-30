@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 226,
+  "revision": 227,
   "nextId": 101,
   "root": {
     "id": "T-1",
@@ -2707,7 +2707,6 @@
             "name": "Validate and submit in the developer portal",
             "status": "Not Started",
             "mscw": "Must",
-            "proposed": true,
             "description": "Alex runs this from his paid claude.ai account at claude.ai/directory/manage: Submit new, Plugin bundle, repo sirashton/MVPlanner, path plugin, Validate, fix and Re-validate, then submit. An agent can prepare the fixes, but only Alex can submit.",
             "serves": "\"can find and install MVPlanner from the directory\": this is the listing itself.",
             "acceptance": [
@@ -2725,6 +2724,10 @@
                 "at": "2026-10-29T22:07:56.435Z",
                 "agent": "claude-4562d347-p106",
                 "text": "Proposed under T-95"
+              },
+              {
+                "at": "2026-10-30T00:18:10.489Z",
+                "text": "Proposal accepted"
               }
             ]
           },

@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 225,
+  "revision": 226,
   "nextId": 101,
   "root": {
     "id": "T-1",
@@ -2674,7 +2674,6 @@
             "name": "Ship the MCP server as readable files under 256 KB",
             "status": "Not Started",
             "mscw": "Should",
-            "proposed": true,
             "description": "plugin/dist/mcp.js is a single 760 KB minified bundle. The directory holds files over 256 KiB, and minified code, for a human reviewer, so every release would wait on manual review. Without it we can still submit, but each version is slower to go live and risks rejection. Split the bundle or stop minifying it.",
             "serves": "\"can find and install MVPlanner from the directory\": it gets each version through review without a manual hold.",
             "acceptance": [
@@ -2696,6 +2695,10 @@
                 "at": "2026-10-29T22:07:53.684Z",
                 "agent": "claude-4562d347-p106",
                 "text": "Proposed under T-95"
+              },
+              {
+                "at": "2026-10-30T00:18:05.957Z",
+                "text": "Proposal accepted"
               }
             ]
           },

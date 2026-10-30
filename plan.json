@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 220,
+  "revision": 221,
   "nextId": 101,
   "root": {
     "id": "T-1",
@@ -2540,7 +2540,6 @@
             "name": "OpenRig example rig with MVPlanner",
             "status": "Not Started",
             "mscw": "Must",
-            "proposed": true,
             "description": "A RigSpec/AgentSpec in this repo (examples/openrig/) with a lead seat running the planner agent, two builder seats and a reviewer seat running scope-reviewer, each loading the mvplanner plugin with MVPLANNER_AGENT set to the seat name. Shows queue rows tagged task:T-n. Published as our own RigBundle first; OpenRig's CONTRIBUTING asks that integrations start as an Ideas Discussion and suggests your own repo as the home. Without it there is no proof the fit works.",
             "serves": "\"A worked example runs MVPlanner in one outside orchestrator (OpenRig first)\"",
             "acceptance": [
@@ -2562,6 +2561,10 @@
                 "at": "2026-10-29T21:31:10.572Z",
                 "agent": "claude-05e9d2c8",
                 "text": "Proposed under T-90"
+              },
+              {
+                "at": "2026-10-30T00:16:22.041Z",
+                "text": "Proposal accepted"
               }
             ]
           },

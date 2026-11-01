@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 233,
+  "revision": 234,
   "nextId": 104,
   "root": {
     "id": "T-1",
@@ -736,6 +736,11 @@
               {
                 "at": "2026-11-01T01:58:14.489Z",
                 "text": "Proposal accepted"
+              },
+              {
+                "at": "2026-11-01T01:58:16.780Z",
+                "agent": "claude-a59f64e0",
+                "text": "Accepted as Must by Alex in the no-sweat setup thread, 2026-11-01; T-101, T-102, T-88 grouped under it as the proposal said."
               }
             ]
           }

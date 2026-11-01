@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 232,
+  "revision": 233,
   "nextId": 104,
   "root": {
     "id": "T-1",
@@ -710,8 +710,7 @@
             "id": "T-103",
             "name": "Set up a new repo in one step, with no GitHub fiddling",
             "status": "Not Started",
-            "mscw": "Should",
-            "proposed": true,
+            "mscw": "Must",
             "description": "Today: run init, commit and push three files by hand, then (in an empty repo) fix GitHub's default branch, then add a setup-script line to the cloud environment, then start the page on a free port. Wanted: say 'set this repo up for MVPlanner' and it is done, ending in a scoping session. Without it everything still works, just clumsily, so Should. Would group T-101 (empty repo), T-102 (init help) and T-88 (mvplan doctor) under it if accepted.",
             "serves": "The plugin's job of getting MVPlanner into a project: Alex's first real new-repo setup (no-sweat, 2026-11-01) took a manual commit, a GitHub default-branch fix and a separate cloud-environment step.",
             "acceptance": [
@@ -733,6 +732,10 @@
                 "at": "2026-11-01T01:56:13.055Z",
                 "agent": "claude-a59f64e0",
                 "text": "Proposed under T-14"
+              },
+              {
+                "at": "2026-11-01T01:58:14.489Z",
+                "text": "Proposal accepted"
               }
             ]
           }

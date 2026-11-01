@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 234,
+  "revision": 235,
   "nextId": 104,
   "root": {
     "id": "T-1",
@@ -446,36 +446,6 @@
                 "links": [
                   "https://github.com/sirashton/MVPlanner/pull/12"
                 ]
-              },
-              {
-                "id": "T-101",
-                "name": "mvplan init works in a brand-new empty repo",
-                "status": "Not Started",
-                "mscw": "Should",
-                "proposed": true,
-                "description": "Found setting up sirashton/no-sweat (2026-11-01). The repo had no commits. mvplan init pushed mvplanner/plan first, so GitHub made it the default branch. Main was pushed afterwards but the default stayed on the plan branch, so cloud sessions clone the plan branch (README + plan.json only, no CLAUDE.md, no .claude/settings.json) and PRs target it. Fixed by hand in GitHub settings. Without this: every new repo set up with init has the same trap until someone notices and changes the default branch by hand, which is why it is Should and not Must.",
-                "serves": "\"Agents that never load MVPlanner never see the plan. Catch them at session start\": in an empty repo, init leaves the plan branch as GitHub's default, so new sessions check out a branch with no CLAUDE.md or plugin settings.",
-                "acceptance": [
-                  {
-                    "text": "In a repo with no commits, mvplan init first makes and pushes a commit on main (the three setup files) before it pushes mvplanner/plan, or stops and says to push main first",
-                    "done": false
-                  },
-                  {
-                    "text": "After init on an empty repo, GitHub's default branch is main",
-                    "done": false
-                  },
-                  {
-                    "text": "Init prints the next steps: commit and push the setup files, the cloud setup-script line, and /mvplanner:scope",
-                    "done": false
-                  }
-                ],
-                "log": [
-                  {
-                    "at": "2026-11-01T01:41:54.425Z",
-                    "agent": "claude-a59f64e0",
-                    "text": "Proposed under T-47"
-                  }
-                ]
               }
             ]
           },
@@ -741,6 +711,43 @@
                 "at": "2026-11-01T01:58:16.780Z",
                 "agent": "claude-a59f64e0",
                 "text": "Accepted as Must by Alex in the no-sweat setup thread, 2026-11-01; T-101, T-102, T-88 grouped under it as the proposal said."
+              }
+            ],
+            "subtasks": [
+              {
+                "id": "T-101",
+                "name": "mvplan init works in a brand-new empty repo",
+                "status": "Not Started",
+                "mscw": "Should",
+                "proposed": true,
+                "description": "Found setting up sirashton/no-sweat (2026-11-01). The repo had no commits. mvplan init pushed mvplanner/plan first, so GitHub made it the default branch. Main was pushed afterwards but the default stayed on the plan branch, so cloud sessions clone the plan branch (README + plan.json only, no CLAUDE.md, no .claude/settings.json) and PRs target it. Fixed by hand in GitHub settings. Without this: every new repo set up with init has the same trap until someone notices and changes the default branch by hand, which is why it is Should and not Must.",
+                "serves": "\"Agents that never load MVPlanner never see the plan. Catch them at session start\": in an empty repo, init leaves the plan branch as GitHub's default, so new sessions check out a branch with no CLAUDE.md or plugin settings.",
+                "acceptance": [
+                  {
+                    "text": "In a repo with no commits, mvplan init first makes and pushes a commit on main (the three setup files) before it pushes mvplanner/plan, or stops and says to push main first",
+                    "done": false
+                  },
+                  {
+                    "text": "After init on an empty repo, GitHub's default branch is main",
+                    "done": false
+                  },
+                  {
+                    "text": "Init prints the next steps: commit and push the setup files, the cloud setup-script line, and /mvplanner:scope",
+                    "done": false
+                  }
+                ],
+                "log": [
+                  {
+                    "at": "2026-11-01T01:41:54.425Z",
+                    "agent": "claude-a59f64e0",
+                    "text": "Proposed under T-47"
+                  },
+                  {
+                    "at": "2026-11-01T01:58:18.984Z",
+                    "agent": "claude-a59f64e0",
+                    "text": "Moved from T-47 to T-103"
+                  }
+                ]
               }
             ]
           }

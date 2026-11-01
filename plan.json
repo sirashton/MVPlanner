@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 236,
+  "revision": 237,
   "nextId": 104,
   "root": {
     "id": "T-1",
@@ -587,38 +587,6 @@
             ]
           },
           {
-            "id": "T-88",
-            "name": "mvplan doctor: check a PC or cloud environment is set up",
-            "status": "Not Started",
-            "mscw": "Should",
-            "serves": "Getting the plugin working on a new PC, project or cloud environment: says what's missing instead of agents failing later",
-            "acceptance": [
-              {
-                "text": "mvplan doctor reports Node version, plugin enabled, marketplace auto-update on, plan branch reachable, push access to it, repo files from mvplan setup present, and page running",
-                "done": false
-              },
-              {
-                "text": "Each failed check says the one command or setting that fixes it",
-                "done": false
-              },
-              {
-                "text": "Works in a cloud session",
-                "done": false
-              }
-            ],
-            "log": [
-              {
-                "at": "2026-10-29T21:28:04.960Z",
-                "agent": "claude-c57cbc36",
-                "text": "Proposed under T-14"
-              },
-              {
-                "at": "2026-10-30T00:15:35.173Z",
-                "text": "Proposal accepted"
-              }
-            ]
-          },
-          {
             "id": "T-89",
             "name": "A stable release channel, separate from main",
             "status": "Not Started",
@@ -751,6 +719,43 @@
                     "at": "2026-11-01T01:58:21.271Z",
                     "agent": "claude-a59f64e0",
                     "text": "Moved from T-11 to T-103"
+                  }
+                ]
+              },
+              {
+                "id": "T-88",
+                "name": "mvplan doctor: check a PC or cloud environment is set up",
+                "status": "Not Started",
+                "mscw": "Should",
+                "serves": "Getting the plugin working on a new PC, project or cloud environment: says what's missing instead of agents failing later",
+                "acceptance": [
+                  {
+                    "text": "mvplan doctor reports Node version, plugin enabled, marketplace auto-update on, plan branch reachable, push access to it, repo files from mvplan setup present, and page running",
+                    "done": false
+                  },
+                  {
+                    "text": "Each failed check says the one command or setting that fixes it",
+                    "done": false
+                  },
+                  {
+                    "text": "Works in a cloud session",
+                    "done": false
+                  }
+                ],
+                "log": [
+                  {
+                    "at": "2026-10-29T21:28:04.960Z",
+                    "agent": "claude-c57cbc36",
+                    "text": "Proposed under T-14"
+                  },
+                  {
+                    "at": "2026-10-30T00:15:35.173Z",
+                    "text": "Proposal accepted"
+                  },
+                  {
+                    "at": "2026-11-01T01:58:23.476Z",
+                    "agent": "claude-a59f64e0",
+                    "text": "Moved from T-14 to T-103"
                   }
                 ]
               }

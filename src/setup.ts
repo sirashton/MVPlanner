@@ -6,7 +6,7 @@ import path from 'node:path';
 // autoUpdate: third-party marketplaces don't update by themselves unless asked to.
 export const MARKETPLACE = { source: { source: 'github', repo: 'sirashton/MVPlanner' }, autoUpdate: true };
 const PLUGIN = 'mvplanner@mvplanner';
-const CLAUDE_MD_MARKER = '<!-- mvplanner -->';
+export const CLAUDE_MD_MARKER = '<!-- mvplanner -->';
 
 export const CLAUDE_MD_SECTION = `${CLAUDE_MD_MARKER}
 ## Planning: MVPlanner
@@ -44,11 +44,13 @@ jobs:
         run: node "$RUNNER_TEMP/mvplanner/plugin/dist/cli.js" check
 `;
 
-export async function writeRepoSetup(root: string): Promise<string[]> {
-    const changed: string[] = [];
+export const SETUP_FILES = ['.claude/settings.json', 'CLAUDE.md', '.github/workflows/mvplanner.yml'] as const;
 
-    const settingsFile = path.join(root, '.claude', 'settings.json');
-    const settings = JSON.parse(await fs.readFile(settingsFile, 'utf-8').catch(() => '{}')) as {
+// The setup files as they should be, given what is there now (undefined = missing). Returns only files that change.
+export function setupFileChanges(current: Record<string, string | undefined>): Record<string, string> {
+    const changes: Record<string, string> = {};
+
+    const settings = JSON.parse(current['.claude/settings.json'] ?? '{}') as {
         extraKnownMarketplaces?: Record<string, unknown>;
         enabledPlugins?: Record<string, boolean>;
     };
@@ -56,22 +58,28 @@ export async function writeRepoSetup(root: string): Promise<string[]> {
     if (!known || known.autoUpdate === undefined || settings.enabledPlugins?.[PLUGIN] !== true) {
         settings.extraKnownMarketplaces = { ...settings.extraKnownMarketplaces, mvplanner: { ...MARKETPLACE, ...known } };
         settings.enabledPlugins = { ...settings.enabledPlugins, [PLUGIN]: true };
-        await fs.mkdir(path.dirname(settingsFile), { recursive: true });
-        await fs.writeFile(settingsFile, `${JSON.stringify(settings, null, 2)}\n`);
-        changed.push('.claude/settings.json');
+        changes['.claude/settings.json'] = `${JSON.stringify(settings, null, 2)}\n`;
     }
 
-    const claudeMd = path.join(root, 'CLAUDE.md');
-    const existing = await fs.readFile(claudeMd, 'utf-8').catch(() => '');
+    const existing = current['CLAUDE.md'] ?? '';
     if (!existing.includes(CLAUDE_MD_MARKER)) {
-        await fs.writeFile(claudeMd, existing ? `${existing.trimEnd()}\n\n${CLAUDE_MD_SECTION}` : CLAUDE_MD_SECTION);
-        changed.push('CLAUDE.md');
+        changes['CLAUDE.md'] = existing ? `${existing.trimEnd()}\n\n${CLAUDE_MD_SECTION}` : CLAUDE_MD_SECTION;
     }
-    const workflow = path.join(root, '.github', 'workflows', 'mvplanner.yml');
-    if (!(await fs.stat(workflow).catch(() => undefined))) {
-        await fs.mkdir(path.dirname(workflow), { recursive: true });
-        await fs.writeFile(workflow, PR_WORKFLOW);
-        changed.push('.github/workflows/mvplanner.yml');
+    if (current['.github/workflows/mvplanner.yml'] === undefined) {
+        changes['.github/workflows/mvplanner.yml'] = PR_WORKFLOW;
     }
-    return changed;
+    return changes;
+}
+
+export async function writeRepoSetup(root: string): Promise<string[]> {
+    const current: Record<string, string | undefined> = {};
+    for (const file of SETUP_FILES) {
+        current[file] = await fs.readFile(path.join(root, file), 'utf-8').catch(() => undefined);
+    }
+    const changes = setupFileChanges(current);
+    for (const [file, content] of Object.entries(changes)) {
+        await fs.mkdir(path.dirname(path.join(root, file)), { recursive: true });
+        await fs.writeFile(path.join(root, file), content);
+    }
+    return Object.keys(changes);
 }

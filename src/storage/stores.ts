@@ -77,7 +77,7 @@ export class GitBranchStore implements PlanStore {
     }
 
     private missing(): PlanError {
-        return new PlanError(`There is no plan branch ${this.branch} on ${this.remote} yet. Ask a human to run "mvplan init". Don't create a plan file yourself.`);
+        return new PlanError(`There is no plan branch ${this.branch} on ${this.remote} yet. Ask a human whether to set the repo up (/mvplanner:setup, or "mvplan setup"). Don't create a plan file yourself.`);
     }
 
     async read(options: ReadOptions = {}): Promise<Plan> {
@@ -199,7 +199,7 @@ export class FileStore implements PlanStore {
         try {
             text = await fs.readFile(this.file, 'utf-8');
         } catch {
-            throw new PlanError(`No plan at ${this.file}. Ask a human to run "mvplan init". Don't create a plan file yourself.`);
+            throw new PlanError(`No plan at ${this.file}. Ask a human to run "mvplan setup". Don't create a plan file yourself.`);
         }
         return parsePlan(text);
     }

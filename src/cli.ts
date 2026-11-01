@@ -11,6 +11,7 @@ import { renderNeedless, renderNext, renderTask, renderTree } from './format.ts'
 import { scanRepo } from './scan.ts';
 import { openInBrowser, startServer } from './serve.ts';
 import { writeRepoSetup } from './setup.ts';
+import { doctor, renderChecks, renderSetup, setupRepo } from './onboard.ts';
 import { currentSession } from './session.ts';
 import { buildView } from './view.ts';
 import { currentBranch, git, repoTopLevel } from './storage/git.ts';
@@ -45,8 +46,12 @@ Changing
   mvplan apply <file|->             Apply a JSON array of edits in one save (see plan_edit)
 
 Setting up
-  mvplan init [--from FILE] [--name NAME]   Create the live plan (migrates a version 1 plan.json)
-  mvplan setup                              Switch the plugin on for every session in this repo (also done by init)
+  mvplan setup [--name NAME] [--from FILE]  Set this repo up in one step: push the files that switch the plugin on
+                                            to the default branch, create the plan branch (migrating a version 1
+                                            plan.json with --from), keep the default branch off the plan branch,
+                                            then check it all works. Safe to run again.
+  mvplan init                               The same as mvplan setup
+  mvplan doctor                             Check this repo and machine are set up, with the fix for anything missing
   mvplan migrate <in> [out]                 Convert a version 1 plan.json to version 2
 
 Storage: the plan branch on the remote by default. Set MVPLANNER_BACKEND=file to use one plan.json in the main
@@ -145,30 +150,36 @@ export async function main(argv: string[], cwd = process.cwd()): Promise<number>
         case 'where':
             out(`The live plan is held in ${store.describe()}.`);
             return 0;
-        case 'init': {
-            const plan = values.from ? await readPlanFile(values.from) : newPlan(values.name ?? path.basename((await repoTopLevel(cwd)) ?? cwd));
-            if (store instanceof GitBranchStore) {
-                await store.init(plan);
-            } else if (store instanceof FileStore) {
-                const exists = await fs.stat(store.file).then(() => true, () => false);
-                if (exists) {
-                    fail(`${store.file} already exists.`);
-                }
-                await store.write(plan);
-            }
-            out(`Created the live plan in ${store.describe()}.`);
-            const changed = await writeRepoSetup((await repoTopLevel(cwd)) ?? cwd);
-            if (changed.length) {
-                out(`Wrote ${changed.join(' and ')} so every Claude Code session here loads MVPlanner. Commit ${changed.length > 1 ? 'them' : 'it'}.`);
-            }
-            return 0;
-        }
+        case 'init':
         case 'setup': {
-            const changed = await writeRepoSetup((await repoTopLevel(cwd)) ?? cwd);
+            const root = (await repoTopLevel(cwd)) ?? cwd;
+            const makePlan = async () => values.from ? await readPlanFile(values.from) : newPlan(values.name ?? path.basename(root));
+            if (store instanceof GitBranchStore) {
+                const result = await setupRepo(cwd, { plan: makePlan, remote: store.remote, planBranch: store.branch });
+                out(renderSetup(result));
+                return result.ok ? 0 : 1;
+            }
+            if (store instanceof FileStore) {
+                const exists = await fs.stat(store.file).then(() => true, () => false);
+                if (!exists) {
+                    await store.write(await makePlan());
+                    out(`Created the live plan in ${store.describe()}.`);
+                }
+            }
+            const changed = await writeRepoSetup(root);
             out(changed.length
                 ? `Wrote ${changed.join(' and ')} so every Claude Code session here loads MVPlanner. Commit ${changed.length > 1 ? 'them' : 'it'}.`
                 : 'This repo already switches MVPlanner on.');
             return 0;
+        }
+        case 'doctor': {
+            if (!(store instanceof GitBranchStore)) {
+                fail('mvplan doctor checks a plan held on a git branch; this repo keeps it in a local file.');
+            }
+            const checks = await doctor(cwd, { remote: store.remote, planBranch: store.branch });
+            out(renderChecks(checks));
+            out(checks.every(c => c.ok) ? '\nAll set.' : '\nFix the ✗ above, then run "mvplan doctor" again.');
+            return checks.every(c => c.ok) ? 0 : 1;
         }
         case 'show': {
             const plan = await store.read({ fresh: true });

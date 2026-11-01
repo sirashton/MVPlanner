@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 241,
+  "revision": 242,
   "nextId": 105,
   "root": {
     "id": "T-1",
@@ -771,6 +771,11 @@
                     "at": "2026-11-01T01:58:23.476Z",
                     "agent": "claude-a59f64e0",
                     "text": "Moved from T-14 to T-103"
+                  },
+                  {
+                    "at": "2026-11-01T02:09:30.112Z",
+                    "agent": "claude-d29e2069",
+                    "text": "Partly done in PR #32 (T-103): mvplan doctor checks plugin on, default branch, setup files, plan readable and pushable, with one fix each, and works in a cloud session. Still missing from AC0: Node version, marketplace auto-update, page running."
                   }
                 ]
               },

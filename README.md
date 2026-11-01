@@ -27,7 +27,7 @@ Then set a repository up, once, from a checkout that can push to it. In Claude C
 mvplan setup --name "My project"       # or: mvplan setup --from plan.json
 ```
 
-`setup` pushes `.claude/settings.json`, a short section of `CLAUDE.md` and a `.github/workflows/mvplanner.yml` check to the default branch, then creates the live plan on the `mvplanner/plan` branch. In a brand-new empty repo the default branch goes first, so GitHub makes `main` the default and not the plan branch. It ends by checking everything works, with the one fix for anything that doesn't, and prints the cloud setup-script line and how to open the plan page. It is safe to run again, and `mvplan doctor` runs the checks on their own. If you can't push to the default branch, `mvplan setup --files-only` writes the three files for you to commit in a pull request.
+`setup` pushes `.claude/settings.json`, a short section of `CLAUDE.md` and a `.github/workflows/mvplanner.yml` check to the default branch, then creates the live plan on the `mvplanner/plan` branch. In a brand-new empty repo the default branch goes first, so GitHub makes `main` the default and not the plan branch. It ends by checking everything works, with the one fix for anything that doesn't, and prints the cloud setup-script line and how to open the plan page. It is safe to run again, and `mvplan doctor` runs the checks on their own.
 
 With those files, Claude Code offers the plugin to everyone who opens the repo, an agent that starts without it stops and says so instead of working blind, and a pull request fails the check unless it names a task (such as T-12, in its title, branch or description) that is claimed or complete, leaves `plan.json` alone, and every `MVP()` or `TODO()` marker names an open task.
 

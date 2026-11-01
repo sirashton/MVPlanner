@@ -132,7 +132,7 @@ export const register: Register = (on, options) => {
           {problem && /no plan/i.test(problem) ? (
             <Box flexDirection="column">
               <Text weight="bold">No MVPlanner plan here</Text>
-              <Text dimColor>To start one, run: mvplan init --name "My project"</Text>
+              <Text dimColor>To start one, ask Claude to set this repo up for MVPlanner (/mvplanner:setup)</Text>
             </Box>
           ) : (
             <Box flexDirection="column">

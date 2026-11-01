@@ -50,7 +50,6 @@ Setting up
                                             to the default branch, create the plan branch (migrating a version 1
                                             plan.json with --from), keep the default branch off the plan branch,
                                             then check it all works. Safe to run again.
-  mvplan setup --files-only                 Only write the setup files into this checkout, for you to commit
   mvplan init                               The same as mvplan setup
   mvplan doctor                             Check this repo and machine are set up, with the fix for anything missing
   mvplan migrate <in> [out]                 Convert a version 1 plan.json to version 2
@@ -119,7 +118,6 @@ export async function main(argv: string[], cwd = process.cwd()): Promise<number>
             'approved-by': { type: 'string' },
             port: { type: 'string' },
             'no-open': { type: 'boolean' },
-            'files-only': { type: 'boolean' },
             help: { type: 'boolean', short: 'h' },
         },
     });
@@ -156,12 +154,12 @@ export async function main(argv: string[], cwd = process.cwd()): Promise<number>
         case 'setup': {
             const root = (await repoTopLevel(cwd)) ?? cwd;
             const makePlan = async () => values.from ? await readPlanFile(values.from) : newPlan(values.name ?? path.basename(root));
-            if (store instanceof GitBranchStore && !values['files-only']) {
+            if (store instanceof GitBranchStore) {
                 const result = await setupRepo(cwd, { plan: makePlan, remote: store.remote, planBranch: store.branch });
                 out(renderSetup(result));
                 return result.ok ? 0 : 1;
             }
-            if (store instanceof FileStore && !values['files-only']) {
+            if (store instanceof FileStore) {
                 const exists = await fs.stat(store.file).then(() => true, () => false);
                 if (!exists) {
                     await store.write(await makePlan());

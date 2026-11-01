@@ -135,7 +135,7 @@ export async function setupRepo(cwd: string, options: SetupOptions): Promise<Set
         const pushed = await git(cwd, ['push', '--quiet', '--no-verify', remote, `${commit}:refs/heads/${defaultBranch}`]);
         if (pushed.code !== 0) {
             throw new PlanError(`Could not push the setup files to ${defaultBranch}: ${pushed.stderr.trim()}\n`
-                + `Fix: give this checkout push access to ${defaultBranch}, or run "mvplan setup --files-only", commit the files in a pull request, merge it, then run "mvplan setup" again.`);
+                + `Fix: give this checkout push access to ${defaultBranch} (or ask someone who has it to run "mvplan setup"), then run "mvplan setup" again.`);
         }
         await git(cwd, ['update-ref', `refs/remotes/${remote}/${defaultBranch}`, commit]);
         lines.push(`Pushed ${listOf(changed)} to ${defaultBranch}, so every Claude Code session here loads MVPlanner.`);

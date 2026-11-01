@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 239,
-  "nextId": 104,
+  "revision": 240,
+  "nextId": 105,
   "root": {
     "id": "T-1",
     "name": "MVPlanner",
@@ -766,6 +766,28 @@
                     "at": "2026-11-01T01:58:23.476Z",
                     "agent": "claude-a59f64e0",
                     "text": "Moved from T-14 to T-103"
+                  }
+                ]
+              },
+              {
+                "id": "T-104",
+                "name": "Set up a repo whose main branch is protected",
+                "status": "Not Started",
+                "mscw": "Should",
+                "proposed": true,
+                "description": "When the push to the default branch is refused, setup could put the setup files on a branch and open (or link) a pull request, or offer `mvplan setup --files-only` to write them into the checkout for a PR. Without it: setup stops with a clear message asking for push access, so protected repos need someone with access to run it; everything else still works.",
+                "serves": "\"Onboarding a new repo must be slick\": mvplan setup pushes straight to the default branch, so a repo with branch protection on main can't be set up in one step.",
+                "acceptance": [
+                  {
+                    "text": "When the default branch refuses the push, setup still gets the setup files onto it through a pull request, and creates the plan branch",
+                    "done": false
+                  }
+                ],
+                "log": [
+                  {
+                    "at": "2026-11-01T02:05:20.004Z",
+                    "agent": "claude-d29e2069",
+                    "text": "Proposed under T-103"
                   }
                 ]
               }

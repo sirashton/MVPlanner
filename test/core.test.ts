@@ -201,7 +201,7 @@ test('the review view summarises progress, proposals, claims and deferrals', asy
     const deferred = deferTask(plan, 'T-4', 'agent-a', { name: 'Animate', trigger: 'users ask' });
     const view = buildView(plan, [{ kind: 'MVP', id: deferred.id, line: 3, text: '', file: 'a.ts' }]);
     assert.equal(view.level, 'Must');
-    assert.deepEqual(view.ladder[0], { label: 'Must', done: 1, total: 2, isCurrent: true });
+    assert.deepEqual(view.ladder[0], { label: 'Must', done: 1, working: 1, total: 2, isCurrent: true });
     assert.deepEqual(view.proposals.map(p => [p.id, p.by]), [[proposal.id, 'agent-b']]);
     assert.deepEqual(view.claims.map(c => [c.id, c.agent, c.isStale]), [['T-4', 'agent-a', false]]);
     assert.deepEqual(view.deferred.map(d => [d.id, d.markers.length]), [[deferred.id, 1]]);

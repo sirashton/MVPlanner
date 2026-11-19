@@ -21,7 +21,8 @@ export interface PlanView {
     revision: number;
     level: DoMore;
     status: string;
-    ladder: { label: string; done: number; total: number; isCurrent: boolean }[];
+    // working: claimed by an agent and not yet complete, shown as "being worked on" beside the done part of the bar.
+    ladder: { label: string; done: number; working: number; total: number; isCurrent: boolean }[];
     // isNow: on the current level's path or asking to raise a parent, so it is reviewed now; the rest wait in a later pile.
     proposals: (TaskSummary & { description?: string; serves?: string; raiseParent?: string; by?: string; pathLevel: Mscw; isNow: boolean })[];
     claims: (TaskSummary & { agent: string; branch?: string; session?: string; since: string; lastActivity: string; isStale: boolean })[];
@@ -51,11 +52,13 @@ export function buildView(plan: Plan, markers: Marker[] = [], now = Date.now()):
         Math.max(rank(task.mscw), ...parents.slice(1).map(p => rank(p.mscw)));
     const leaves = entries.filter(e => e.parents.length > 0 && isLeafWork(e.task) && !e.task.proposed && !e.parents.some(p => p.proposed));
     const level = overallLevel(plan);
-    const ladder = (['Must', 'Should', 'Could'] as const).map((name, i) => {
-        const pool = leaves.filter(e => effective(e.task, e.parents) <= i);
-        return { label: i === 0 ? 'Must' : `Up to ${name}`, done: pool.filter(e => e.task.status === 'Complete').length, total: pool.length, isCurrent: level === name };
+    const rung = (label: string, pool: typeof leaves, isCurrent: boolean) => ({
+        label, done: pool.filter(e => e.task.status === 'Complete').length,
+        working: pool.filter(e => e.task.claimedBy && e.task.status !== 'Complete').length, total: pool.length, isCurrent,
     });
-    ladder.push({ label: 'Everything', done: leaves.filter(e => e.task.status === 'Complete').length, total: leaves.length, isCurrent: false });
+    const ladder = (['Must', 'Should', 'Could'] as const).map((name, i) =>
+        rung(i === 0 ? 'Must' : `Up to ${name}`, leaves.filter(e => effective(e.task, e.parents) <= i), level === name));
+    ladder.push(rung('Everything', leaves, false));
 
     const markersById = new Map<string, Marker[]>();
     for (const marker of markers) {

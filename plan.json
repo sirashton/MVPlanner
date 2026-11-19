@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/sirashton/mvplanner/main/plan.schema.json",
   "version": 2,
-  "revision": 244,
+  "revision": 245,
   "nextId": 106,
   "root": {
     "id": "T-1",
@@ -1182,7 +1182,7 @@
               {
                 "id": "T-105",
                 "name": "Must, Should and Could progress bars at the top of the plan page",
-                "status": "Not Started",
+                "status": "In Progress",
                 "mscw": "Should",
                 "proposed": true,
                 "serves": "Review the plan at a glance: Alex wants to see how far through each priority the plan is, with work in progress shown, without reading the tree",
@@ -1201,8 +1201,19 @@
                     "at": "2026-11-19T22:59:10.795Z",
                     "agent": "claude-progress-bars",
                     "text": "Proposed under T-30"
+                  },
+                  {
+                    "at": "2026-11-19T22:59:29.494Z",
+                    "agent": "claude-progress-bars",
+                    "text": "Claimed on main"
                   }
-                ]
+                ],
+                "claimedBy": {
+                  "agent": "claude-progress-bars",
+                  "at": "2026-11-19T22:59:29.491Z",
+                  "branch": "main",
+                  "session": "2fc7f55a-b93d-4727-a70c-c8aab3381c76"
+                }
               }
             ],
             "links": [

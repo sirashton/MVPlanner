@@ -69,7 +69,6 @@ header.top h1 { font-size: 30px; line-height: 1.1; font-weight: 850; letter-spac
 /* After the done part, the tasks agents are working on now, in the being-worked-on colour. */
 .bar span.working { background: var(--live); }
 .rung:not(.current) .bar span { opacity: .55; }
-.rung .working-count { color: var(--live); }
 /* Each priority keeps one colour wherever it appears: pickers, decisions, focus levels, the ladder and the done marks. */
 [data-p=Must] { --p: var(--must); }
 [data-p=Should] { --p: var(--should); }
@@ -534,7 +533,6 @@ function render() {
   const share = (n, total) => `width:${total ? (100 * n / total).toFixed(1) : 0}%`;
   $('ladder').replaceChildren(...v.ladder.map((r, i) => el('div', { class: r.isCurrent ? 'rung current' : 'rung', 'data-p': P[i] === "Won't" ? undefined : P[i] },
     el('b', {}, r.label), ` ${r.done} of ${r.total} done`,
-    r.working ? el('span', { class: 'working-count' }, `, ${r.working} being worked on`) : null,
     el('div', { class: 'bar', role: 'img', 'aria-label': `${r.label}: ${r.done} of ${r.total} done, ${r.working || 0} being worked on` },
       el('span', { style: share(r.done, r.total) }),
       r.working ? el('span', { class: 'working', style: share(r.working, r.total), title: `${r.working} being worked on` }) : null))));
